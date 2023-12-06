@@ -3,6 +3,7 @@
  */
 
 package gr.hua.dit.oop2.calendarproject;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,6 +14,7 @@ public class CalendarProject {
     public static void main(String[] args) {
            
         java.util.Scanner input = new java.util.Scanner(System.in);
+        ArrayList<Event> eventsList = new ArrayList<>();
         
         System.out.println("Add event (Press 1)");
         System.out.println("Edit event (Press 2)");
@@ -35,6 +37,8 @@ public class CalendarProject {
             String description = input.nextLine();
         
             Event myEvent = new Event(title ,date , time, description);
+            
+            eventsList.add(myEvent);
             
             System.out.println("Event added: " + myEvent.getTitle() + " on " + myEvent.getDate());
         }
