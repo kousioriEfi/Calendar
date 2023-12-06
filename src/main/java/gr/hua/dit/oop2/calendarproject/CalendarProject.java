@@ -3,10 +3,6 @@
  */
 
 package gr.hua.dit.oop2.calendarproject;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CalendarProject {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static void main(String[] args) {
            
         java.util.Scanner input = new java.util.Scanner(System.in);
         ArrayList<Event> eventsList = new ArrayList<>();
@@ -64,7 +60,19 @@ public class CalendarProject {
                     }
                     
                     case 2 -> {
-                    
+                        
+                        System.out.println("Add dueDate");
+                        String dueDate = input.nextLine();
+            
+                        System.out.println("DueTime");
+                        String dueTime = input.nextLine();
+                        
+                        System.out.println("Enter true or false:");
+                        String userInput = input.nextLine();
+
+                        // Parse the string into a boolean
+                        boolean status = Boolean.parseBoolean(userInput);
+
                         System.out.println("Add title");
                         String title = input.nextLine();
             
@@ -77,32 +85,18 @@ public class CalendarProject {
                         System.out.println("Add description");
                         String description = input.nextLine();
                         
-                        Event myEvent = new Event(title ,date , time, description);
+                        Event myEvent = new Project(dueDate, dueTime, status,title ,date , time, description);
             
                         eventsList.add(myEvent);
             
                         System.out.println("Project added: " + myEvent.getTitle() + " on " + myEvent.getDate());
                     
                     }
+                    
+                    
                 }
              
-                System.out.println("Add title");
-                String title = input.nextLine();
-            
-                System.out.println("Date");
-                String date = input.nextLine();
-            
-                System.out.println("Time");
-                String time = input.nextLine();
-            
-                System.out.println("Add description");
-                String description = input.nextLine();
-        
-                Event myEvent = new Event(title ,date , time, description);
-            
-                eventsList.add(myEvent);
-            
-                System.out.println("Event added: " + myEvent.getTitle() + " on " + myEvent.getDate());
+                
             }
         }
         
@@ -116,17 +110,6 @@ public class CalendarProject {
         //System.out.println(testProject.getDueDate());
         for(int i=0;i<eventsList.size();i++){
            eventsList.get(i).printEvent();
-            
-            }
-        //        FileOutputStream eventsFile = new FileOutputStream("events.txt");
-//        ObjectOutputStream objectEvents = new ObjectOutputStream(eventsFile);
-//        objectEvents.writeObject(eventsList);
-        FileInputStream fis = new FileInputStream("events.txt");
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        
-        eventsList = (ArrayList<Event>) ois.readObject();
-        for(Event myEvent: eventsList){
-            myEvent.printEvent();
             
             }
     }
