@@ -13,8 +13,8 @@ public class Project extends Event{
     private String dueTime;
     private boolean status;
 
-    public Project(String dueDate, String dueTime, boolean status, String date, String title, String time, String description) {
-        super(date, title, time, description);
+    public Project(String dueDate, String dueTime, boolean status, String title, String date, String time, String description) {
+        super(title, date, time, description);
         this.dueDate = dueDate;
         this.dueTime = dueTime;
         this.status = status;

@@ -39,5 +39,10 @@ public class CalendarProject {
             System.out.println("Event added: " + myEvent.getTitle() + " on " + myEvent.getDate());
         }
         
+        Event testEvent = new Event("birthday","28/12/2003","11:30","oxi");
+        Project testProject = new Project("15/12/2023","12:00",true,"ergasia","6/12/2023","4:49","nai");
+        
+        System.out.println(testEvent.getDescription());
+        System.out.println(testProject.getDueDate());
     }
 }
