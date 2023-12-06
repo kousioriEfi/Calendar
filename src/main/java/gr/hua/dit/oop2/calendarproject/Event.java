@@ -3,12 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package gr.hua.dit.oop2.calendarproject;
-
+import java.io.Serializable;
 /**
  *
  * @author leftp
  */
-public class Event {
+public class Event implements Serializable {
     private String title;
     private String date;
     private String time;

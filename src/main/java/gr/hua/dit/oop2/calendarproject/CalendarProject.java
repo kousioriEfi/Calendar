@@ -3,6 +3,10 @@
  */
 
 package gr.hua.dit.oop2.calendarproject;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +15,7 @@ import java.util.ArrayList;
  */
 public class CalendarProject {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
            
         java.util.Scanner input = new java.util.Scanner(System.in);
         ArrayList<Event> eventsList = new ArrayList<>();
@@ -112,6 +116,17 @@ public class CalendarProject {
         //System.out.println(testProject.getDueDate());
         for(int i=0;i<eventsList.size();i++){
            eventsList.get(i).printEvent();
+            
+            }
+        //        FileOutputStream eventsFile = new FileOutputStream("events.txt");
+//        ObjectOutputStream objectEvents = new ObjectOutputStream(eventsFile);
+//        objectEvents.writeObject(eventsList);
+        FileInputStream fis = new FileInputStream("events.txt");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        
+        eventsList = (ArrayList<Event>) ois.readObject();
+        for(Event myEvent: eventsList){
+            myEvent.printEvent();
             
             }
     }
