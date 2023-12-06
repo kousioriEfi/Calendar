@@ -22,25 +22,84 @@ public class CalendarProject {
         int opt = input.nextInt();
         input.nextLine();
         
-        if ( opt == 1){
-             
-            System.out.println("Add title");
-            String title = input.nextLine();
-            
-            System.out.println("Date");
-            String date = input.nextLine();
-            
-            System.out.println("Time");
-            String time = input.nextLine();
-            
-            System.out.println("Add description");
-            String description = input.nextLine();
+        switch (opt){
         
-            Event myEvent = new Event(title ,date , time, description);
+            case 1 -> {
+                
+                System.out.println("Add appointment (Press 1)");
+                System.out.println("Add project (Press 2)");
+                
+                int ev_opt = input.nextInt();
+                input.nextLine();
+                
+                switch (ev_opt) { 
+                    
+                    case 1 -> {
+                    
+                        System.out.println("Add title");
+                        String title = input.nextLine();
             
-            eventsList.add(myEvent);
+                        System.out.println("Date");
+                        String date = input.nextLine();
+                        
+                        System.out.println("Duration");
+                        String duration = input.nextLine();
             
-            System.out.println("Event added: " + myEvent.getTitle() + " on " + myEvent.getDate());
+                        System.out.println("Time");
+                        String time = input.nextLine();
+            
+                        System.out.println("Add description");
+                        String description = input.nextLine();
+                        
+                        Event myEvent = new Appointment(duration, title, date, time, description);
+            
+                        eventsList.add(myEvent);
+            
+                        System.out.println("Appointment added: " + myEvent.getTitle() + " on " + myEvent.getDate());
+                    
+                    }
+                    
+                    case 2 -> {
+                    
+                        System.out.println("Add title");
+                        String title = input.nextLine();
+            
+                        System.out.println("Date");
+                        String date = input.nextLine();
+            
+                        System.out.println("Time");
+                        String time = input.nextLine();
+            
+                        System.out.println("Add description");
+                        String description = input.nextLine();
+                        
+                        Event myEvent = new Event(title ,date , time, description);
+            
+                        eventsList.add(myEvent);
+            
+                        System.out.println("Project added: " + myEvent.getTitle() + " on " + myEvent.getDate());
+                    
+                    }
+                }
+             
+                System.out.println("Add title");
+                String title = input.nextLine();
+            
+                System.out.println("Date");
+                String date = input.nextLine();
+            
+                System.out.println("Time");
+                String time = input.nextLine();
+            
+                System.out.println("Add description");
+                String description = input.nextLine();
+        
+                Event myEvent = new Event(title ,date , time, description);
+            
+                eventsList.add(myEvent);
+            
+                System.out.println("Event added: " + myEvent.getTitle() + " on " + myEvent.getDate());
+            }
         }
         
         Event testEvent = new Event("birthday","28/12/2003","11:30","oxi");
