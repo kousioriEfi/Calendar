@@ -9,16 +9,16 @@ package gr.hua.dit.oop2.calendarproject;
  * @author leftp
  */
 public class Event {
-    private String date;
     private String title;
+    private String date;
     private String time;
     private String description;
 
 
 
-    public Event(String date, String title, String time, String description) {
-        this.date = date;
+    public Event(String title ,String date , String time, String description) {
         this.title = title;
+        this.date = date;
         this.time = time;
         this.description = description;
     }
