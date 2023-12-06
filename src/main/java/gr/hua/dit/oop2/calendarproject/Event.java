@@ -54,5 +54,13 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public void printEvent(){
+        System.out.println("Τίτλος: " + getTitle());
+        System.out.println("Ημερομηνία " + getDate());
+    
+    }
 }
+
+
 

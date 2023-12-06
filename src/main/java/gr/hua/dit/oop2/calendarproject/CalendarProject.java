@@ -44,9 +44,16 @@ public class CalendarProject {
         }
         
         Event testEvent = new Event("birthday","28/12/2003","11:30","oxi");
-        Project testProject = new Project("15/12/2023","12:00",true,"ergasia","6/12/2023","4:49","nai");
+        Project testProject = new Project("15/12/2023","12:00",true,"ergasia","6/12/2023","4:49","nai"); 
         
-        System.out.println(testEvent.getDescription());
-        System.out.println(testProject.getDueDate());
+        eventsList.add(testEvent);
+        eventsList.add(testProject);
+        
+        //System.out.println(testEvent.getDescription());
+        //System.out.println(testProject.getDueDate());
+        for(int i=0;i<eventsList.size();i++){
+           eventsList.get(i).printEvent();
+            
+            }
     }
 }
