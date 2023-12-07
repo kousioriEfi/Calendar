@@ -22,70 +22,70 @@ import java.util.Date;
  */
 public class CalendarProject {
     public static void main(String[] args) {
-//         // Writing to an iCalendar (.ics) file
-//        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
-//            // Write iCalendar header
-//            writer.write("BEGIN:VCALENDAR\n");
-//            writer.write("VERSION:2.0\n");
-//            writer.write("PRODID:-//Your Organization//Your Application//EN\n");
-//
-//            // Add an event
-//            writer.write("BEGIN:VEVENT\n");
-//            writer.write("SUMMARY:Hello, File I/O!\n");
-//
-//            // Set the event start and end time (here, it's set for the current date and time)
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-//            String startDate = dateFormat.format(new Date());
-//            String endDate = dateFormat.format(new Date(System.currentTimeMillis() + 3600000)); // Adding 1 hour
-//
-//            writer.write("DTSTART:" + startDate + "\n");
-//            writer.write("DTEND:" + endDate + "\n");
-//
-//            // End the event
-//            writer.write("END:VEVENT\n");
-//
-//            // End the calendar
-//            writer.write("END:VCALENDAR\n");
-//
-//            System.out.println("iCalendar file created successfully.");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//       
-//        // Reading from an iCalendar (.ics) file
-//        try (BufferedReader reader = new BufferedReader(new FileReader("output.ics"))) {
-//            String line;
-//            String summary = null;
-//            String startDate = null;
-//
-//            while ((line = reader.readLine()) != null) {
-//                if (line.startsWith("SUMMARY:")) {
-//                    // Extracting the event title (SUMMARY)
-//                    summary = line.substring("SUMMARY:".length());
-//                } else if (line.startsWith("DTSTART:")) {
-//                    // Extracting the event start date (DTSTART)
-//                    startDate = line.substring("DTSTART:".length());
-//                }
-//
-//                // Assuming the end of the event information is marked by "END:VEVENT"
-//                if (line.equals("END:VEVENT")) {
-//                    // Print the event details
-//                    if (summary != null && startDate != null) {
-//                        System.out.println("Title: " + summary);
-//                        System.out.println("Date: " + startDate);
-//                        System.out.println();
-//                    }
-//
-//                    // Reset variables for the next event
-//                    summary = null;
-//                    startDate = null;
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//      
-//       
+         // Writing to an iCalendar (.ics) file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
+            // Write iCalendar header
+            writer.write("BEGIN:VCALENDAR\n");
+            writer.write("VERSION:2.0\n");
+            writer.write("PRODID:-//Your Organization//Your Application//EN\n");
+
+            // Add an event
+            writer.write("BEGIN:VEVENT\n");
+            writer.write("SUMMARY:Hello, File I/O!\n");
+
+            // Set the event start and end time (here, it's set for the current date and time)
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            String startDate = dateFormat.format(new Date());
+            String endDate = dateFormat.format(new Date(System.currentTimeMillis() + 3600000)); // Adding 1 hour
+
+            writer.write("DTSTART:" + startDate + "\n");
+            writer.write("DTEND:" + endDate + "\n");
+
+            // End the event
+            writer.write("END:VEVENT\n");
+
+            // End the calendar
+            writer.write("END:VCALENDAR\n");
+
+            System.out.println("iCalendar file created successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       
+        // Reading from an iCalendar (.ics) file
+        try (BufferedReader reader = new BufferedReader(new FileReader("output.ics"))) {
+            String line;
+            String summary = null;
+            String startDate = null;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("SUMMARY:")) {
+                    // Extracting the event title (SUMMARY)
+                    summary = line.substring("SUMMARY:".length());
+                } else if (line.startsWith("DTSTART:")) {
+                    // Extracting the event start date (DTSTART)
+                    startDate = line.substring("DTSTART:".length());
+                }
+
+                // Assuming the end of the event information is marked by "END:VEVENT"
+                if (line.equals("END:VEVENT")) {
+                    // Print the event details
+                    if (summary != null && startDate != null) {
+                        System.out.println("Title: " + summary);
+                        System.out.println("Date: " + startDate);
+                        System.out.println();
+                    }
+
+                    // Reset variables for the next event
+                    summary = null;
+                    startDate = null;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+      
+       
         
         java.util.Scanner input = new java.util.Scanner(System.in);
         ArrayList<Event> eventsList = new ArrayList<>();
