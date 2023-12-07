@@ -4,6 +4,8 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+import java.util.Date;
+
 /**
  *
  * @author leftp
@@ -11,7 +13,7 @@ package gr.hua.dit.oop2.calendarproject;
 public class Appointment extends Event{
     private String duration;
 
-    public Appointment(String duration, String title, String date, String time, String description) {
+    public Appointment(String duration, String title, Date date, String time, String description) {
         super(title, date, time, description);
         this.duration = duration;
     }

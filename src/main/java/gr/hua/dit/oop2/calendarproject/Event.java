@@ -4,30 +4,32 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+import java.util.Date;
+
 /**
  *
  * @author leftp
  */
 public class Event {
     private String title;
-    private String date;
+    private Date date;
     private String time;
     private String description;
 
 
 
-    public Event(String title ,String date , String time, String description) {
+    public Event(String title ,Date date , String time, String description) {
         this.title = title;
         this.date = date;
         this.time = time;
         this.description = description;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
