@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import gr.hua.dit.oop2.calendar.TimeService;
+import gr.hua.dit.oop2.calendar.TimeTeller;
+
 
 /**
  *
@@ -35,7 +38,7 @@ public class CalendarProject {
                     // Extracting the event start date (DTSTART)
                     startDate = line.substring("DTSTART:".length());
                 }
-
+//dateFormat.format(event.getDate())
                 // Assuming the end of the event information is marked by "END:VEVENT"
                 if (line.equals("END:VEVENT")) {
                     // Print the event details
@@ -84,7 +87,9 @@ public class CalendarProject {
             
                         System.out.println("Date");
                         String dateString = input.nextLine();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                        
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z's");
+
                         Date date = dateFormat.parse(dateString);
                         
                         System.out.println("Duration");
@@ -106,7 +111,6 @@ public class CalendarProject {
                             
                             writer.write("BEGIN:VCALENDAR\n");
                             writer.write("VERSION:2.0\n");
-                            writer.write("PRODID:-//Programming//Calendar//EN\n");
 
                             for (Event event : eventsList) {
                                 // Add an event
