@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import gr.hua.dit.oop2.calendar.TimeService;
-import gr.hua.dit.oop2.calendar.TimeTeller;
+//import gr.hua.dit.oop2.calendar.TimeService;
+//import gr.hua.dit.oop2.calendar.TimeTeller;
 
 
 /**
@@ -70,7 +70,7 @@ public class CalendarProject {
         
         switch (opt){
         
-            case 1 -> {
+            case 1 :{
                 
                 System.out.println("Add appointment (Press 1)");
                 System.out.println("Add project (Press 2)");
@@ -80,7 +80,7 @@ public class CalendarProject {
                 
                 switch (ev_opt) { 
                     
-                    case 1 -> {
+                    case 1:{
                     
                         System.out.println("Add title");
                         String title = input.nextLine();
@@ -102,9 +102,9 @@ public class CalendarProject {
                         System.out.println("Add description");
                         String description = input.nextLine();
                         
-                        Event myEvent = new Appointment(duration, title, date, time, description);
+                        Appointment myAppointment = new Appointment(title, date, time, description, duration);
             
-                        eventsList.add(myEvent);
+                        eventsList.add(myAppointment);
                         // Writing to an iCalendar (.ics) file
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
                             
@@ -132,11 +132,11 @@ public class CalendarProject {
                             e.printStackTrace();
                         }
        
-                        System.out.println("Appointment added: " + myEvent.getTitle() + " on " + myEvent.getDate());
+                        System.out.println("Appointment added: " + myAppointment.getTitle() + " on " + myAppointment.getDate());
                     
                     }
                     
-                    case 2 -> {
+                    case 2 : {
                         
 //                        System.out.println("Add dueDate");
 //                        String dueDate = input.nextLine();
@@ -162,7 +162,7 @@ public class CalendarProject {
 //                        System.out.println("Add description");
 //                        String description = input.nextLine();
 //                        
-//                        Event myEvent = new Project(dueDate, dueTime, status,title ,date , time, description);
+//                        Event myEvent = new Project(title ,date , time, description,dueDate, dueTime, status);
 //            
 //                        eventsList.add(myEvent);
 //            

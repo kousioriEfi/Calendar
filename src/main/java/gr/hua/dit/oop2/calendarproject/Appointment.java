@@ -13,7 +13,7 @@ import java.util.Date;
 public class Appointment extends Event{
     private String duration;
 
-    public Appointment(String duration, String title, Date date, String time, String description) {
+    public Appointment(String title, Date date, String time, String description, String duration) {
         super(title, date, time, description);
         this.duration = duration;
     }
