@@ -24,11 +24,12 @@ import java.util.Date;
 public class CalendarProject {
     public static void main(String[] args) throws ParseException {
          
-        // Reading from an iCalendar (.ics) file
         try (BufferedReader reader = new BufferedReader(new FileReader("output.ics"))) {
             String line;
             String summary = null;
             String startDate = null;
+
+            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("SUMMARY:")) {
@@ -37,17 +38,32 @@ public class CalendarProject {
                 } else if (line.startsWith("DTSTART:")) {
                     // Extracting the event start date (DTSTART)
                     startDate = line.substring("DTSTART:".length());
+
+                    // Parse the 'startDate' string using the iCalendar format
+                    try {
+                        Date parsedDate = iCalendarFormat.parse(startDate);
+
+                        // Format the parsed date using the desired output format
+                        Date formattedDate = iCalendarFormat.parse(startDate);
+                        // Date date = dateFormat.parse(dateString);
+
+                        // Print the event details
+                        if (summary != null) {
+                            System.out.println("Title: " + summary);
+                            System.out.println("Date: " + formattedDate);
+                            System.out.println();
+                        }
+
+                        // Reset variables for the next event
+                        summary = null;
+                        startDate = null;
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
-//dateFormat.format(event.getDate())
+
                 // Assuming the end of the event information is marked by "END:VEVENT"
                 if (line.equals("END:VEVENT")) {
-                    // Print the event details
-                    if (summary != null && startDate != null) {
-                        System.out.println("Title: " + summary);
-                        System.out.println("Date: " + startDate);
-                        System.out.println();
-                    }
-
                     // Reset variables for the next event
                     summary = null;
                     startDate = null;
@@ -56,7 +72,8 @@ public class CalendarProject {
         } catch (IOException e) {
             e.printStackTrace();
         }
-      
+    
+
        
         
         Scanner input = new java.util.Scanner(System.in);
