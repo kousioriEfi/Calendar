@@ -88,7 +88,7 @@ public class CalendarProject {
                         System.out.println("Date");
                         String dateString = input.nextLine();
                         
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z's");
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
 
                         Date date = dateFormat.parse(dateString);
                         
