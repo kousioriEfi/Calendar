@@ -20,7 +20,7 @@ import java.util.Date;
  *
  * @author leftp
  */
-public class CalendarProject {
+public class CalendarProject implements TimeTeller{
     public static void main(String[] args) throws ParseException {
          
         try (BufferedReader reader = new BufferedReader(new FileReader("output.ics"))) {
@@ -207,7 +207,7 @@ public class CalendarProject {
                                 else if (event instanceof Project){
                                     Project project =(Project) event;
                                     writer.write("BEGIN:VTODO\n");
-                                    writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDueDateTime())+"\n");
+                                    writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDate())+"\n");
                                     writer.write("SUMMARY:"+ event.getTitle()+"\n");
                                     if(project.getStatus()== false){
                                         writer.write("STATUS:NEEDS-ACTION\n");
@@ -252,6 +252,7 @@ public class CalendarProject {
             
             }
     }
+       
 }
 
 
@@ -298,31 +299,31 @@ public class CalendarProject {
 //            case 1->{
 //                switch(calendarChoice){
 //                    case "day" -> {
-// //                       calendarDay();
+// //                       printDay();
 //                    }
 //                    case "week"-> {
-//  //                      calendarWeek();
+//  //                      printWeek();
 //                    }
 //                    case "month"->{
-//  //                      calendarMonth();
+//  //                      printMonth();
 //
 //                    }
 //                    case "pastday"->{
-//   //                     calendarPastday();
+//   //                     printPastday();
 //
 //                    }
 //                    case "pastweek"->{
-//  //                      calendarPastweek();
+//  //                      printPastweek();
 //
 //                    }
 //                    case "pastmonth"->{
-// //                       calendarPastmonth();
+// //                       printPastmonth();
 //                    }
 //                    case "todo"->{
-//  //                      calendarTodo();
+//  //                      printTodo();
 //                    }
 //                    case "due"->{
-////                        calendarDue();
+////                        printDue();
 //                    }
 //                    default->{
 //                        break;
@@ -475,3 +476,5 @@ public class CalendarProject {
 //
 //    
 //}}
+
+   

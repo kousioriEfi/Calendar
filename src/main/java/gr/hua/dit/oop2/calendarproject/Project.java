@@ -11,21 +11,11 @@ import java.util.Date;
  * @author leftp
  */
 public class Project extends Event{
-    private Date dueDateTime;
     private boolean status;
 
-    public Project(String title,String description, Date dueDateTime, boolean status) {
-        super(title,description);
-        this.dueDateTime = dueDateTime;
+    public Project(String title,String description, Date date, boolean status) {
+        super(title,description,date);
         this.status = status;
-    }
-
-    public Date getDueDateTime() {
-        return dueDateTime;
-    }
-
-    public void setDueDateTime(Date dueDateTime) {
-        this.dueDateTime = dueDateTime;
     }
 
     public boolean getStatus() {
