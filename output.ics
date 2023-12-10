@@ -7,3 +7,24 @@ STATUS:NEEDS-ACTION
 DESCRIPTION:Ergasia pou mas exei vgalei thn pisth:)
 END:VTODO
 END:VCALENDAR
+
+
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VTODO
+DUE;VALUE=DATE:00021130T000000Z
+SUMMARY:pw
+STATUS:NEEDS-ACTION
+DESCRIPTION:popoooo
+END:VTODO
+END:VCALENDAR
+
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VTODO
+DUE;VALUE=DATE:00021130T000001Z
+SUMMARY:paojroiajrolikawjaloktjnalkthjawlokthnawoijklthniuo;lkhniujkhtbiujkhnwtjkwhbtjkihtjaikhuijrae'hnyikjhnyajkyearjjky
+STATUS:DOESNT-NEED-ACTION
+DESCRIPTION:aikropihejanroIKAHRAWKJHRaIUOJRhUAOIhuiohsyguijkoghsuirgfhsaiutghsriujftghsetiukehnasjtsikhtsiujthsiuethsjikthse
+END:VTODO
+END:VCALENDAR

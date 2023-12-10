@@ -100,7 +100,7 @@ public class CalendarProject {
                         System.out.println("Add title");
                         String title = input.nextLine();
             
-                        System.out.println("Date");
+                        System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
                         String dateString = input.nextLine();
                         
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
@@ -161,7 +161,7 @@ public class CalendarProject {
                         System.out.println("Add title");
                         String title = input.nextLine();
             
-                        System.out.println("Current Date and Time");
+                        System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
                         String dateString = input.nextLine();
                         
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
@@ -209,9 +209,9 @@ public class CalendarProject {
                                     writer.write("BEGIN:VTODO\n");
                                     writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDueDateTime())+"\n");
                                     writer.write("SUMMARY:"+ event.getTitle()+"\n");
-                                    if(project.getStatus()== true){
+                                    if(project.getStatus()== false){
                                         writer.write("STATUS:NEEDS-ACTION\n");
-                                    }else if(project.getStatus()== false){
+                                    }else if(project.getStatus()== true){
                                         writer.write("STATUS:DOESNT-NEED-ACTION\n");
                                     }
                                     writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
