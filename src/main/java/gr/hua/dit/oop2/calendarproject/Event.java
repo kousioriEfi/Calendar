@@ -13,15 +13,13 @@ import java.util.Date;
 public class Event {
     private String title;
     private Date date;
-    private String time;
     private String description;
 
 
 
-    public Event(String title ,Date date , String time, String description) {
+    public Event(String title ,Date date , String description) {
         this.title = title;
         this.date = date;
-        this.time = time;
         this.description = description;
     }
 
@@ -39,14 +37,6 @@ public class Event {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public String getDescription() {

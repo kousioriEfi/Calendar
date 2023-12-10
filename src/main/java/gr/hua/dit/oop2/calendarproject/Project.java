@@ -15,8 +15,8 @@ public class Project extends Event{
     private String dueTime;
     private boolean status;
 
-    public Project(String title, Date date, String time, String description) {
-        super(title, date, time, description);
+    public Project(String title, Date date, String description) {
+        super(title, date, description);
         this.dueDate = dueDate;
         this.dueTime = dueTime;
         this.status = status;

@@ -11,18 +11,18 @@ import java.util.Date;
  * @author leftp
  */
 public class Appointment extends Event{
-    private String duration;
+    private Date duration;
 
-    public Appointment(String title, Date date, String time, String description, String duration) {
-        super(title, date, time, description);
+    public Appointment(String title, Date date, String description, Date duration) {
+        super(title, date, description);
         this.duration = duration;
     }
 
-    public String getDuration() {
+    public Date getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Date duration) {
         this.duration = duration;
     }
     

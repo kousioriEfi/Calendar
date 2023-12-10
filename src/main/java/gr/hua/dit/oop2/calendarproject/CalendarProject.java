@@ -14,8 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 //import gr.hua.dit.oop2.calendar.TimeService;
-//import gr.hua.dit.oop2.calendar.TimeTeller;
-
+//import gr.hua.dit.oop2.calendar.TimeTeller;   
 
 /**
  *
@@ -41,7 +40,6 @@ public class CalendarProject {
 
                     // Parse the 'startDate' string using the iCalendar format
                     try {
-                        Date parsedDate = iCalendarFormat.parse(startDate);
 
                         // Format the parsed date using the desired output format
                         Date formattedDate = iCalendarFormat.parse(startDate);
@@ -109,18 +107,18 @@ public class CalendarProject {
 
                         Date date = dateFormat.parse(dateString);
                         
-                        System.out.println("Duration");
-                        String duration = input.nextLine();
-            
-                        System.out.println("Time");
-                        String time = input.nextLine();
+                        
+                        System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                        String durationString = input.nextLine();
+                        
+                        Date duration = dateFormat.parse(durationString);
                         
                         
                         System.out.println("Add description");
                         String description = input.nextLine();
                         
-                        Appointment myAppointment = new Appointment(title, date, time, description, duration);
-            
+                        Event myAppointment = new Appointment(title, date, description, duration);
+                        
                         eventsList.add(myAppointment);
                         // Writing to an iCalendar (.ics) file
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
@@ -136,8 +134,13 @@ public class CalendarProject {
 
 
                                 writer.write("DTSTART:" + dateFormat.format(event.getDate()) + "\n");
-                                //writer.write("DTEND:" + endDate + "\n");
-
+//                                writer.write("DURATION:" + dateFormat.format(appointment.getDuration()) + "\n");
+                                if (event instanceof Appointment) {
+                                    Appointment appointment = (Appointment) event;
+                                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
+                                }
+                                
+                                writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
                                 // End the event
                                 writer.write("END:VEVENT\n");
                             }
@@ -173,13 +176,12 @@ public class CalendarProject {
 //                        System.out.println("Date");
 //                        String date = input.nextLine();
 //            
-//                        System.out.println("Time");
-//                        String time = input.nextLine();
+//                        
 //            
 //                        System.out.println("Add description");
 //                        String description = input.nextLine();
 //                        
-//                        Event myEvent = new Project(title ,date , time, description,dueDate, dueTime, status);
+//                        Event myEvent = new Project(title ,date, description,dueDate, dueTime, status);
 //            
 //                        eventsList.add(myEvent);
 //            
@@ -195,13 +197,11 @@ public class CalendarProject {
         }
         
 
-//            Event myEvent = new Event("Meeting", "20231215", "15:30", "Discuss project progress"); 
+//            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
 //        
 //        eventsList.add(testEvent);
 //        eventsList.add(testProject);
-        
-        //System.out.println(testEvent.getDescription());
-        //System.out.println(testProject.getDueDate());
+
         for(int i=0;i<eventsList.size();i++){
            eventsList.get(i).printEvent();
             
@@ -304,15 +304,12 @@ public class CalendarProject {
 //                        
 //                        System.out.println("Duration");
 //                        String duration = input.nextLine();
-//            
-//                        System.out.println("Time");
-//                        String time = input.nextLine();
 //                        
 //                        
 //                        System.out.println("Add description");
 //                        String description = input.nextLine();
 //                        
-//                        Event myEvent = new Appointment(duration, title,Date date, time, description);
+//                        Event myEvent = new Appointment(duration, title,Date date, description);
 //            
 //                        eventsList.add(myEvent);
 //                        // Writing to an iCalendar (.ics) file
@@ -354,7 +351,6 @@ public class CalendarProject {
 //                        boolean status;
 //                        String title;   
 //                        String date;
-//                        String time;
 //                        String description;
 //                       
 //                        eventsList = new ArrayList<>();
@@ -377,13 +373,11 @@ public class CalendarProject {
 //                        System.out.println("Date");
 //                        date = input.nextLine();
 //            
-//                        System.out.println("Time");
-//                        time = input.nextLine();
 //            
 //                        System.out.println("Add description");
 //                        description = input.nextLine();
 //                      
-//                        Event myEvent = new Project(dueDate, dueTime, status,title ,Date date , time, description);
+//                        Event myEvent = new Project(dueDate, dueTime, status,title ,Date date , description);
 //            
 //                        eventsList.add(myEvent);
 //            
@@ -426,7 +420,7 @@ public class CalendarProject {
 ////        }
 ////      
 //
-////            Event myEvent = new Event("Meeting", "20231215", "15:30", "Discuss project progress"); 
+////            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
 ////        
 ////        eventsList.add(testEvent);
 ////        eventsList.add(testProject);
