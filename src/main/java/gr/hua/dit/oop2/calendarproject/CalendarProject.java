@@ -117,7 +117,7 @@ public class CalendarProject {
                         System.out.println("Add description");
                         String description = input.nextLine();
                         
-                        Appointment myAppointment = new Appointment(title, date, description, duration);
+                        Appointment myAppointment = new Appointment(title,description,date,duration);
                         
                         eventsList.add(myAppointment);
                         // Writing to an iCalendar (.ics) file
@@ -156,7 +156,7 @@ public class CalendarProject {
                         System.out.println("Appointment added: " + myAppointment.getTitle() + " on " + myAppointment.getDate());
                     
                     }
-                    
+                    break;
                     case 2 : {
                         System.out.println("Add title");
                         String title = input.nextLine();
@@ -230,45 +230,14 @@ public class CalendarProject {
                         }
        
                         
-                    
+                    break;
                     }
                     
-                        
-//                        System.out.println("Add dueDate");
-//                        String dueDate = input.nextLine();
-//            
-//                        System.out.println("DueTime");
-//                        String dueTime = inputSystem.nextLine();
-//                        
-//                        System.out.println("Enter true or false:");
-//                        String userInput = input.nextLine();
-//
-//                        // Parse the string into a boolean
-//                        boolean status = Boolean.parseBoolean(userInput);
-//
-//                        System.out.println("Add title");
-//                        String title = input.nextLine();
-//            
-//                        System.out.println("Date");
-//                        String date = input.nextLine();
-//            
-//                        
-//            
-//                        System.out.println("Add description");
-//                        String description = input.nextLine();
-//                        
-//                        Event myEvent = new Project(title ,date, description,dueDate, dueTime, status);
-//            
-//                        eventsList.add(myEvent);
-//            
-//                        System.out.println("Project added: " + myEvent.getTitle() + " on " + myEvent.getDate());
-//                    
-                    
-                    
+
                     
                 }
              
-                
+                break;
             }
         }
         

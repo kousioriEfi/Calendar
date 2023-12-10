@@ -14,8 +14,9 @@ public class Appointment extends Event{
     private Date date;
     private Date duration;
 
-    public Appointment(String title, Date date, String description, Date duration) {
+    public Appointment(String title,String description, Date date, Date duration) {
         super(title,description);
+        this.date = date;
         this.duration = duration;
     }
 
