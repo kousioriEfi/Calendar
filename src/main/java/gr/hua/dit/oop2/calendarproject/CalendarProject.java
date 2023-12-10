@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 //import gr.hua.dit.oop2.calendar.TimeService;
 //import gr.hua.dit.oop2.calendar.TimeTeller;   
@@ -59,6 +60,8 @@ public class CalendarProject implements TimeTeller{
                         e.printStackTrace();
                     }
                 }
+///////////////////////////////NEED LOOP THAT GETS EVERY CALENDAR EVENT CREATES AN OBJECT AND ADD IT IN THE LIST/////////////////////////////////////////////////////////
+                
 
                 // Assuming the end of the event information is marked by "END:VEVENT"
                 if (line.equals("END:VEVENT")) {
@@ -185,6 +188,10 @@ public class CalendarProject implements TimeTeller{
                         
                         eventsList.add(myProject);
                         // Writing to an iCalendar (.ics) file
+                        
+                        // Add this before writing to the .ics file
+                        
+
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
                             
                             
