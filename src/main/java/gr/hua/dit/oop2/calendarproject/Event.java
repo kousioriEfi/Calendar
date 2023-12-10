@@ -4,7 +4,6 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
-import java.util.Date;
 
 /**
  *
@@ -12,24 +11,16 @@ import java.util.Date;
  */
 public class Event {
     private String title;
-    private Date date;
     private String description;
 
 
 
-    public Event(String title ,Date date , String description) {
+    public Event(String title , String description) {
         this.title = title;
-        this.date = date;
         this.description = description;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
+   
 
     public String getTitle() {
         return title;
@@ -49,7 +40,7 @@ public class Event {
     
     public void printEvent(){
         System.out.println("Τίτλος: " + getTitle());
-        System.out.println("Ημερομηνία " + getDate());
+        
     
     }
 }

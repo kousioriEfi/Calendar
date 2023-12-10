@@ -117,7 +117,7 @@ public class CalendarProject {
                         System.out.println("Add description");
                         String description = input.nextLine();
                         
-                        Event myAppointment = new Appointment(title, date, description, duration);
+                        Appointment myAppointment = new Appointment(title, date, description, duration);
                         
                         eventsList.add(myAppointment);
                         // Writing to an iCalendar (.ics) file
@@ -132,11 +132,12 @@ public class CalendarProject {
                                 writer.write("BEGIN:VEVENT\n");
                                 writer.write("SUMMARY:"+ event.getTitle()+"\n");
 
-
-                                writer.write("DTSTART:" + dateFormat.format(event.getDate()) + "\n");
+                            if (event instanceof Appointment) {
+                                Appointment appointment = (Appointment) event;
+                                writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");
 //                                writer.write("DURATION:" + dateFormat.format(appointment.getDuration()) + "\n");
-                                if (event instanceof Appointment) {
-                                    Appointment appointment = (Appointment) event;
+                                
+                                    
                                     writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
                                 }
                                 
@@ -157,12 +158,87 @@ public class CalendarProject {
                     }
                     
                     case 2 : {
+                        System.out.println("Add title");
+                        String title = input.nextLine();
+            
+                        System.out.println("Current Date and Time");
+                        String dateString = input.nextLine();
+                        
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+
+                        Date date = dateFormat.parse(dateString);
+                        
+                        
+                        System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                        String dueDateTimeString = input.nextLine();
+                        
+                        Date dueDateTime = dateFormat.parse(dueDateTimeString);
+                        
+                        
+                        System.out.println("Add description");
+                        String description = input.nextLine();
+                        
+                        System.out.println("Give status of the project (true/false)");
+                        boolean status = input.nextBoolean();
+                        
+                        Project myProject = new Project(title, description, dueDateTime,status);
+                        
+                        eventsList.add(myProject);
+                        // Writing to an iCalendar (.ics) file
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
+                            
+                            
+                            writer.write("BEGIN:VCALENDAR\n");
+                            writer.write("VERSION:2.0\n");
+
+                            for (Event event : eventsList) {
+                                // Add an event
+                                if (event instanceof Appointment) {
+                                    Appointment appointment = (Appointment) event; 
+                                    writer.write("BEGIN:VEVENT\n");
+                                    writer.write("SUMMARY:"+ event.getTitle()+"\n");
+
+
+                                    writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");                                
+                                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
+                                    writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
+                                    writer.write("END:VEVENT\n");
+                                }
+                                else if (event instanceof Project){
+                                    Project project =(Project) event;
+                                    writer.write("BEGIN:VTODO\n");
+                                    writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDueDateTime())+"\n");
+                                    writer.write("SUMMARY:"+ event.getTitle()+"\n");
+                                    if(project.getStatus()== true){
+                                        writer.write("STATUS:NEEDS-ACTION\n");
+                                    }else if(project.getStatus()== false){
+                                        writer.write("STATUS:DOESNT-NEED-ACTION\n");
+                                    }
+                                    writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
+                                    writer.write("END:VTODO\n");
+                                    
+                                }
+                                
+                                System.out.println("Event added: " + event.getTitle());
+                            }
+                            // End the calendar
+                            writer.write("END:VCALENDAR\n");
+
+                            System.out.println("iCalendar file created successfully.");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+       
+                        
+                    
+                    }
+                    
                         
 //                        System.out.println("Add dueDate");
 //                        String dueDate = input.nextLine();
 //            
 //                        System.out.println("DueTime");
-//                        String dueTime = input.nextLine();
+//                        String dueTime = inputSystem.nextLine();
 //                        
 //                        System.out.println("Enter true or false:");
 //                        String userInput = input.nextLine();
@@ -187,7 +263,7 @@ public class CalendarProject {
 //            
 //                        System.out.println("Project added: " + myEvent.getTitle() + " on " + myEvent.getDate());
 //                    
-                    }
+                    
                     
                     
                 }
