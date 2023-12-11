@@ -23,62 +23,151 @@ import java.util.Date;
  */
 public class CalendarProject implements TimeTeller{
     public static void main(String[] args) throws ParseException {
-         
-        try (BufferedReader reader = new BufferedReader(new FileReader("output.ics"))) {
+        ArrayList<Event> eventsList = new ArrayList<>();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("output.ics"));
             String line;
-            String summary = null;
-            String startDate = null;
+            String title = null;
+            String date = null;
+            String duration = null;
+            String description = null;
+            
 
             SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("SUMMARY:")) {
-                    // Extracting the event title (SUMMARY)
-                    summary = line.substring("SUMMARY:".length());
-                } else if (line.startsWith("DTSTART:")) {
-                    // Extracting the event start date (DTSTART)
-                    startDate = line.substring("DTSTART:".length());
+                if(line.equals("BEGIN:VEVENT")){
+                    while((line = reader.readLine())!=null){
+                        if (line.startsWith("SUMMARY:")) {
+                            // Extracting the event title (SUMMARY)
+                            title = line.substring("SUMMARY:".length());
+                        } else if (line.startsWith("DTSTART:")) {
+                            // Extracting the event start date (DTSTART)
+                            date = line.substring("DTSTART:".length());
 
-                    // Parse the 'startDate' string using the iCalendar format
-                    try {
+                            // Parse the 'startDate' string using the iCalendar format
+                            
+                        }else if(line.startsWith("DTEND:")){
+                            duration = line.substring("DTEND:".length());
+                            
+                        }else if(line.startsWith("DESCRIPTION:")){
+                            description = line.substring("DESCRIPTION:".length());
+                        
+                        }else if (line.equals("END:VEVENT")) {
+                            
+                            try {
+                                Date formattedDate = iCalendarFormat.parse(date);
+                                Date formattedDateEnd = iCalendarFormat.parse(duration);
+                                // Date date = dateFormat.parse(dateString);
+                                Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
+                                eventsList.add(appointment);
+                                // Print the event details
+                                if (title != null) {
+                                    System.out.println("Title: " + title);
+                                    System.out.println("Date: " + formattedDate);
+                                    System.out.println("Date End: "+formattedDateEnd);
+                                    System.out.println("Description: "+ description);
+                                    System.out.println();
+                                }
 
-                        // Format the parsed date using the desired output format
-                        Date formattedDate = iCalendarFormat.parse(startDate);
-                        // Date date = dateFormat.parse(dateString);
-
-                        // Print the event details
-                        if (summary != null) {
-                            System.out.println("Title: " + summary);
-                            System.out.println("Date: " + formattedDate);
-                            System.out.println();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            // Reset variables for the next event
+                            title = null;
+                            date = null;
                         }
-
-                        // Reset variables for the next event
-                        summary = null;
-                        startDate = null;
-                    } catch (ParseException e) {
-                        e.printStackTrace();
                     }
                 }
-///////////////////////////////NEED LOOP THAT GETS EVERY CALENDAR EVENT CREATES AN OBJECT AND ADD IT IN THE LIST/////////////////////////////////////////////////////////
                 
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        BufferedReader reader2 = null;
+        try  {
+            
+            reader2 = new BufferedReader(new FileReader("output.ics"));
+            String line2;
+            String title2 = null;
+            String date2 = null;
+            String duration2 = null;
+            String description2 = null;
+            boolean status = false;
 
-                // Assuming the end of the event information is marked by "END:VEVENT"
-                if (line.equals("END:VEVENT")) {
-                    // Reset variables for the next event
-                    summary = null;
-                    startDate = null;
+            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            while ((line2 = reader2.readLine()) != null){
+            if(line2.equals("BEGIN:VTODO")){
+                    System.out.print("MPHKE\n");
+                    while((line2 = reader2.readLine())!=null){
+                        if (line2.startsWith("SUMMARY:")) {
+                            // Extracting the event title (SUMMARY)
+                            title2 = line2.substring("SUMMARY:".length());
+                        } else if (line2.startsWith("DUE;VALUE=DATE:")) {
+                            // Extracting the event start date (DTSTART)
+                            date2 = line2.substring("DUE;VALUE=DATE:".length());
+
+                            // Parse the 'startDate' string using the iCalendar format
+                            
+                        }else if(line2.equals("STATUS:DOESNT-NEED-ACTION")){
+                            status = true;
+                            
+                        }else if(line2.equals("STATUS:NEEDS-ACTION")){
+                            status = false;
+                        }else if(line2.startsWith("DESCRIPTION:")){
+                            description2 = line2.substring("DESCRIPTION:".length());
+                        
+                        }else if (line2.equals("END:VTODO")) {
+                            
+                            try {
+                                Date formattedDate = iCalendarFormat.parse(date2);
+                                
+                                // Date date = dateFormat.parse(dateString);
+                                Project project = new Project(title2,description2,formattedDate,status);
+                                eventsList.add(project);
+                                // Print the event details
+                                if (title2 != null) {
+                                    System.out.println("Title: " + title2);
+                                    System.out.println("Due Date Time:" + formattedDate);
+                                    System.out.println("Status: "+ status);
+                                    System.out.println("Description: "+ description2);
+                                    System.out.println();
+                                }
+
+                                // Reset variables for the next event
+                                title2 = null;
+                                date2 = null;
+                                description2 = null;
+                                
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            // Reset variables for the next event
+                            title2 = null;
+                            date2 = null;
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-    
-
+        
+        
        
         
         Scanner input = new java.util.Scanner(System.in);
-        ArrayList<Event> eventsList = new ArrayList<>();
         
         System.out.println("Add event (Press 1)");
         System.out.println("Edit event (Press 2)");
@@ -124,7 +213,7 @@ public class CalendarProject implements TimeTeller{
                         
                         eventsList.add(myAppointment);
                         // Writing to an iCalendar (.ics) file
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
                             
                             
                             writer.write("BEGIN:VCALENDAR\n");
@@ -191,7 +280,7 @@ public class CalendarProject implements TimeTeller{
                         
                         // Add this before writing to the .ics file
                         
-
+        ////////////////eventsList.sort(Comparator.comparing(Event::getDate));///////////////////////////////////////////////////////////////////
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
                             
                             
@@ -214,8 +303,8 @@ public class CalendarProject implements TimeTeller{
                                 else if (event instanceof Project){
                                     Project project =(Project) event;
                                     writer.write("BEGIN:VTODO\n");
-                                    writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDate())+"\n");
                                     writer.write("SUMMARY:"+ event.getTitle()+"\n");
+                                    writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDate())+"\n");
                                     if(project.getStatus()== false){
                                         writer.write("STATUS:NEEDS-ACTION\n");
                                     }else if(project.getStatus()== true){
@@ -261,7 +350,58 @@ public class CalendarProject implements TimeTeller{
     }
        
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                  if(line.equals("BEGIN:VTODO")){
+//                    System.out.print("MPHKE\n");
+//                    while((line = reader.readLine())!=null){
+//                        if (line.startsWith("SUMMARY:")) {
+//                            // Extracting the event title (SUMMARY)
+//                            title = line.substring("SUMMARY:".length());
+//                        } else if (line.startsWith("DUE;VALUE=DATE:")) {
+//                            // Extracting the event start date (DTSTART)
+//                            date = line.substring("DUE;VALUE=DATE:".length());
+//
+//                            // Parse the 'startDate' string using the iCalendar format
+//                            
+//                        }else if(line.equals("STATUS:DOESNT-NEED-ACTION")){
+//                            status = true;
+//                            
+//                        }else if(line.equals("STATUS:NEEDS-ACTION")){
+//                            status = false;
+//                        }else if(line.startsWith("DESCRIPTION:")){
+//                            description = line.substring("DESCRIPTION:".length());
+//                        
+//                        }else if (line.equals("END:VTODO")) {
+//                            
+//                            try {
+//                                Date formattedDate = iCalendarFormat.parse(date);
+//                                Date formattedDateEnd = iCalendarFormat.parse(duration);
+//                                // Date date = dateFormat.parse(dateString);
+//                                Project project = new Project(title,description,formattedDate,status);
+//                                eventsList.add(project);
+//                                // Print the event details
+//                                if (title != null) {
+//                                    System.out.println("Title: " + title);
+//                                    System.out.println("Due Date Time:" + formattedDate);
+//                                    System.out.println("Status: "+ status);
+//                                    System.out.println("Description: "+ description);
+//                                    System.out.println();
+//                                }
+//
+//                                // Reset variables for the next event
+//                                title = null;
+//                                date = null;
+//                                description = null;
+//                                
+//                            } catch (ParseException e) {
+//                                e.printStackTrace();
+//                            }
+//                            // Reset variables for the next event
+//                            title = null;
+//                            date = null;
+//                        }
+//                    }
+//                }  
 
 
 ///*
