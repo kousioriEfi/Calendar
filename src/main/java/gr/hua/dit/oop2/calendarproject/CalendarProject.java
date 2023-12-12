@@ -29,18 +29,232 @@ public class CalendarProject implements TimeTeller{
         BufferedReader reader = null;
         
         
+//
+//        int year=requestInt("Year");
+//        int month=requestChoice2(12,"Month (up to 12)");
+//        int day=requestChoice2(30,"Day (up to 30)" );
+//        int hours=requestChoice2(23,"Hours(up to 23)");
+//        int minutes=requestChoice(59,"Minutes(up to 59)");
+//        int seconds=requestChoice(59,"Seconds(up to 59)");
+//        LocalDateTime decidedDate= LocalDateTime.of(year, month, day, hours, minutes, seconds);
+//        System.out.println(decidedDate);
+        System.out.println("Events Before Sorting");
 
-        int year=requestInt("Year");
-        int month=requestChoice2(12,"Month (up to 12)");
-        int day=requestChoice2(30,"Day (up to 30)" );
-        int hours=requestChoice2(23,"Hours(up to 23)");
-        int minutes=requestChoice(59,"Minutes(up to 59)");
-        int seconds=requestChoice(59,"Seconds(up to 59)");
-        LocalDateTime decidedDate= LocalDateTime.of(year, month, day, hours, minutes, seconds);
-        System.out.println(decidedDate);
+        eventsList = readAppointmentsFromFile("output.ics", eventsList);
+        eventsList = readProjectsFromFile("output.ics", eventsList);
         
-        try {
-            reader = new BufferedReader(new FileReader("output.ics"));
+        Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
+        eventsList.sort(eventComparator);
+        
+        System.out.println("Events After Sorting");
+       
+        
+        writeSortedEventsToFile(eventsList);        
+        for(int i=0;i<eventsList.size();i++){
+           eventsList.get(i).printEvent();
+
+        }
+
+        System.out.println("Add event (Press 1)");
+        System.out.println("Edit event (Press 2)");
+        
+        int opt = input.nextInt();
+        input.nextLine();
+        
+        switch (opt){
+        
+            case 1 :{
+                
+                System.out.println("Add appointment (Press 1)");
+                System.out.println("Add project (Press 2)");
+                
+                int ev_opt = input.nextInt();
+                input.nextLine();
+                
+                switch (ev_opt) { 
+                    
+                    case 1:{
+                    
+                        System.out.println("Add title");
+                        String title = input.nextLine();
+            
+                        System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                        String dateString = input.nextLine();
+                        
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+
+                        Date date = dateFormat.parse(dateString);
+                        
+                        
+                        System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                        String durationString = input.nextLine();
+                        
+                        Date duration = dateFormat.parse(durationString);
+                        
+                        
+                        System.out.println("Add description");
+                        String description = input.nextLine();
+                        
+                        Appointment myAppointment = new Appointment(title,description,date,duration);
+                        writeAppointmentToFile(myAppointment,eventsList);
+                    }
+                    break;
+                    case 2 : {
+                        System.out.println("Add title");
+                        String title = input.nextLine();
+            
+                        System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                        String dateString = input.nextLine();
+                        
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+
+                        Date date = dateFormat.parse(dateString);
+                        
+                        
+                        System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                        String dueDateTimeString = input.nextLine();
+                        
+                        Date dueDateTime = dateFormat.parse(dueDateTimeString);
+                        
+                        
+                        System.out.println("Add description");
+                        String description = input.nextLine();
+                        
+                        System.out.println("Give status of the project (true/false)");
+                        boolean status = input.nextBoolean();
+                        
+                        Project myProject = new Project(title, description, dueDateTime,status);
+                        writeProjectToFile(myProject,eventsList);
+                        ////////////////eventsList.sort(Comparator.comparing(Event::getDate));///////////////////////////////////////////////////////////////////
+                          
+                    break;
+                    } 
+                }
+                break;
+            }
+        } //////////////
+        
+    }
+    
+    
+    
+    //this method is used for the request of the minutes and seconds because it allows the user to input 0>=
+    static private int requestChoice(int maxChoice , String inputType){
+    Scanner input = new java.util.Scanner(System.in);
+    boolean isValidChoice=false;
+    int number=0;
+    while(!isValidChoice)
+    {
+        System.out.println("Enter a valid choice of " + inputType);
+        String choice = input.nextLine();
+        try{
+            number=Integer.parseInt(choice);
+            if((number>=0)&&(number<=maxChoice)){
+                isValidChoice=true;
+            }else{
+                System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
+            }
+        }catch(NumberFormatException e){
+            System.out.println("The input was not an integer");
+        }
+    }
+    return number;
+}
+
+    //This method is used for the request of the month day and hours because it allows the user to input 1>=
+    static private int requestChoice2(int maxChoice , String inputType){
+    Scanner input = new java.util.Scanner(System.in);
+    boolean isValidChoice=false;
+    int number=0;
+    while(!isValidChoice)
+    {
+        System.out.println("Enter a valid choice of " + inputType);
+        String choice = input.nextLine();
+        try{
+            number=Integer.parseInt(choice);
+            if((number>=1)&&(number<=maxChoice)){
+                isValidChoice=true;
+            }else{
+                System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
+            }
+        }catch(NumberFormatException e){
+            System.out.println("The input was not an integer");
+        }
+
+    }
+    return number;
+}    
+        
+    public static int requestInt(String inputType){
+        Scanner input = new java.util.Scanner(System.in);
+        int number=0;
+        boolean valid=false;
+        do{
+            try{
+                System.out.println("Please input " + inputType);
+                number=input.nextInt();
+                valid=true;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input.Please provide integer for the " + inputType);
+                input.nextLine();
+            }
+        }while(!valid);
+        
+        return number; 
+    }
+    
+    private static void readEventsFromFile(String fileName) throws ParseException{
+        BufferedReader reader = null;
+
+         try {
+            reader = new BufferedReader(new FileReader(fileName));
+            String line;
+            String title = null;
+            String date = null;
+            String dueDate = null;
+            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+
+            while ((line = reader.readLine()) != null) {
+                if(line.equals("BEGIN:VEVENT")){
+                    while((line = reader.readLine())!=null){
+                        if (line.startsWith("SUMMARY:")) {
+                            // Extracting the event title (SUMMARY)
+                            title = line.substring("SUMMARY:".length());
+                            System.out.println("Title: " + title);
+                        } else if (line.startsWith("DTSTART:")) {
+                            date = line.substring("DTSTART:".length());
+                            Date formattedDate = iCalendarFormat.parse(date);
+                            System.out.println("Date: " + formattedDate);
+                        }else if(line.startsWith("DUE;VALUE=DATE:")){
+                            dueDate = line.substring("DUE;VALUE=DATE:".length());
+                            Date formattedDueDate = iCalendarFormat.parse(dueDate);
+                            System.out.println("Due Date Time:" + formattedDueDate);
+                        }
+                        title = null;
+                        date = null;
+                    }
+                }
+                
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    private static ArrayList<Event> readAppointmentsFromFile(String fileName, ArrayList<Event> eventsList) {
+        BufferedReader reader = null;
+
+         try {
+            reader = new BufferedReader(new FileReader(fileName));
             String line;
             String title = null;
             String date = null;
@@ -108,22 +322,23 @@ public class CalendarProject implements TimeTeller{
                 }
             }
         }
-        
+        return eventsList;
+    }
+    //MALAKIA PROS TO PARON
+    private static ArrayList<Event> readProjectsFromFile(String fileName, ArrayList<Event> eventsList){
         BufferedReader reader2 = null;
         try  {
             
-            reader2 = new BufferedReader(new FileReader("output.ics"));
+            reader2 = new BufferedReader(new FileReader(fileName));
             String line2;
             String title2 = null;
             String date2 = null;
-            String duration2 = null;
             String description2 = null;
             boolean status = false;
 
             SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
             while ((line2 = reader2.readLine()) != null){
                 if(line2.equals("BEGIN:VTODO")){
-                    System.out.print("MPHKE\n");
                     while((line2 = reader2.readLine())!=null){
                         if (line2.startsWith("SUMMARY:")) {
                             // Extracting the event title (SUMMARY)
@@ -177,80 +392,58 @@ public class CalendarProject implements TimeTeller{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
-        eventsList.sort(eventComparator);
+        return eventsList;
+    }
+    
+    private static void writeAppointmentToFile(Appointment appointment, ArrayList<Event> eventsList) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
-        System.out.println("Add event (Press 1)");
-        System.out.println("Edit event (Press 2)");
-        
-        int opt = input.nextInt();
-        input.nextLine();
-        
-        switch (opt){
-        
-            case 1 :{
-                
-                System.out.println("Add appointment (Press 1)");
-                System.out.println("Add project (Press 2)");
-                
-                int ev_opt = input.nextInt();
-                input.nextLine();
-                
-                switch (ev_opt) { 
-                    
-                    case 1:{
-                    
-                        System.out.println("Add title");
-                        String title = input.nextLine();
+            writer.write("BEGIN:VCALENDAR\n");
+            writer.write("VERSION:2.0\n");
+
+            eventsList.add(appointment);
             
-                        System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String dateString = input.nextLine();
-                        
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+                    writer.write("BEGIN:VEVENT\n");
+                    writer.write("SUMMARY:" + appointment.getTitle() + "\n");
+                    writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");
+                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
+                    writer.write("DESCRIPTION:" + appointment.getDescription() + "\n");
+                    writer.write("END:VEVENT\n");
+                    writer.write("\n");
+                
+            
 
-                        Date date = dateFormat.parse(dateString);
-                        
-                        
-                        System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String durationString = input.nextLine();
-                        
-                        Date duration = dateFormat.parse(durationString);
-                        
-                        
-                        System.out.println("Add description");
-                        String description = input.nextLine();
-                        
-                        Appointment myAppointment = new Appointment(title,description,date,duration);
-                        
-                        eventsList.add(myAppointment);
-                        eventComparator = Comparator.comparing(Event::getDate);
-                        eventsList.sort(eventComparator);
-                        // Writing to an iCalendar (.ics) file
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
+            writer.write("END:VCALENDAR\n");
+
+            System.out.println("iCalendar file updated successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void writeProjectToFile(Project project, ArrayList<Event> eventsList){
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
                             
-                            
+                            eventsList.add(project);
+                        
                             writer.write("BEGIN:VCALENDAR\n");
                             writer.write("VERSION:2.0\n");
-
-                            for (Event event : eventsList) {
-                                // Add an event
-                                writer.write("BEGIN:VEVENT\n");
-                                writer.write("SUMMARY:"+ event.getTitle()+"\n");
-
-                            if (event instanceof Appointment) {
-                                Appointment appointment = (Appointment) event;
-                                writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");
-//                                writer.write("DURATION:" + dateFormat.format(appointment.getDuration()) + "\n");
-                                
-                                    
-                                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
-                                }
-                                
-                                writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
-                                // End the event
-                                writer.write("END:VEVENT\n");
+                               
+                            writer.write("BEGIN:VTODO\n");
+                            writer.write("SUMMARY:"+ project.getTitle()+"\n");
+                            writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDate())+"\n");
+                            if(project.getStatus()== false){
+                                writer.write("STATUS:NEEDS-ACTION\n");
+                            }else if(project.getStatus()== true){
+                                writer.write("STATUS:DOESNT-NEED-ACTION\n");
                             }
+                            writer.write("DESCRIPTION:"+ project.getDescription()+"\n");
+                            writer.write("END:VTODO\n");
+                            writer.write("\n");
+                                    
+                                
+                            System.out.println("Event added: " + project.getTitle());
                             // End the calendar
                             writer.write("END:VCALENDAR\n");
 
@@ -258,172 +451,48 @@ public class CalendarProject implements TimeTeller{
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-       
-                        System.out.println("Appointment added: " + myAppointment.getTitle() + " on " + myAppointment.getDate());
-                    
+    }
+    private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+
+            writer.write("BEGIN:VCALENDAR\n");
+            writer.write("VERSION:2.0\n");
+
+            for (Event event : eventsList) {
+                // Add an event
+                if (event instanceof Appointment) {
+                    Appointment appointment = (Appointment) event;
+                    writer.write("BEGIN:VEVENT\n");
+                    writer.write("SUMMARY:" + appointment.getTitle() + "\n");
+                    writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");
+                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
+                    writer.write("DESCRIPTION:" + appointment.getDescription() + "\n");
+                    // End the event
+                    writer.write("END:VEVENT\n");
+                    writer.write("\n");
+                } else if (event instanceof Project) {
+                    Project project = (Project) event;
+                    writer.write("BEGIN:VTODO\n");
+                    writer.write("SUMMARY:" + project.getTitle() + "\n");
+                    writer.write("DUE;VALUE=DATE:" + dateFormat.format(project.getDate()) + "\n");
+                    if (project.getStatus() == false) {
+                        writer.write("STATUS:NEEDS-ACTION\n");
+                    } else if (project.getStatus() == true) {
+                        writer.write("STATUS:DOESNT-NEED-ACTION\n");
                     }
-                    break;
-                    case 2 : {
-                        System.out.println("Add title");
-                        String title = input.nextLine();
-            
-                        System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String dateString = input.nextLine();
-                        
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-
-                        Date date = dateFormat.parse(dateString);
-                        
-                        
-                        System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String dueDateTimeString = input.nextLine();
-                        
-                        Date dueDateTime = dateFormat.parse(dueDateTimeString);
-                        
-                        
-                        System.out.println("Add description");
-                        String description = input.nextLine();
-                        
-                        System.out.println("Give status of the project (true/false)");
-                        boolean status = input.nextBoolean();
-                        
-                        Project myProject = new Project(title, description, dueDateTime,status);
-                        
-                        eventsList.add(myProject);
-                        eventComparator = Comparator.comparing(Event::getDate);
-                        eventsList.sort(eventComparator);
-                        // Writing to an iCalendar (.ics) file
-                        
-                        // Add this before writing to the .ics file
-                        
-        ////////////////eventsList.sort(Comparator.comparing(Event::getDate));///////////////////////////////////////////////////////////////////
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
-                            
-                            
-                            writer.write("BEGIN:VCALENDAR\n");
-                            writer.write("VERSION:2.0\n");
-
-                            for (Event event : eventsList) {
-                                // Add an event
-                                if (event instanceof Appointment) {
-                                    Appointment appointment = (Appointment) event; 
-                                    writer.write("BEGIN:VEVENT\n");
-                                    writer.write("SUMMARY:"+ event.getTitle()+"\n");
-
-
-                                    writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");                                
-                                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
-                                    writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
-                                    writer.write("END:VEVENT\n");
-                                }
-                                else if (event instanceof Project){
-                                    Project project =(Project) event;
-                                    writer.write("BEGIN:VTODO\n");
-                                    writer.write("SUMMARY:"+ event.getTitle()+"\n");
-                                    writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDate())+"\n");
-                                    if(project.getStatus()== false){
-                                        writer.write("STATUS:NEEDS-ACTION\n");
-                                    }else if(project.getStatus()== true){
-                                        writer.write("STATUS:DOESNT-NEED-ACTION\n");
-                                    }
-                                    writer.write("DESCRIPTION:"+ event.getDescription()+"\n");
-                                    writer.write("END:VTODO\n");
-                                    
-                                }
-                                System.out.println("Event added: " + event.getTitle());
-                            }
-                            // End the calendar
-                            writer.write("END:VCALENDAR\n");
-
-                            System.out.println("iCalendar file created successfully.");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }  
-                    break;
-                    } 
+                    writer.write("DESCRIPTION:" + project.getDescription() + "\n");
+                    writer.write("END:VTODO\n");
+                    writer.write("\n");
                 }
-                break;
             }
-        } //////////////
-        
-
-                //            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
-                //        
-                //        eventsList.add(testEvent);
-                //        eventsList.add(testProject);
-
-        for(int i=0;i<eventsList.size();i++){
-           eventsList.get(i).printEvent();
-            
+            // End the calendar
+            writer.write("END:VCALENDAR\n");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
-    
-    
-    
-        //this method is used for the request of the minutes and seconds because it allows the user to input 0>=
-        static private int requestChoice(int maxChoice , String inputType){
-        Scanner input = new java.util.Scanner(System.in);
-        boolean isValidChoice=false;
-        int number=0;
-        while(!isValidChoice)
-        {
-            System.out.println("Enter a valid choice of " + inputType);
-            String choice = input.nextLine();
-            try{
-                number=Integer.parseInt(choice);
-                if((number>=0)&&(number<=maxChoice)){
-                    isValidChoice=true;
-                }else{
-                    System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
-                }
-            }catch(NumberFormatException e){
-                System.out.println("The input was not an integer");
-            }
-        }
-        return number;
-    }
-    
-        //This method is used for the request of the month day and hours because it allows the user to input 1>=
-        static private int requestChoice2(int maxChoice , String inputType){
-        Scanner input = new java.util.Scanner(System.in);
-        boolean isValidChoice=false;
-        int number=0;
-        while(!isValidChoice)
-        {
-            System.out.println("Enter a valid choice of " + inputType);
-            String choice = input.nextLine();
-            try{
-                number=Integer.parseInt(choice);
-                if((number>=1)&&(number<=maxChoice)){
-                    isValidChoice=true;
-                }else{
-                    System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
-                }
-            }catch(NumberFormatException e){
-                System.out.println("The input was not an integer");
-            }
+}
 
-        }
-        return number;
-    }    
-        
-    public static int requestInt(String inputType){
-        Scanner input = new java.util.Scanner(System.in);
-        int number=0;
-        boolean valid=false;
-        do{
-            try{
-                System.out.println("Please input " + inputType);
-                number=input.nextInt();
-                valid=true;
-            }catch(InputMismatchException e){
-                System.out.println("Invalid input.Please provide integer for the " + inputType);
-                input.nextLine();
-            }
-        }while(!valid);
-        
-        return number; 
-    }
 }
 
 
@@ -477,7 +546,8 @@ public class CalendarProject implements TimeTeller{
 //                    }
 //                }
 //            }
-//            case 2->{
+//DEN XREIAZETAI NA EINAI CASE ALLA NA EINAI ARGS.LENGTH == 0 TOTE...
+//            case 2->{            
 //                System.out.println("Add appointment (Press 1)");
 //                System.out.println("Add project (Press 2)");
 //               
