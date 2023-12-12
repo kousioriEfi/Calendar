@@ -16,15 +16,29 @@ import java.util.Comparator;
 import java.util.Date;
 //import gr.hua.dit.oop2.calendar.TimeService;
 //import gr.hua.dit.oop2.calendar.TimeTeller;   
-
+import java.time.LocalDateTime;
+import java.util.InputMismatchException;
 /**
  *
  * @author leftp
  */
 public class CalendarProject implements TimeTeller{
     public static void main(String[] args) throws ParseException {
+        Scanner input = new java.util.Scanner(System.in);
         ArrayList<Event> eventsList = new ArrayList<>();
         BufferedReader reader = null;
+        
+        
+
+        int year=requestInt("Year");
+        int month=requestChoice(12,"Month (up to 12)");
+        int day=requestChoice(30,"Day (up to 30)" );
+        int hours=requestChoice(23,"Hours(up to 23)");
+        int minutes=requestChoice(59,"Minutes(up to 59)");
+        int seconds=requestChoice(59,"Seconds(up to 59)");
+        LocalDateTime decidedDate= LocalDateTime.of(year, month, day, hours, minutes, seconds);
+        System.out.println(decidedDate);
+        
         try {
             reader = new BufferedReader(new FileReader("output.ics"));
             String line;
@@ -167,7 +181,7 @@ public class CalendarProject implements TimeTeller{
         
        
         
-        Scanner input = new java.util.Scanner(System.in);
+
         
         System.out.println("Add event (Press 1)");
         System.out.println("Edit event (Press 2)");
@@ -341,7 +355,50 @@ public class CalendarProject implements TimeTeller{
             
         }
     }
-       
+    
+    
+    
+    
+        static private int requestChoice(int maxChoice , String inputType){
+        Scanner input = new java.util.Scanner(System.in);
+        boolean isValidChoice=false;
+        int number=0;
+        while(!isValidChoice)
+        {
+            System.out.println("Enter a valid choice of " + inputType);
+            String choice = input.nextLine();
+            try{
+                number=Integer.parseInt(choice);
+                if((number>=1)&&(number<=maxChoice)){
+                    isValidChoice=true;
+                }else{
+                    System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
+                }
+            }catch(NumberFormatException e){
+                System.out.println("The input was not an integer");
+            }
+
+        }
+        return number;
+    }
+    
+    public static int requestInt(String inputType){
+        Scanner input = new java.util.Scanner(System.in);
+        int number=0;
+        boolean valid=false;
+        do{
+            try{
+                System.out.println("Please input " + inputType);
+                number=input.nextInt();
+                valid=true;
+            }catch(InputMismatchException e){
+                System.out.println("Invalid input.Please provide integer for the " + inputType);
+                input.nextLine();
+            }
+        }while(!valid);
+        
+        return number; 
+    }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                  if(line.equals("BEGIN:VTODO")){
