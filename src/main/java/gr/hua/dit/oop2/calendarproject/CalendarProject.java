@@ -314,7 +314,6 @@ public class CalendarProject implements TimeTeller{
                                     writer.write("END:VTODO\n");
                                     
                                 }
-                                
                                 System.out.println("Event added: " + event.getTitle());
                             }
                             // End the calendar
@@ -323,30 +322,25 @@ public class CalendarProject implements TimeTeller{
                             System.out.println("iCalendar file created successfully.");
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }
-       
-                        
+                        }  
                     break;
-                    }
-                    
-
-                    
+                    } 
                 }
-             
                 break;
             }
         }
         
+        
 
-//            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
-//        
-//        eventsList.add(testEvent);
-//        eventsList.add(testProject);
+                //            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
+                //        
+                //        eventsList.add(testEvent);
+                //        eventsList.add(testProject);
 
         for(int i=0;i<eventsList.size();i++){
            eventsList.get(i).printEvent();
             
-            }
+        }
     }
        
 }
