@@ -330,7 +330,6 @@ public class CalendarProject implements TimeTeller{
             }
         }
         
-        
 
                 //            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
                 //        
