@@ -122,7 +122,7 @@ public class CalendarProject implements TimeTeller{
 
             SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
             while ((line2 = reader2.readLine()) != null){
-            if(line2.equals("BEGIN:VTODO")){
+                if(line2.equals("BEGIN:VTODO")){
                     System.out.print("MPHKE\n");
                     while((line2 = reader2.readLine())!=null){
                         if (line2.startsWith("SUMMARY:")) {
@@ -133,20 +133,20 @@ public class CalendarProject implements TimeTeller{
                             date2 = line2.substring("DUE;VALUE=DATE:".length());
 
                             // Parse the 'startDate' string using the iCalendar format
-                            
+
                         }else if(line2.equals("STATUS:DOESNT-NEED-ACTION")){
                             status = true;
-                            
+
                         }else if(line2.equals("STATUS:NEEDS-ACTION")){
                             status = false;
                         }else if(line2.startsWith("DESCRIPTION:")){
                             description2 = line2.substring("DESCRIPTION:".length());
-                        
+
                         }else if (line2.equals("END:VTODO")) {
-                            
+
                             try {
                                 Date formattedDate = iCalendarFormat.parse(date2);
-                                
+
                                 // Date date = dateFormat.parse(dateString);
                                 Project project = new Project(title2,description2,formattedDate,status);
                                 eventsList.add(project);
@@ -163,7 +163,7 @@ public class CalendarProject implements TimeTeller{
                                 title2 = null;
                                 date2 = null;
                                 description2 = null;
-                                
+
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -178,11 +178,9 @@ public class CalendarProject implements TimeTeller{
             e.printStackTrace();
         }
         
-        
-       
-        
+        Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
+        eventsList.sort(eventComparator);
 
-        
         System.out.println("Add event (Press 1)");
         System.out.println("Edit event (Press 2)");
         
@@ -226,6 +224,8 @@ public class CalendarProject implements TimeTeller{
                         Appointment myAppointment = new Appointment(title,description,date,duration);
                         
                         eventsList.add(myAppointment);
+                        eventComparator = Comparator.comparing(Event::getDate);
+                        eventsList.sort(eventComparator);
                         // Writing to an iCalendar (.ics) file
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
                             
@@ -290,6 +290,8 @@ public class CalendarProject implements TimeTeller{
                         Project myProject = new Project(title, description, dueDateTime,status);
                         
                         eventsList.add(myProject);
+                        eventComparator = Comparator.comparing(Event::getDate);
+                        eventsList.sort(eventComparator);
                         // Writing to an iCalendar (.ics) file
                         
                         // Add this before writing to the .ics file
@@ -377,7 +379,6 @@ public class CalendarProject implements TimeTeller{
             }catch(NumberFormatException e){
                 System.out.println("The input was not an integer");
             }
-
         }
         return number;
     }
@@ -424,83 +425,8 @@ public class CalendarProject implements TimeTeller{
         return number; 
     }
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                  if(line.equals("BEGIN:VTODO")){
-//                    System.out.print("MPHKE\n");
-//                    while((line = reader.readLine())!=null){
-//                        if (line.startsWith("SUMMARY:")) {
-//                            // Extracting the event title (SUMMARY)
-//                            title = line.substring("SUMMARY:".length());
-//                        } else if (line.startsWith("DUE;VALUE=DATE:")) {
-//                            // Extracting the event start date (DTSTART)
-//                            date = line.substring("DUE;VALUE=DATE:".length());
-//
-//                            // Parse the 'startDate' string using the iCalendar format
-//                            
-//                        }else if(line.equals("STATUS:DOESNT-NEED-ACTION")){
-//                            status = true;
-//                            
-//                        }else if(line.equals("STATUS:NEEDS-ACTION")){
-//                            status = false;
-//                        }else if(line.startsWith("DESCRIPTION:")){
-//                            description = line.substring("DESCRIPTION:".length());
-//                        
-//                        }else if (line.equals("END:VTODO")) {
-//                            
-//                            try {
-//                                Date formattedDate = iCalendarFormat.parse(date);
-//                                Date formattedDateEnd = iCalendarFormat.parse(duration);
-//                                // Date date = dateFormat.parse(dateString);
-//                                Project project = new Project(title,description,formattedDate,status);
-//                                eventsList.add(project);
-//                                // Print the event details
-//                                if (title != null) {
-//                                    System.out.println("Title: " + title);
-//                                    System.out.println("Due Date Time:" + formattedDate);
-//                                    System.out.println("Status: "+ status);
-//                                    System.out.println("Description: "+ description);
-//                                    System.out.println();
-//                                }
-//
-//                                // Reset variables for the next event
-//                                title = null;
-//                                date = null;
-//                                description = null;
-//                                
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
-//                            // Reset variables for the next event
-//                            title = null;
-//                            date = null;
-//                        }
-//                    }
-//                }  
 
 
-///*
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-// */
-//
-//package gr.hua.dit.oop2.calendarproject;
-//import java.io.BufferedReader;
-//import java.io.FileReader;
-//import java.util.ArrayList;
-//import java.util.Scanner;
-//import java.io.BufferedWriter;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.text.ParseException;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//import gr.hua.dit.oop2.calendar.TimeService;
-//import gr.hua.dit.oop2.calendar.TimeTeller;
-//
-//
-///**
-// *
-// * @author leftp
-// */
 //public class CalendarProject {
 //    public static void main(String[] args) throws ParseException {
 //         
