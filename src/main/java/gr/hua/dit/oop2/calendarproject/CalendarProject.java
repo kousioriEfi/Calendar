@@ -31,9 +31,9 @@ public class CalendarProject implements TimeTeller{
         
 
         int year=requestInt("Year");
-        int month=requestChoice(12,"Month (up to 12)");
-        int day=requestChoice(30,"Day (up to 30)" );
-        int hours=requestChoice(23,"Hours(up to 23)");
+        int month=requestChoice2(12,"Month (up to 12)");
+        int day=requestChoice2(30,"Day (up to 30)" );
+        int hours=requestChoice2(23,"Hours(up to 23)");
         int minutes=requestChoice(59,"Minutes(up to 59)");
         int seconds=requestChoice(59,"Seconds(up to 59)");
         LocalDateTime decidedDate= LocalDateTime.of(year, month, day, hours, minutes, seconds);
@@ -358,8 +358,32 @@ public class CalendarProject implements TimeTeller{
     
     
     
-    
+        //this method is used for the request of the minutes and seconds because it allows the user to input 0>=
         static private int requestChoice(int maxChoice , String inputType){
+        Scanner input = new java.util.Scanner(System.in);
+        boolean isValidChoice=false;
+        int number=0;
+        while(!isValidChoice)
+        {
+            System.out.println("Enter a valid choice of " + inputType);
+            String choice = input.nextLine();
+            try{
+                number=Integer.parseInt(choice);
+                if((number>=0)&&(number<=maxChoice)){
+                    isValidChoice=true;
+                }else{
+                    System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
+                }
+            }catch(NumberFormatException e){
+                System.out.println("The input was not an integer");
+            }
+
+        }
+        return number;
+    }
+    
+        //This method is used for the request of the month day and hours because it allows the user to input 1>=
+        static private int requestChoice2(int maxChoice , String inputType){
         Scanner input = new java.util.Scanner(System.in);
         boolean isValidChoice=false;
         int number=0;
@@ -380,8 +404,8 @@ public class CalendarProject implements TimeTeller{
 
         }
         return number;
-    }
-    
+    }    
+        
     public static int requestInt(String inputType){
         Scanner input = new java.util.Scanner(System.in);
         int number=0;
