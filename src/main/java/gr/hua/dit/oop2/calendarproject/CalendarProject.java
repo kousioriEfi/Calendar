@@ -27,9 +27,10 @@ public class CalendarProject implements TimeTeller{
     public static void main(String[] args) throws ParseException {
         Scanner input = new java.util.Scanner(System.in);
         ArrayList<Event> eventsList = new ArrayList<>();
+        ArrayList<Event> printEventList = new ArrayList<>();
         BufferedReader reader = null;
         TimeTeller teller = TimeService.getTeller();
-        //
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
         int year=requestInt("Year");
         int month=requestChoice2(12,"Month (up to 12)");
@@ -43,8 +44,11 @@ public class CalendarProject implements TimeTeller{
         System.out.println("Events Before Sorting");
         
         
+                
         eventsList = readAppointmentsFromFile("output.ics", eventsList);
         eventsList = readProjectsFromFile("output.ics", eventsList);
+        
+        printEventList = readAppointmentsFromFileTest("output.ics", printEventList);
         
         Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
         eventsList.sort(eventComparator);
@@ -511,6 +515,90 @@ public class CalendarProject implements TimeTeller{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    
+    
+    
+    
+    
+        private static void printDay(){
+            
+        }    
+    
+        private static ArrayList<Event> readAppointmentsFromFileTest(String fileName, ArrayList<Event> printEventList) {
+        BufferedReader reader = null;
+
+         try {
+            reader = new BufferedReader(new FileReader(fileName));
+            String line;
+            String title = null;
+            String date = null;
+            String duration = null;
+            String description = null;
+            
+
+            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+
+            while ((line = reader.readLine()) != null) {
+                if(line.equals("BEGIN:VEVENT")){
+                    while((line = reader.readLine())!=null){
+                        if (line.startsWith("SUMMARY:")) {
+                            // Extracting the event title (SUMMARY)
+                            title = line.substring("SUMMARY:".length());
+                        } else if (line.startsWith("DTSTART:")) {
+                            // Extracting the event start date (DTSTART)
+                            date = line.substring("DTSTART:".length());
+
+                            // Parse the 'startDate' string using the iCalendar format
+                            
+                        }else if(line.startsWith("DTEND:")){
+                            duration = line.substring("DTEND:".length());
+                            
+                        }else if(line.startsWith("DESCRIPTION:")){
+                            description = line.substring("DESCRIPTION:".length());
+                        
+                        }else if (line.equals("END:VEVENT")) {
+                            
+                            try {
+                                Date formattedDate = iCalendarFormat.parse(date);
+                                Date formattedDateEnd = iCalendarFormat.parse(duration);
+                                // Date date = dateFormat.parse(dateString);
+                                Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
+    //if statement wste an time isAfter kanei add sto list kai meta kanw print to list                          
+                                printEventList.add(appointment);
+                                // Print the event details
+                                if (title != null) {
+                                    System.out.println("Title: " + title);
+                                    System.out.println("Date: " + formattedDate);
+                                    System.out.println("Date End: "+formattedDateEnd);
+                                    System.out.println("Description: "+ description);
+                                    System.out.println();
+                                }
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            // Reset variables for the next event
+                            title = null;
+                            date = null;
+                        }
+                    }
+                }
+                
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return printEventList;
+    }
 }
 
 
