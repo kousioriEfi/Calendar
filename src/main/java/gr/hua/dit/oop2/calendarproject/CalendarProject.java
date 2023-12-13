@@ -3,6 +3,7 @@
  */
 
 package gr.hua.dit.oop2.calendarproject;
+import gr.hua.dit.oop2.calendar.TimeListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -14,8 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
-//import gr.hua.dit.oop2.calendar.TimeService;
-//import gr.hua.dit.oop2.calendar.TimeTeller;   
+import gr.hua.dit.oop2.calendar.TimeService;
+import gr.hua.dit.oop2.calendar.TimeTeller;   
 import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 /**
@@ -27,19 +28,21 @@ public class CalendarProject implements TimeTeller{
         Scanner input = new java.util.Scanner(System.in);
         ArrayList<Event> eventsList = new ArrayList<>();
         BufferedReader reader = null;
+        TimeTeller teller = TimeService.getTeller();
         
-        
-//
-//        int year=requestInt("Year");
-//        int month=requestChoice2(12,"Month (up to 12)");
-//        int day=requestChoice2(30,"Day (up to 30)" );
-//        int hours=requestChoice2(23,"Hours(up to 23)");
-//        int minutes=requestChoice(59,"Minutes(up to 59)");
-//        int seconds=requestChoice(59,"Seconds(up to 59)");
-//        LocalDateTime decidedDate= LocalDateTime.of(year, month, day, hours, minutes, seconds);
-//        System.out.println(decidedDate);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+        int year=requestInt("Year");
+        int month=requestChoice2(12,"Month (up to 12)");
+        int day=requestChoice2(30,"Day (up to 30)" );
+        int hours=requestChoice2(23,"Hours(up to 23)");
+        int minutes=requestChoice(59,"Minutes(up to 59)");
+        int seconds=requestChoice(59,"Seconds(up to 59)");
+        LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);
+        LocalDateTime dt = teller.now();
+        System.out.println(time.adjustInto(dt));
         System.out.println("Events Before Sorting");
-
+        
+        
         eventsList = readAppointmentsFromFile("output.ics", eventsList);
         eventsList = readProjectsFromFile("output.ics", eventsList);
         
@@ -81,7 +84,7 @@ public class CalendarProject implements TimeTeller{
                         System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
                         String dateString = input.nextLine();
                         
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+
 
                         Date date = dateFormat.parse(dateString);
                         
@@ -106,7 +109,7 @@ public class CalendarProject implements TimeTeller{
                         System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
                         String dateString = input.nextLine();
                         
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+
 
                         Date date = dateFormat.parse(dateString);
                         
@@ -492,6 +495,21 @@ public class CalendarProject implements TimeTeller{
             e.printStackTrace();
         }
 }
+
+    @Override
+    public LocalDateTime now() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void addTimeListener(TimeListener tl) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void removeTimeListener(TimeListener tl) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }
 
