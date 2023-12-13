@@ -75,7 +75,7 @@ public class CalendarProject implements TimeTeller{
                 System.out.println("Add appointment (Press 1)");
                 System.out.println("Add project (Press 2)");
                 
-                int ev_opt = input.nextInt();
+                int ev_opt = requestChoice2(2,"1 or 2");
                 input.nextLine();
                 
                 switch (ev_opt) { 
@@ -128,7 +128,7 @@ public class CalendarProject implements TimeTeller{
                         String description = input.nextLine();
                         
                         System.out.println("Give status of the project (true/false)");
-                        boolean status = input.nextBoolean();
+                        boolean status = requestBoolean("true/false");
                         
                         Project myProject = new Project(title, description, dueDateTime,status);
                         writeProjectToFile(myProject,eventsList);
@@ -209,6 +209,28 @@ public class CalendarProject implements TimeTeller{
         
         return number; 
     }
+    
+    
+        public static boolean requestBoolean(String inputType){
+        Scanner input = new java.util.Scanner(System.in);
+        String userInput;
+        boolean bool=false;
+        boolean valid=false;
+        do{
+                System.out.println("Please input " + inputType);
+                userInput=input.nextLine().toLowerCase();
+                if(userInput.equals("true")||userInput.equals("false")){
+                    bool=Boolean.parseBoolean(userInput);
+                    valid=true; 
+                }else{
+            
+                    System.out.println("Invalid input.Please provide " + inputType);
+            }
+        }while(!valid);
+        
+            return bool; 
+        }
+        
     
     private static void readEventsFromFile(String fileName) throws ParseException{
         BufferedReader reader = null;
