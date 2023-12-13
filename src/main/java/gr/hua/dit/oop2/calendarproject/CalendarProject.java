@@ -1,148 +1,158 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
+    */
 
-package gr.hua.dit.oop2.calendarproject;
-import gr.hua.dit.oop2.calendar.TimeListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import gr.hua.dit.oop2.calendar.TimeService;
-import gr.hua.dit.oop2.calendar.TimeTeller;   
-import java.time.LocalDateTime;
-import java.util.InputMismatchException;
-/**
- *
- * @author leftp
- */
-public class CalendarProject implements TimeTeller{
-    public static void main(String[] args) throws ParseException {
-        Scanner input = new java.util.Scanner(System.in);
-        ArrayList<Event> eventsList = new ArrayList<>();
-        ArrayList<Event> printEventList = new ArrayList<>();
-        BufferedReader reader = null;
-        TimeTeller teller = TimeService.getTeller();
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-        int year=requestInt("Year");
-        int month=requestChoice2(12,"Month (up to 12)");
-        int day=requestChoice2(30,"Day (up to 30)" );
-        int hours=requestChoice2(23,"Hours(up to 23)");
-        int minutes=requestChoice(59,"Minutes(up to 59)");
-        int seconds=requestChoice(59,"Seconds(up to 59)");
-        LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);
-        LocalDateTime dt = teller.now();
-        System.out.println(time.adjustInto(dt));
-        System.out.println("Events Before Sorting");
-        
-        
-                
-        eventsList = readAppointmentsFromFile("output.ics", eventsList);
-        eventsList = readProjectsFromFile("output.ics", eventsList);
-        
-        printEventList = readAppointmentsFromFileTest("output.ics", printEventList);
-        
-        Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
-        eventsList.sort(eventComparator);
-        
-        System.out.println("Events After Sorting");
-       
-        
-        writeSortedEventsToFile(eventsList);        
-        for(int i=0;i<eventsList.size();i++){
-           eventsList.get(i).printEvent();
+   package gr.hua.dit.oop2.calendarproject;
+   import gr.hua.dit.oop2.calendar.TimeListener;
+   import java.io.BufferedReader;
+   import java.io.FileReader;
+   import java.util.ArrayList;
+   import java.util.Scanner;
+   import java.io.BufferedWriter;
+   import java.io.FileWriter;
+   import java.io.IOException;
+   import java.text.ParseException;
+   import java.text.SimpleDateFormat;
+   import java.util.Comparator;
+   import gr.hua.dit.oop2.calendar.TimeService;
+   import gr.hua.dit.oop2.calendar.TimeTeller;   
+   import static java.lang.System.exit;
+   import java.time.Instant;
+   import java.time.LocalDateTime;
+import java.time.LocalTime;
+   import java.time.format.DateTimeFormatter;
+   import java.util.InputMismatchException;
+   /**
+    *
+    * @author leftp
+    */
+   public class CalendarProject implements TimeTeller{
+       public static void main(String[] args) throws ParseException {
+           Scanner input = new java.util.Scanner(System.in);
+           ArrayList<Event> eventsList = new ArrayList<>();
+           ArrayList<Event> printEventList = new ArrayList<>();
+           BufferedReader reader = null;
+           TimeTeller teller = TimeService.getTeller();
 
-        }
-
-        System.out.println("Add event (Press 1)");
-        System.out.println("Edit event (Press 2)");
-        
-        int opt = input.nextInt();
-        input.nextLine();
-        
-        switch (opt){
-        
-            case 1 :{
-                
-                System.out.println("Add appointment (Press 1)");
-                System.out.println("Add project (Press 2)");
-                
-                int ev_opt = requestChoice2(2,"1 or 2");
-                input.nextLine();
-                
-                switch (ev_opt) { 
-                    
-                    case 1:{
-                    
-                        System.out.println("Add title");
-                        String title = input.nextLine();
-            
-                        System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String dateString = input.nextLine();
-                        
+           int year=requestInt("Year");
+           int month=requestChoice2(12,"Month (up to 12)");
+           int day=requestChoice2(30,"Day (up to 30)" );
+           int hours=requestChoice2(23,"Hours(up to 23)");
+           int minutes=requestChoice(59,"Minutes(up to 59)");
+           int seconds=requestChoice(59,"Seconds(up to 59)");
+           LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);
+           LocalDateTime dt = teller.now();
+           
+           System.out.println(time.adjustInto(dt));
+           System.out.println("Events Before Sorting");
 
 
-                        Date date = dateFormat.parse(dateString);
-                        
-                        
-                        System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String durationString = input.nextLine();
-                        
-                        Date duration = dateFormat.parse(durationString);
-                        
-                        
-                        System.out.println("Add description");
-                        String description = input.nextLine();
-                        
-                        Appointment myAppointment = new Appointment(title,description,date,duration);
-                        writeAppointmentToFile(myAppointment,eventsList);
-                    }
-                    break;
-                    case 2 : {
-                        System.out.println("Add title");
-                        String title = input.nextLine();
-            
-                        System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String dateString = input.nextLine();
-                        
+
+           eventsList = readAppointmentsFromFile("output.ics", eventsList);
+           eventsList = readProjectsFromFile("output.ics", eventsList);
+
+           printEventList = readAppointmentsFromFileTest("output.ics", printEventList);
+
+           Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
+           eventsList.sort(eventComparator);
+
+            printEventsForTheDay(eventsList,time);
+//           System.out.println("Events After Sorting");
+//
+//           writeSortedEventsToFile(eventsList);        
+//           for(int i=0;i<eventsList.size();i++){
+//              eventsList.get(i).printEvent();
+//
+//           }
+//
+           System.out.println("Add event (Press 1)");
+           System.out.println("Edit event (Press 2)");
+
+           int opt = input.nextInt();
+           input.nextLine();
+
+           switch (opt){
+
+               case 1 :{
+
+                   System.out.println("Add appointment (Press 1)");
+                   System.out.println("Add project (Press 2)");
+
+                   int ev_opt = input.nextInt();
+                   input.nextLine();
+
+                   switch (ev_opt) { 
+
+                       case 1:{
+
+                           System.out.println("Add title");
+                           String title = input.nextLine();
+
+                           System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                           String dateString = input.nextLine();
+
+                           //Instant instant = dateString.toInstant;
+                           //LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+                           LocalDateTime date = LocalDateTime.parse(dateString, formatter);
+                           System.out.println("Converted LocalDateTime: " + date);
+                           //Date date = dateFormat.parse(dateString);
 
 
-                        Date date = dateFormat.parse(dateString);
-                        
-                        
-                        System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                        String dueDateTimeString = input.nextLine();
-                        
-                        Date dueDateTime = dateFormat.parse(dueDateTimeString);
-                        
-                        
-                        System.out.println("Add description");
-                        String description = input.nextLine();
-                        
-                        System.out.println("Give status of the project (true/false)");
-                        boolean status = requestBoolean("true/false");
-                        
-                        Project myProject = new Project(title, description, dueDateTime,status);
-                        writeProjectToFile(myProject,eventsList);
-                        ////////////////eventsList.sort(Comparator.comparing(Event::getDate));///////////////////////////////////////////////////////////////////
-                          
-                    break;
-                    } 
-                }
+                           System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                           String durationString = input.nextLine();
+
+                           LocalDateTime duration = LocalDateTime.parse(durationString, formatter);
+
+
+                           System.out.println("Add description");
+                           String description = input.nextLine();
+
+                           Appointment myAppointment = new Appointment(title,description,date,duration);
+                           writeAppointmentToFile(myAppointment,eventsList);
+                        break;
+                       }
+                       case 2 : {
+                           System.out.println("Add title");
+                           String title = input.nextLine();
+
+                           System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                           String dateString = input.nextLine();
+                           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+                           LocalDateTime date = LocalDateTime.parse(dateString, formatter);
+
+
+                           System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                           String dueDateTimeString = input.nextLine();
+
+                           LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
+
+
+                           System.out.println("Add description");
+                           String description = input.nextLine();
+
+                           System.out.println("Give status of the project (true/false)");
+                           boolean status = requestBoolean("true/false");
+
+                           Project myProject = new Project(title, description, dueDateTime,status);
+                           writeProjectToFile(myProject,eventsList);
+                           ////////////////eventsList.sort(Comparator.comparing(Event::getDate));///////////////////////////////////////////////////////////////////
+                           break;
+                       } 
+                       
+                   }
+                   System.out.println("EMMM");
                 break;
-            }
-        } //////////////
-        
-    }
-    
+               }default: {
+                    System.out.println("Invalid outer choice");
+                break;
+                }
+            
+           } //////////////
+           System.out.println("EMMM main");
+           exit(0);
+       }
+
     
     
     //this method is used for the request of the minutes and seconds because it allows the user to input 0>=
@@ -200,6 +210,7 @@ public class CalendarProject implements TimeTeller{
             try{
                 System.out.println("Please input " + inputType);
                 number=input.nextInt();
+                input.nextLine();
                 valid=true;
             }catch(InputMismatchException e){
                 System.out.println("Invalid input.Please provide integer for the " + inputType);
@@ -211,25 +222,25 @@ public class CalendarProject implements TimeTeller{
     }
     
     
-        public static boolean requestBoolean(String inputType){
+    public static boolean requestBoolean(String inputType){
         Scanner input = new java.util.Scanner(System.in);
         String userInput;
         boolean bool=false;
         boolean valid=false;
         do{
-                System.out.println("Please input " + inputType);
-                userInput=input.nextLine().toLowerCase();
-                if(userInput.equals("true")||userInput.equals("false")){
-                    bool=Boolean.parseBoolean(userInput);
-                    valid=true; 
-                }else{
-            
-                    System.out.println("Invalid input.Please provide " + inputType);
+            System.out.println("Please input " + inputType);
+            userInput=input.nextLine().toLowerCase();
+            if(userInput.equals("true")||userInput.equals("false")){
+                bool=Boolean.parseBoolean(userInput);
+                valid=true; 
+            }else{
+
+                System.out.println("Invalid input.Please provide " + inputType);
             }
         }while(!valid);
         
-            return bool; 
-        }
+        return bool; 
+    }
         
     
     private static void readEventsFromFile(String fileName) throws ParseException{
@@ -241,7 +252,7 @@ public class CalendarProject implements TimeTeller{
             String title = null;
             String date = null;
             String dueDate = null;
-            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
 
             while ((line = reader.readLine()) != null) {
                 if(line.equals("BEGIN:VEVENT")){
@@ -252,11 +263,11 @@ public class CalendarProject implements TimeTeller{
                             System.out.println("Title: " + title);
                         } else if (line.startsWith("DTSTART:")) {
                             date = line.substring("DTSTART:".length());
-                            Date formattedDate = iCalendarFormat.parse(date);
+                            LocalDateTime formattedDate = LocalDateTime.parse(date,formatter);
                             System.out.println("Date: " + formattedDate);
                         }else if(line.startsWith("DUE;VALUE=DATE:")){
                             dueDate = line.substring("DUE;VALUE=DATE:".length());
-                            Date formattedDueDate = iCalendarFormat.parse(dueDate);
+                            LocalDateTime formattedDueDate = LocalDateTime.parse(dueDate, formatter);
                             System.out.println("Due Date Time:" + formattedDueDate);
                         }
                         title = null;
@@ -291,7 +302,7 @@ public class CalendarProject implements TimeTeller{
             String description = null;
             
 
-            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
 
             while ((line = reader.readLine()) != null) {
                 if(line.equals("BEGIN:VEVENT")){
@@ -313,23 +324,18 @@ public class CalendarProject implements TimeTeller{
                         
                         }else if (line.equals("END:VEVENT")) {
                             
-                            try {
-                                Date formattedDate = iCalendarFormat.parse(date);
-                                Date formattedDateEnd = iCalendarFormat.parse(duration);
-                                // Date date = dateFormat.parse(dateString);
-                                Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
-                                eventsList.add(appointment);
-                                // Print the event details
-                                if (title != null) {
-                                    System.out.println("Title: " + title);
-                                    System.out.println("Date: " + formattedDate);
-                                    System.out.println("Date End: "+formattedDateEnd);
-                                    System.out.println("Description: "+ description);
-                                    System.out.println();
-                                }
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                            LocalDateTime formattedDate = LocalDateTime.parse(date, formatter);
+                            LocalDateTime formattedDateEnd = LocalDateTime.parse(duration, formatter);
+                            // Date date = dateFormat.parse(dateString);
+                            Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
+                            eventsList.add(appointment);
+                            // Print the event details
+                            if (title != null) {
+                                System.out.println("Title: " + title);
+                                System.out.println("Date: " + formattedDate);
+                                System.out.println("Date End: "+formattedDateEnd);
+                                System.out.println("Description: "+ description);
+                                System.out.println();
                             }
                             // Reset variables for the next event
                             title = null;
@@ -365,7 +371,7 @@ public class CalendarProject implements TimeTeller{
             String description2 = null;
             boolean status = false;
 
-            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
             while ((line2 = reader2.readLine()) != null){
                 if(line2.equals("BEGIN:VTODO")){
                     while((line2 = reader2.readLine())!=null){
@@ -388,29 +394,22 @@ public class CalendarProject implements TimeTeller{
 
                         }else if (line2.equals("END:VTODO")) {
 
-                            try {
-                                Date formattedDate = iCalendarFormat.parse(date2);
-
-                                // Date date = dateFormat.parse(dateString);
-                                Project project = new Project(title2,description2,formattedDate,status);
-                                eventsList.add(project);
-                                // Print the event details
-                                if (title2 != null) {
-                                    System.out.println("Title: " + title2);
-                                    System.out.println("Due Date Time:" + formattedDate);
-                                    System.out.println("Status: "+ status);
-                                    System.out.println("Description: "+ description2);
-                                    System.out.println();
-                                }
-
-                                // Reset variables for the next event
-                                title2 = null;
-                                date2 = null;
-                                description2 = null;
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                            LocalDateTime formattedDate = LocalDateTime.parse(date2,formatter);
+                            // Date date = dateFormat.parse(dateString);
+                            Project project = new Project(title2,description2,formattedDate,status);
+                            eventsList.add(project);
+                            // Print the event details
+                            if (title2 != null) {
+                                System.out.println("Title: " + title2);
+                                System.out.println("Due Date Time:" + formattedDate);
+                                System.out.println("Status: "+ status);
+                                System.out.println("Description: "+ description2);
+                                System.out.println();
                             }
+                            // Reset variables for the next event
+                            title2 = null;
+                            date2 = null;
+                            description2 = null;
                             // Reset variables for the next event
                             title2 = null;
                             date2 = null;
@@ -420,26 +419,37 @@ public class CalendarProject implements TimeTeller{
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            if (reader2 != null) {
+                try {
+                    reader2.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return eventsList;
     }
     
     private static void writeAppointmentToFile(Appointment appointment, ArrayList<Event> eventsList) {
+        
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+            
+            
+            if (eventsList.isEmpty()) {
+            // Write calendar header if the list is empty
             writer.write("BEGIN:VCALENDAR\n");
             writer.write("VERSION:2.0\n");
-
+            }
             eventsList.add(appointment);
-            
-                    writer.write("BEGIN:VEVENT\n");
-                    writer.write("SUMMARY:" + appointment.getTitle() + "\n");
-                    writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");
-                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
-                    writer.write("DESCRIPTION:" + appointment.getDescription() + "\n");
-                    writer.write("END:VEVENT\n");
-                    writer.write("\n");
+            writer.write("BEGIN:VEVENT\n");
+            writer.write("SUMMARY:" + appointment.getTitle() + "\n");
+            writer.write("DTSTART:" + formatter.format(appointment.getDate()) + "\n");
+            writer.write("DTEND:" + formatter.format(appointment.getDuration()) + "\n");
+            writer.write("DESCRIPTION:" + appointment.getDescription() + "\n");
+            writer.write("END:VEVENT\n");
+            //writer.write("\n");
                 
             
 
@@ -448,11 +458,12 @@ public class CalendarProject implements TimeTeller{
             System.out.println("iCalendar file updated successfully.");
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Error writing appointment to file: " + e.getMessage());
         }
     }
     private static void writeProjectToFile(Project project, ArrayList<Event> eventsList){
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
                             
                             eventsList.add(project);
                         
@@ -461,7 +472,7 @@ public class CalendarProject implements TimeTeller{
                                
                             writer.write("BEGIN:VTODO\n");
                             writer.write("SUMMARY:"+ project.getTitle()+"\n");
-                            writer.write("DUE;VALUE=DATE:"+ dateFormat.format(project.getDate())+"\n");
+                            writer.write("DUE;VALUE=DATE:"+ formatter.format(project.getDate())+"\n");
                             if(project.getStatus()== false){
                                 writer.write("STATUS:NEEDS-ACTION\n");
                             }else if(project.getStatus()== true){
@@ -483,7 +494,7 @@ public class CalendarProject implements TimeTeller{
     }
     private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
 
             writer.write("BEGIN:VCALENDAR\n");
             writer.write("VERSION:2.0\n");
@@ -494,8 +505,8 @@ public class CalendarProject implements TimeTeller{
                     Appointment appointment = (Appointment) event;
                     writer.write("BEGIN:VEVENT\n");
                     writer.write("SUMMARY:" + appointment.getTitle() + "\n");
-                    writer.write("DTSTART:" + dateFormat.format(appointment.getDate()) + "\n");
-                    writer.write("DTEND:" + dateFormat.format(appointment.getDuration()) + "\n");
+                    writer.write("DTSTART:" + formatter.format(appointment.getDate()) + "\n");
+                    writer.write("DTEND:" + formatter.format(appointment.getDuration()) + "\n");
                     writer.write("DESCRIPTION:" + appointment.getDescription() + "\n");
                     // End the event
                     writer.write("END:VEVENT\n");
@@ -504,7 +515,7 @@ public class CalendarProject implements TimeTeller{
                     Project project = (Project) event;
                     writer.write("BEGIN:VTODO\n");
                     writer.write("SUMMARY:" + project.getTitle() + "\n");
-                    writer.write("DUE;VALUE=DATE:" + dateFormat.format(project.getDate()) + "\n");
+                    writer.write("DUE;VALUE=DATE:" + formatter.format(project.getDate()) + "\n");
                     if (project.getStatus() == false) {
                         writer.write("STATUS:NEEDS-ACTION\n");
                     } else if (project.getStatus() == true) {
@@ -521,7 +532,23 @@ public class CalendarProject implements TimeTeller{
             e.printStackTrace();
         }
 }
+    
+    public static void printEventsForTheDay(ArrayList<Event> eventsList, LocalDateTime date) {
+        LocalTime time = date.toLocalTime();
+        
+        LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(date.toLocalDate(), time.MAX);
 
+        System.out.println("Events for " + date.toLocalDate() + ":");
+
+        for (Event event : eventsList) {
+            LocalDateTime eventDate = event.getDate();
+
+            if (eventDate.isEqual(startOfDay) || (eventDate.isAfter(startOfDay) && eventDate.isBefore(endOfDay))) {
+                event.printEvent();
+            }
+        }
+    }
     @Override
     public LocalDateTime now() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -536,15 +563,6 @@ public class CalendarProject implements TimeTeller{
     public void removeTimeListener(TimeListener tl) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
-    
-    
-    
-    
-    
-        private static void printDay(){
-            
-        }    
     
         private static ArrayList<Event> readAppointmentsFromFileTest(String fileName, ArrayList<Event> printEventList) {
         BufferedReader reader = null;
@@ -558,7 +576,7 @@ public class CalendarProject implements TimeTeller{
             String description = null;
             
 
-            SimpleDateFormat iCalendarFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
 
             while ((line = reader.readLine()) != null) {
                 if(line.equals("BEGIN:VEVENT")){
@@ -580,24 +598,19 @@ public class CalendarProject implements TimeTeller{
                         
                         }else if (line.equals("END:VEVENT")) {
                             
-                            try {
-                                Date formattedDate = iCalendarFormat.parse(date);
-                                Date formattedDateEnd = iCalendarFormat.parse(duration);
-                                // Date date = dateFormat.parse(dateString);
-                                Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
-    //if statement wste an time isAfter kanei add sto list kai meta kanw print to list                          
-                                printEventList.add(appointment);
-                                // Print the event details
-                                if (title != null) {
-                                    System.out.println("Title: " + title);
-                                    System.out.println("Date: " + formattedDate);
-                                    System.out.println("Date End: "+formattedDateEnd);
-                                    System.out.println("Description: "+ description);
-                                    System.out.println();
-                                }
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                            LocalDateTime formattedDate = LocalDateTime.parse(date, formatter);
+                            LocalDateTime formattedDateEnd = LocalDateTime.parse(duration, formatter);
+                            // Date date = dateFormat.parse(dateString);
+                            Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
+                            //if statement wste an time isAfter kanei add sto list kai meta kanw print to list
+                            printEventList.add(appointment);
+                            // Print the event details
+                            if (title != null) {
+                                System.out.println("Title: " + title);
+                                System.out.println("Date: " + formattedDate);
+                                System.out.println("Date End: "+formattedDateEnd);
+                                System.out.println("Description: "+ description);
+                                System.out.println();
                             }
                             // Reset variables for the next event
                             title = null;

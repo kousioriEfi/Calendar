@@ -4,6 +4,7 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -11,18 +12,18 @@ import java.util.Date;
  * @author leftp
  */
 public class Appointment extends Event{
-    private Date duration;
+    private LocalDateTime duration;
 
-    public Appointment(String title,String description, Date date, Date duration) {
+    public Appointment(String title,String description, LocalDateTime date, LocalDateTime duration) {
         super(title,description,date);
         this.duration = duration;
     }
   
-    public Date getDuration() {
+    public LocalDateTime getDuration() {
         return duration;
     }
 
-    public void setDuration(Date duration) {
+    public void setDuration(LocalDateTime duration) {
         this.duration = duration;
     }
     

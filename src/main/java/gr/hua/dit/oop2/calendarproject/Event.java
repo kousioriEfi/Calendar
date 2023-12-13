@@ -4,6 +4,7 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -14,13 +15,13 @@ import java.util.Date;
 public class Event {
     private String title;
     private String description;
-    private Date date;
+    private LocalDateTime date;
 
 
 
 
 
-    public Event(String title , String description , Date date) {
+    public Event(String title , String description , LocalDateTime date) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -44,11 +45,11 @@ public class Event {
         this.description = description;
     }
     
-        public Date getDate() {
+        public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }    
      

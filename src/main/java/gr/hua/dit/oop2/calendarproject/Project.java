@@ -4,6 +4,7 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Date;
 public class Project extends Event{
     private boolean status;
 
-    public Project(String title,String description, Date date, boolean status) {
+    public Project(String title,String description, LocalDateTime date, boolean status) {
         super(title,description,date);
         this.status = status;
     }
