@@ -18,7 +18,7 @@
    import gr.hua.dit.oop2.calendar.TimeService;
    import gr.hua.dit.oop2.calendar.TimeTeller;   
    import static java.lang.System.exit;
-import java.time.DayOfWeek;
+   import java.time.DayOfWeek;
    import java.time.Instant;
    import java.time.LocalDateTime;
    import java.time.LocalTime;
@@ -60,8 +60,9 @@ import java.time.DayOfWeek;
            Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
            eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
 
-            printEventsForTheDay(eventsList,time);//Prints the events for a specific day sorted
-            printEventsForThePastWeek(eventsList, time);
+            //printEventsForTheDay(eventsList,time);//Prints the events for a specific day sorted
+            //printEventsForThePastWeek(eventsList, time);
+            printEventsForThePastMonth(eventsList, time);
             
 //           System.out.println("Events After Sorting");
 //
@@ -635,15 +636,35 @@ import java.time.DayOfWeek;
     }
     
     public static void printEventsForTheMonth(ArrayList<Event> eventsList, LocalDateTime date) {
-        // Get the last day of the month
-        LocalDateTime lastDayOfMonth = date.withDayOfMonth(date.toLocalDate().lengthOfMonth());
+        System.out.println("Events for the rest of the month:");
 
-        for (LocalDateTime currentDate = date; currentDate.isBefore(lastDayOfMonth.plusDays(1)); currentDate = currentDate.plusDays(1)) {
+        // Get the last day of the month
+        LocalDateTime lastDayOfMonth = date.withDayOfMonth(date.getMonth().length(date.toLocalDate().isLeapYear()));
+
+        // Print events for each day from today until the last day of the month
+        while (date.isBefore(lastDayOfMonth) || date.isEqual(lastDayOfMonth)) {
             // Print events for each day
-            printEventsForTheDay(eventsList, currentDate);
+            printEventsForTheWholeDay(eventsList, date);
+
+            // Move to the next day
+            date = date.plusDays(1);
         }
     }
-    
+    public static void printEventsForThePastMonth(ArrayList<Event> eventsList, LocalDateTime date) {
+        System.out.println("Events from the beginning of the month until today:");
+
+        // Get the first day of the month
+        LocalDateTime firstDayOfMonth = date.withDayOfMonth(1);
+
+        // Print events for each day from the first day of the month until today
+        while (firstDayOfMonth.isBefore(date) || firstDayOfMonth.isEqual(date)) {
+            // Print events for each day
+            printEventsForTheDay(eventsList, firstDayOfMonth);
+
+            // Move to the next day
+            firstDayOfMonth = firstDayOfMonth.plusDays(1);
+        }
+    }
 
 
 
