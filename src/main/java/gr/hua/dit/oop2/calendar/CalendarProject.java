@@ -3,8 +3,8 @@
     */
 
    //All libraries used throughout the code
-   package gr.hua.dit.oop2.calendarproject;
-   import gr.hua.dit.oop2.calendar.TimeListener;
+   package gr.hua.dit.oop2.calendar;
+
    import java.io.BufferedReader;
    import java.io.FileReader;
    import java.util.ArrayList;
@@ -14,8 +14,7 @@
    import java.io.IOException;
    import java.text.ParseException;
    import java.util.Comparator;
-   import gr.hua.dit.oop2.calendar.TimeService;
-   import gr.hua.dit.oop2.calendar.TimeTeller;
+   
    import java.time.DayOfWeek;
    import java.time.LocalDateTime;
    import java.time.LocalTime;
@@ -25,10 +24,10 @@
     *
     * @author leftp
     */
-   public class CalendarProject implements TimeTeller{
+   public class CalendarProject{
        
        //BEGINNING OF MAIN
-       public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException {
            Scanner input = new java.util.Scanner(System.in);
            
            ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
@@ -687,20 +686,11 @@
         }
     }
 
-    @Override
-    public LocalDateTime now() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
-    @Override
-    public void addTimeListener(TimeListener tl) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 
-    @Override
-    public void removeTimeListener(TimeListener tl) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
+    
 
 
 }

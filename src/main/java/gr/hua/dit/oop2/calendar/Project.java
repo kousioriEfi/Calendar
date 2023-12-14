@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package gr.hua.dit.oop2.calendarproject;
+package gr.hua.dit.oop2.calendar;
 
 //Libraries used for the Project
 import java.time.LocalDateTime;
