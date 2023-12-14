@@ -40,6 +40,7 @@
            BufferedReader reader = null;
            TimeTeller teller = TimeService.getTeller();
 
+           
            int year=requestInt("Year");
            int month=requestChoice2(12,"Month (up to 12)");
            int day=requestChoice2(30,"Day (up to 30)" );
@@ -71,29 +72,24 @@
 //              eventsList.get(i).printEvent();
 //
 //           }
-            
-            
-            System.out.println("Add event (Press 1)");//Option for adding any event on the calendar
-            System.out.println("Edit event (Press 2)");
+            String calendarChoice = args[0].toLowerCase();
+            String fileName = args[1];
 
-            int opt = input.nextInt();//Gets user input
-            input.nextLine();
-
-            switch (opt){
+            switch (args.length){
 
                 case 1 :{ //Case the option is add an event
                     
                     
                    //Message in order for the user to decide wether they want to add an appointment or project
-                   System.out.println("Add appointment (Press 1)");
-                   System.out.println("Add project (Press 2)");
-
-                   int ev_opt = input.nextInt();
+                   
+                   System.out.println("Print Appointment /Project Type(1/2)");
+                    
+                   int ev_opt = requestChoice2(2,"1/2");
                    input.nextLine();
 
                     switch (ev_opt) { 
 
-                        case 1:{ //Case they chhose to add appointment
+                        case 1:{ //Case they chose to add appointment
 
                            System.out.println("Add title");
                            String title = input.nextLine();
@@ -156,14 +152,47 @@
                     }
                 }case 2:{
                 
-                    System.out.println("bakaa");
+                    switch (calendarChoice){
+                        case "day":{
+                            printEventsForTheDay(eventsList,time);
+                            break;
+                            }
+                        case "week":{
+                            printEventsForTheWeek(eventsList,time);
+                            break;
+                        }
+                        case "month":{
+                            printEventsForTheMonth(eventsList,time);
+                            break;
+                        }
+                        case "pastday":{
+                            printEventsForThePastDay(eventsList,time);
+                            break;
+                        }
+                        case "pastweek":{
+                            printEventsForThePastWeek(eventsList,time);
+                            break;
+                        }
+                        case "pastmonth":{
+                            printEventsForThePastMonth(eventsList,time);
+                            break;
+                        }
+                        case "todo":{
+                            printEventsForTheToDo(eventsList,time);
+                            break;
+                        }
+                        case "due":{
+                            printEventsForTheDue(eventsList,time);
+                            break;
+                        }
+                    }
                     break;
                 }
                 
               
             } 
            System.out.println("End of the main method.");
-           exit(0);
+           TimeService.stop();
         }  
     //END OF MAIN
     
