@@ -694,7 +694,35 @@
             firstDayOfMonth = firstDayOfMonth.plusDays(1);
         }
     }
+    
+    public static void printEventsForTheToDo(ArrayList<Event> eventsList, LocalDateTime date) {
+        System.out.println("Incomplete projects before the deadline:");
 
+        for (Event event : eventsList) {
+            if (event instanceof Project) {
+                Project project = (Project) event;
+
+                // Check if it's a project, incomplete, and past the deadline
+                if (project.getStatus()== false && project.getDate().isAfter(date)) {
+                    project.printEvent();
+                }
+            }
+        }
+    }
+    public static void printEventsForTheDue(ArrayList<Event> eventsList, LocalDateTime date) {
+        System.out.println("Incomplete projects after the deadline:");
+
+        for (Event event : eventsList) {
+            if (event instanceof Project) {
+                Project project = (Project) event;
+
+                // Check if it's a project, incomplete, and past the deadline
+                if (project.getStatus()== false && project.getDate().isBefore(date)) {
+                    project.printEvent();
+                }
+            }
+        }
+    }
 
 
 
