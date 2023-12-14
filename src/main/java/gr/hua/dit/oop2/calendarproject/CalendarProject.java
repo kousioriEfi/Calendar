@@ -13,13 +13,10 @@
    import java.io.FileWriter;
    import java.io.IOException;
    import java.text.ParseException;
-   import java.text.SimpleDateFormat;
    import java.util.Comparator;
    import gr.hua.dit.oop2.calendar.TimeService;
-   import gr.hua.dit.oop2.calendar.TimeTeller;   
-   import static java.lang.System.exit;
+   import gr.hua.dit.oop2.calendar.TimeTeller;
    import java.time.DayOfWeek;
-   import java.time.Instant;
    import java.time.LocalDateTime;
    import java.time.LocalTime;
    import java.time.format.DateTimeFormatter;
@@ -35,12 +32,11 @@
            Scanner input = new java.util.Scanner(System.in);
            
            ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
-           ArrayList<Event> printEventList = new ArrayList<>();//A secondary list created to print events their date matches with the date the user suggest
-           
-           BufferedReader reader = null;
            TimeTeller teller = TimeService.getTeller();
 
-           
+           String calendarChoice = args[0].toLowerCase();
+           String fileName = "output.ics";   //args[1];
+            
            int year=requestInt("Year");
            int month=requestChoice2(12,"Month (up to 12)");
            int day=requestChoice2(30,"Day (up to 30)" );
@@ -49,39 +45,18 @@
            int seconds=requestChoice(59,"Seconds(up to 59)");
            LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
            LocalDateTime dt = teller.now();
-           
            System.out.println(time.adjustInto(dt));
-           System.out.println("Events Before Sorting");//It prints all the events included to the ics file without being sorted
 
-           eventsList = readAppointmentsFromFile("output.ics", eventsList);//The ics file gets all the appointments
-           eventsList = readProjectsFromFile("output.ics", eventsList);//The ics file gets all the projects
-
-           printEventList = readAppointmentsFromFileTest("output.ics", printEventList);
+           eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
+           eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
 
            Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
            eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
 
-            //printEventsForTheDay(eventsList,time);//Prints the events for a specific day sorted
-            //printEventsForThePastWeek(eventsList, time);
-            printEventsForThePastMonth(eventsList, time);
-            
-//           System.out.println("Events After Sorting");
-//
-//           writeSortedEventsToFile(eventsList);        
-//           for(int i=0;i<eventsList.size();i++){
-//              eventsList.get(i).printEvent();
-//
-//           }
-            String calendarChoice = args[0].toLowerCase();
-            String fileName = args[1];
-
             switch (args.length){
 
                 case 1 :{ //Case the option is add an event
-                    
-                    
                    //Message in order for the user to decide wether they want to add an appointment or project
-                   
                    System.out.println("Print Appointment /Project Type(1/2)");
                     
                    int ev_opt = requestChoice2(2,"1/2");
@@ -104,18 +79,15 @@
                            System.out.println("Converted LocalDateTime: " + date);
                            //Date date = dateFormat.parse(dateString);
 
-
                            System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
                            String durationString = input.nextLine();
 
                            LocalDateTime duration = LocalDateTime.parse(durationString, formatter);
-
-
                            System.out.println("Add description");
                            String description = input.nextLine();
 
                            Appointment myAppointment = new Appointment(title,description,date,duration);
-                           writeAppointmentToFile(myAppointment,eventsList);
+                           writeAppointmentToFile(myAppointment,eventsList,fileName);
                           
                            break;
                            
@@ -124,19 +96,12 @@
                        
                             System.out.println("Add title");
                             String title = input.nextLine();
-
-                            System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                            String dateString = input.nextLine();
+                            
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-                            LocalDateTime date = LocalDateTime.parse(dateString, formatter);
-
-
                             System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
                             String dueDateTimeString = input.nextLine();
-
                             LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
-
-
+                            
                             System.out.println("Add description");
                             String description = input.nextLine();
 
@@ -144,7 +109,7 @@
                             boolean status = requestBoolean("true/false");
 
                             Project myProject = new Project(title, description, dueDateTime,status);
-                            writeProjectToFile(myProject,eventsList);
+                            writeProjectToFile(myProject,eventsList,fileName);
                             
                             break;
                         } 
@@ -188,8 +153,6 @@
                     }
                     break;
                 }
-                
-              
             } 
            System.out.println("End of the main method.");
            TimeService.stop();
@@ -475,9 +438,9 @@
     }
     
     //Method for writting an appointment to the ical file
-    private static void writeAppointmentToFile(Appointment appointment, ArrayList<Event> eventsList) {
+    private static void writeAppointmentToFile(Appointment appointment, ArrayList<Event> eventsList, String file) {
         
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
             
             
@@ -507,8 +470,8 @@
     }
     
     //Method for writting a project to the ical file 
-    private static void writeProjectToFile(Project project, ArrayList<Event> eventsList){
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
+    private static void writeProjectToFile(Project project, ArrayList<Event> eventsList, String file){
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))) {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
                             
                             eventsList.add(project);
@@ -724,12 +687,6 @@
         }
     }
 
-
-
-
-
-
-
     @Override
     public LocalDateTime now() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -744,77 +701,6 @@
     public void removeTimeListener(TimeListener tl) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-        
-        // i am not sure
-        
-    private static ArrayList<Event> readAppointmentsFromFileTest(String fileName, ArrayList<Event> printEventList) {
-        BufferedReader reader = null;
 
-         try {
-            reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            String title = null;
-            String date = null;
-            String duration = null;
-            String description = null;
-            
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-
-            while ((line = reader.readLine()) != null) {
-                if(line.equals("BEGIN:VEVENT")){
-                    while((line = reader.readLine())!=null){
-                        if (line.startsWith("SUMMARY:")) {
-                            // Extracting the event title (SUMMARY)
-                            title = line.substring("SUMMARY:".length());
-                        } else if (line.startsWith("DTSTART:")) {
-                            // Extracting the event start date (DTSTART)
-                            date = line.substring("DTSTART:".length());
-
-                            // Parse the 'startDate' string using the iCalendar format
-                            
-                        }else if(line.startsWith("DTEND:")){
-                            duration = line.substring("DTEND:".length());
-                            
-                        }else if(line.startsWith("DESCRIPTION:")){
-                            description = line.substring("DESCRIPTION:".length());
-                        
-                        }else if (line.equals("END:VEVENT")) {
-                            
-                            LocalDateTime formattedDate = LocalDateTime.parse(date, formatter);
-                            LocalDateTime formattedDateEnd = LocalDateTime.parse(duration, formatter);
-                            // Date date = dateFormat.parse(dateString);
-                            Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
-                            //if statement wste an time isAfter kanei add sto list kai meta kanw print to list
-                            printEventList.add(appointment);
-                            // Print the event details
-                            if (title != null) {
-                                System.out.println("Title: " + title);
-                                System.out.println("Date: " + formattedDate);
-                                System.out.println("Date End: "+formattedDateEnd);
-                                System.out.println("Description: "+ description);
-                                System.out.println();
-                            }
-                            // Reset variables for the next event
-                            title = null;
-                            date = null;
-                        }
-                    }
-                }
-                
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return printEventList;
-    }
 }
