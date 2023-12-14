@@ -18,6 +18,7 @@
    import gr.hua.dit.oop2.calendar.TimeService;
    import gr.hua.dit.oop2.calendar.TimeTeller;   
    import static java.lang.System.exit;
+import java.time.DayOfWeek;
    import java.time.Instant;
    import java.time.LocalDateTime;
    import java.time.LocalTime;
@@ -60,6 +61,8 @@
            eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
 
             printEventsForTheDay(eventsList,time);//Prints the events for a specific day sorted
+            printEventsForTheWeek(eventsList, time);
+            
 //           System.out.println("Events After Sorting");
 //
 //           writeSortedEventsToFile(eventsList);        
@@ -150,8 +153,6 @@
                         } 
                        
                     }
-                   
-                  
                 }case 2:{
                 
                     System.out.println("bakaa");
@@ -161,6 +162,7 @@
               
             } 
            System.out.println("End of the main method.");
+           exit(0);
         }  
     //END OF MAIN
     
@@ -306,7 +308,7 @@
          
     }
     
-    //Method used for a reading appointments from file
+    //Method used for reading appointments from file
     private static ArrayList<Event> readAppointmentsFromFile(String fileName, ArrayList<Event> eventsList) {
         BufferedReader reader = null;
 
@@ -556,7 +558,7 @@
         LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
         LocalDateTime endOfDay = LocalDateTime.of(date.toLocalDate(), time.MAX);
 
-        System.out.println("Events for " + date.toLocalDate() + ":");
+        System.out.println("Events for The Day" + date.toLocalDate() + ":");
 
         for (Event event : eventsList) {
             LocalDateTime eventDate = event.getDate();
@@ -564,6 +566,15 @@
             if (eventDate.isEqual(startOfDay) || (eventDate.isAfter(startOfDay) && eventDate.isBefore(endOfDay))) {
                 event.printEvent();
             }
+        }
+    }
+    public static void printEventsForTheWeek(ArrayList<Event> eventsList, LocalDateTime startDate) {
+        System.out.println("Events for this week :");
+        for (int i = 0; i < DayOfWeek.values().length; i++) {
+            LocalDateTime currentDate = startDate.plusDays(i);
+
+            // Print events for each day
+            printEventsForTheDay(eventsList, currentDate);
         }
     }
     @Override
@@ -583,7 +594,7 @@
         
         // i am not sure
         
-        private static ArrayList<Event> readAppointmentsFromFileTest(String fileName, ArrayList<Event> printEventList) {
+    private static ArrayList<Event> readAppointmentsFromFileTest(String fileName, ArrayList<Event> printEventList) {
         BufferedReader reader = null;
 
          try {
@@ -654,158 +665,3 @@
         return printEventList;
     }
 }
-
-
-//public class CalendarProject {
-//    public static void main(String[] args) throws ParseException {
-//         
-//        Scanner input = new java.util.Scanner(System.in);
-//        ArrayList<Event> eventsList = new ArrayList<>();
-//        
-//        if (args.length < 2) {
-//            System.out.println("Usage: java -jar calendar.jar <calendarType> <filename.ics>");
-//            return;
-//        }
-//        
-//        
-//        String calendarChoice = args[0].toLowerCase();
-//        String fileName = args[1];
-//        
-//        switch (args.length){
-//            case 1->{
-//                switch(calendarChoice){
-//                    case "day" -> {
-// //                       printDay();
-//                    }
-//                    case "week"-> {
-//  //                      printWeek();
-//                    }
-//                    case "month"->{
-//  //                      printMonth();
-//
-//                    }
-//                    case "pastday"->{
-//   //                     printPastday();
-//
-//                    }
-//                    case "pastweek"->{
-//  //                      printPastweek();
-//
-//                    }
-//                    case "pastmonth"->{
-// //                       printPastmonth();
-//                    }
-//                    case "todo"->{
-//  //                      printTodo();
-//                    }
-//                    case "due"->{
-////                        printDue();
-//                    }
-//                    default->{
-//                        break;
-//                    }
-//                }
-//            }
-//DEN XREIAZETAI NA EINAI CASE ALLA NA EINAI ARGS.LENGTH == 0 TOTE...
-//            case 2->{            
-//                System.out.println("Add appointment (Press 1)");
-//                System.out.println("Add project (Press 2)");
-//               
-//                int ev_opt = requestChoice(2);              
-//                
-//                switch(ev_opt){
-//                    case 1->{
-//                        System.out.println("Add title");
-//                        String title = input.nextLine();
-//            
-//                        System.out.println("Date");
-//                        String dateString = input.nextLine();
-//                        
-//                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z's");
-//
-//                        Date date = dateFormat.parse(dateString);
-//                        
-//                        System.out.println("Duration");
-//                        String duration = input.nextLine();
-//                        
-//                        
-//                        System.out.println("Add description");
-//                        String description = input.nextLine();
-//                        
-//                        Event myEvent = new Appointment(duration, title,Date date, description);
-//            
-//                        eventsList.add(myEvent);
-//                        // Writing to an iCalendar (.ics) file
-//                        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
-//                            
-//                            
-//                            writer.write("BEGIN:VCALENDAR\n");
-//                            writer.write("VERSION:2.0\n");
-//
-//                            for (Event event : eventsList) {
-//                                // Add an event
-//                                writer.write("BEGIN:VEVENT\n");
-//                                writer.write("SUMMARY:"+ event.getTitle()+"\n");
-//
-//
-//                                writer.write("DTSTART:" + dateFormat.format(event.getDate()) + "\n");
-//                                //writer.write("DTEND:" + endDate + "\n");
-//
-//                                // End the event
-//                                writer.write("END:VEVENT\n");
-//                            }
-//                            // End the calendar
-//                            writer.write("END:VCALENDAR\n");
-//
-//                            System.out.println("iCalendar file created successfully.");
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//       
-//                        System.out.println("Appointment added: " + myEvent.getTitle() + " on " + myEvent.getDate());
-//                    
-//                    }
-//                    
-//                    case 2->{
-//                                                
-//                        String dueDate;
-//                        String dueTime;
-//                        String userInput;
-//                        boolean status;
-//                        String title;   
-//                        String date;
-//                        String description;
-//                       
-//                        eventsList = new ArrayList<>();
-//                        
-//                        System.out.println("Add dueDate");
-//                        dueDate = input.nextLine();
-//            
-//                        System.out.println("DueTime");
-//                        dueTime = input.nextLine();
-//                        
-//                        System.out.println("Enter true or false:");
-//                        userInput = input.nextLine();
-//
-//                        // Parse the string into a boolean
-//                        status = Boolean.parseBoolean(userInput);
-//
-//                        System.out.println("Add title");
-//                        title = input.nextLine();
-//            
-//                        System.out.println("Date");
-//                        date = input.nextLine();
-//            
-//            
-//                        System.out.println("Add description");
-//                        description = input.nextLine();
-//                      
-//                        Event myEvent = new Project(dueDate, dueTime, status,title ,Date date , description);
-//            
-//                        eventsList.add(myEvent);
-//            
-//                        System.out.println("Project added: " + myEvent.getTitle() + " on " + myEvent.getDate());
-//                    }
-//                }
-//            }
-//        }    
