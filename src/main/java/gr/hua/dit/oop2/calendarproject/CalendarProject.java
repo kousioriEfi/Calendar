@@ -61,7 +61,7 @@ import java.time.DayOfWeek;
            eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
 
             printEventsForTheDay(eventsList,time);//Prints the events for a specific day sorted
-            printEventsForTheWeek(eventsList, time);
+            printEventsForThePastWeek(eventsList, time);
             
 //           System.out.println("Events After Sorting");
 //
@@ -349,13 +349,13 @@ import java.time.DayOfWeek;
                             Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
                             eventsList.add(appointment);
                             // Print the event details
-                            if (title != null) {
-                                System.out.println("Title: " + title);
-                                System.out.println("Date: " + formattedDate);
-                                System.out.println("Date End: "+formattedDateEnd);
-                                System.out.println("Description: "+ description);
-                                System.out.println();
-                            }
+//                            if (title != null) {
+//                                System.out.println("Title: " + title);
+//                                System.out.println("Date: " + formattedDate);
+//                                System.out.println("Date End: "+formattedDateEnd);
+//                                System.out.println("Description: "+ description);
+//                                System.out.println();
+//                            }
                             // Reset variables for the next event
                             title = null;
                             date = null;
@@ -419,13 +419,13 @@ import java.time.DayOfWeek;
                             Project project = new Project(title2,description2,formattedDate,status);
                             eventsList.add(project);
                             // Print the event details
-                            if (title2 != null) {
-                                System.out.println("Title: " + title2);
-                                System.out.println("Due Date Time:" + formattedDate);
-                                System.out.println("Status: "+ status);
-                                System.out.println("Description: "+ description2);
-                                System.out.println();
-                            }
+//                            if (title2 != null) {
+//                                System.out.println("Title: " + title2);
+//                                System.out.println("Due Date Time:" + formattedDate);
+//                                System.out.println("Status: "+ status);
+//                                System.out.println("Description: "+ description2);
+//                                System.out.println();
+//                            }
                             // Reset variables for the next event
                             title2 = null;
                             date2 = null;
@@ -555,6 +555,22 @@ import java.time.DayOfWeek;
     public static void printEventsForTheDay(ArrayList<Event> eventsList, LocalDateTime date) {
         LocalTime time = date.toLocalTime();
         
+        //LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(date.toLocalDate(), time.MAX);
+
+        System.out.println("Events for The Day" + date.toLocalDate() + ":");
+
+        for (Event event : eventsList) {
+            LocalDateTime eventDate = event.getDate();
+
+            if (eventDate.isEqual(date) || (eventDate.isAfter(date) && eventDate.isBefore(endOfDay))) {
+                event.printEvent();
+            }
+        }
+    }
+    public static void printEventsForTheWholeDay(ArrayList<Event> eventsList, LocalDateTime date) {
+        LocalTime time = date.toLocalTime();
+        
         LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
         LocalDateTime endOfDay = LocalDateTime.of(date.toLocalDate(), time.MAX);
 
@@ -568,15 +584,74 @@ import java.time.DayOfWeek;
             }
         }
     }
-    public static void printEventsForTheWeek(ArrayList<Event> eventsList, LocalDateTime startDate) {
-        System.out.println("Events for this week :");
-        for (int i = 0; i < DayOfWeek.values().length; i++) {
-            LocalDateTime currentDate = startDate.plusDays(i);
+    public static void printEventsForThePastDay(ArrayList<Event> eventsList, LocalDateTime date) {
+        LocalTime time = date.toLocalTime();
+        
+        LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
+        
+
+        System.out.println("Events for The Day" + date.toLocalDate() + ":");
+
+        for (Event event : eventsList) {
+            LocalDateTime eventDate = event.getDate();
+
+            if (eventDate.isEqual(startOfDay) || (eventDate.isAfter(startOfDay) && eventDate.isBefore(date))) {
+                event.printEvent();
+            }
+        }
+    }
+    
+    public static void printEventsForTheWeek(ArrayList<Event> eventsList, LocalDateTime date) {
+        System.out.println("Events for this week:");
+
+        // Get the current day of the week
+        DayOfWeek currentDayOfWeek = date.getDayOfWeek();
+
+        // Determine the number of days to add based on the current day of the week
+        int daysToAdd = DayOfWeek.SATURDAY.getValue() - currentDayOfWeek.getValue();
+
+        for (int i = 0; i <= daysToAdd; i++) {
+            LocalDateTime currentDate = date.plusDays(i);
 
             // Print events for each day
             printEventsForTheDay(eventsList, currentDate);
         }
     }
+    public static void printEventsForThePastWeek(ArrayList<Event> eventsList, LocalDateTime date) {
+        System.out.println("Events for the past week:");
+
+        // Get the current day of the week
+        DayOfWeek currentDayOfWeek = date.getDayOfWeek();
+
+        // Determine the number of days to subtract based on the current day of the week
+        int daysToSubtract = currentDayOfWeek.getValue();
+
+        for (int i = daysToSubtract; i >= 0; i--) {
+            LocalDateTime currentDate = date.minusDays(i);
+
+            // Print events for each day
+            printEventsForTheWholeDay(eventsList, currentDate);
+        }
+    }
+    
+    public static void printEventsForTheMonth(ArrayList<Event> eventsList, LocalDateTime date) {
+        // Get the last day of the month
+        LocalDateTime lastDayOfMonth = date.withDayOfMonth(date.toLocalDate().lengthOfMonth());
+
+        for (LocalDateTime currentDate = date; currentDate.isBefore(lastDayOfMonth.plusDays(1)); currentDate = currentDate.plusDays(1)) {
+            // Print events for each day
+            printEventsForTheDay(eventsList, currentDate);
+        }
+    }
+    
+
+
+
+
+
+
+
+
     @Override
     public LocalDateTime now() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
