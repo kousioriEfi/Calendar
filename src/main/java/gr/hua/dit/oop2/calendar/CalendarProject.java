@@ -4,12 +4,13 @@
 
    //All libraries used throughout the code
    package gr.hua.dit.oop2.calendar;
-
+   
    import java.io.BufferedReader;
    import java.io.FileReader;
    import java.util.ArrayList;
    import java.util.Scanner;
    import java.io.BufferedWriter;
+import java.io.File;
    import java.io.FileWriter;
    import java.io.IOException;
    import java.text.ParseException;
@@ -28,29 +29,38 @@
        
        //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
-           Scanner input = new java.util.Scanner(System.in);
+            Scanner input = new java.util.Scanner(System.in);
            
-           ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
-           TimeTeller teller = TimeService.getTeller();
-
-           String calendarChoice = args[0].toLowerCase();
-           String fileName = "output.ics";   //args[1];
+            ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
+            TimeTeller teller = TimeService.getTeller();
             
-           int year=requestInt("Year");
-           int month=requestChoice2(12,"Month (up to 12)");
-           int day=requestChoice2(30,"Day (up to 30)" );
-           int hours=requestChoice2(23,"Hours(up to 23)");
-           int minutes=requestChoice(59,"Minutes(up to 59)");
-           int seconds=requestChoice(59,"Seconds(up to 59)");
-           LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
-           LocalDateTime dt = teller.now();
-           System.out.println(time.adjustInto(dt));
+            
 
-           eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
-           eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
+            String calendarChoice = args[0].toLowerCase();
+            String fileName = args[1];//"C:\\Users\\leftp\\OneDrive\\Έγγραφα\\NetBeansProjects\\Calendar\\output.ics" ;    
+            fileName=getDirectoryPath()+ "\\" + fileName ;
+                    
 
-           Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
-           eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
+    
+            
+            
+            
+            
+            int year=requestInt("Year");
+            int month=requestChoice2(12,"Month (up to 12)");
+            int day=requestChoice2(30,"Day (up to 30)" );
+            int hours=requestChoice2(23,"Hours(up to 23)");
+            int minutes=requestChoice(59,"Minutes(up to 59)");
+            int seconds=requestChoice(59,"Seconds(up to 59)");
+            LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
+            LocalDateTime dt = teller.now();
+            System.out.println(time.adjustInto(dt));
+
+            eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
+            eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
+
+            Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
+            eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
 
             switch (args.length){
 
@@ -687,9 +697,25 @@
     }
 
 
-    
+    public static String getDirectoryPath(){
+       String currentDirectory = System.getProperty("user.dir");
 
+       
+        File currentDirFile = new File(currentDirectory);
 
+        
+        File parentDirFile = currentDirFile.getParentFile();
+
+        if (parentDirFile != null) {
+            
+            String parentDirectoryPath = parentDirFile.getAbsolutePath();
+            return parentDirectoryPath;
+        } else {
+            System.out.println("No parent directory (already at the root).");
+            return "";
+        }
+        
+    }
     
 
 
