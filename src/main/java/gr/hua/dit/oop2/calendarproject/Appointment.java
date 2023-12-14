@@ -4,6 +4,7 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+//Libraries used for appointment class
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -11,14 +12,15 @@ import java.util.Date;
  *
  * @author leftp
  */
-public class Appointment extends Event{
+public class Appointment extends Event{ //Methods the subclass appointment inherit from the superclass Event
     private LocalDateTime duration;
 
-    public Appointment(String title,String description, LocalDateTime date, LocalDateTime duration) {
+    public Appointment(String title,String description, LocalDateTime date, LocalDateTime duration) { //Constructor for appointment
         super(title,description,date);
         this.duration = duration;
     }
-  
+    
+    //Setters/getters
     public LocalDateTime getDuration() {
         return duration;
     }

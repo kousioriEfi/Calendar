@@ -4,6 +4,7 @@
  */
 package gr.hua.dit.oop2.calendarproject;
 
+//Libraries used for the Event class
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -21,14 +22,14 @@ public class Event {
 
 
 
-    public Event(String title , String description , LocalDateTime date) {
+    public Event(String title , String description , LocalDateTime date) { //Constructor for the Event
         this.title = title;
         this.description = description;
         this.date = date;
     }
 
    
-
+    //Setters/getters
     public String getTitle() {
         return title;
     }

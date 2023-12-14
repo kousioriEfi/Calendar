@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
     */
 
+   //All libraries used throughout the code
    package gr.hua.dit.oop2.calendarproject;
    import gr.hua.dit.oop2.calendar.TimeListener;
    import java.io.BufferedReader;
@@ -19,7 +20,7 @@
    import static java.lang.System.exit;
    import java.time.Instant;
    import java.time.LocalDateTime;
-import java.time.LocalTime;
+   import java.time.LocalTime;
    import java.time.format.DateTimeFormatter;
    import java.util.InputMismatchException;
    /**
@@ -27,10 +28,14 @@ import java.time.LocalTime;
     * @author leftp
     */
    public class CalendarProject implements TimeTeller{
+       
+       //BEGINNING OF MAIN
        public static void main(String[] args) throws ParseException {
            Scanner input = new java.util.Scanner(System.in);
-           ArrayList<Event> eventsList = new ArrayList<>();
-           ArrayList<Event> printEventList = new ArrayList<>();
+           
+           ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
+           ArrayList<Event> printEventList = new ArrayList<>();//A secondary list created to print events their date matches with the date the user suggest
+           
            BufferedReader reader = null;
            TimeTeller teller = TimeService.getTeller();
 
@@ -40,23 +45,21 @@ import java.time.LocalTime;
            int hours=requestChoice2(23,"Hours(up to 23)");
            int minutes=requestChoice(59,"Minutes(up to 59)");
            int seconds=requestChoice(59,"Seconds(up to 59)");
-           LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);
+           LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
            LocalDateTime dt = teller.now();
            
            System.out.println(time.adjustInto(dt));
-           System.out.println("Events Before Sorting");
+           System.out.println("Events Before Sorting");//It prints all the events included to the ics file without being sorted
 
-
-
-           eventsList = readAppointmentsFromFile("output.ics", eventsList);
-           eventsList = readProjectsFromFile("output.ics", eventsList);
+           eventsList = readAppointmentsFromFile("output.ics", eventsList);//The ics file gets all the appointments
+           eventsList = readProjectsFromFile("output.ics", eventsList);//The ics file gets all the projects
 
            printEventList = readAppointmentsFromFileTest("output.ics", printEventList);
 
-           Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);
-           eventsList.sort(eventComparator);
+           Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
+           eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
 
-            printEventsForTheDay(eventsList,time);
+            printEventsForTheDay(eventsList,time);//Prints the events for a specific day sorted
 //           System.out.println("Events After Sorting");
 //
 //           writeSortedEventsToFile(eventsList);        
@@ -64,26 +67,29 @@ import java.time.LocalTime;
 //              eventsList.get(i).printEvent();
 //
 //           }
-//
-           System.out.println("Add event (Press 1)");
-           System.out.println("Edit event (Press 2)");
+            
+            
+            System.out.println("Add event (Press 1)");//Option for adding any event on the calendar
+            System.out.println("Edit event (Press 2)");
 
-           int opt = input.nextInt();
-           input.nextLine();
+            int opt = input.nextInt();//Gets user input
+            input.nextLine();
 
-           switch (opt){
+            switch (opt){
 
-               case 1 :{
-
+                case 1 :{ //Case the option is add an event
+                    
+                    
+                   //Message in order for the user to decide wether they want to add an appointment or project
                    System.out.println("Add appointment (Press 1)");
                    System.out.println("Add project (Press 2)");
 
                    int ev_opt = input.nextInt();
                    input.nextLine();
 
-                   switch (ev_opt) { 
+                    switch (ev_opt) { 
 
-                       case 1:{
+                        case 1:{ //Case they chhose to add appointment
 
                            System.out.println("Add title");
                            String title = input.nextLine();
@@ -110,52 +116,55 @@ import java.time.LocalTime;
 
                            Appointment myAppointment = new Appointment(title,description,date,duration);
                            writeAppointmentToFile(myAppointment,eventsList);
-                        break;
-                       }
-                       case 2 : {
-                           System.out.println("Add title");
-                           String title = input.nextLine();
-
-                           System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                           String dateString = input.nextLine();
-                           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-                           LocalDateTime date = LocalDateTime.parse(dateString, formatter);
-
-
-                           System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                           String dueDateTimeString = input.nextLine();
-
-                           LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
-
-
-                           System.out.println("Add description");
-                           String description = input.nextLine();
-
-                           System.out.println("Give status of the project (true/false)");
-                           boolean status = requestBoolean("true/false");
-
-                           Project myProject = new Project(title, description, dueDateTime,status);
-                           writeProjectToFile(myProject,eventsList);
-                           ////////////////eventsList.sort(Comparator.comparing(Event::getDate));///////////////////////////////////////////////////////////////////
+                          
                            break;
-                       } 
+                           
+                           
+                        }case 2 : { //Case they want to add a project
                        
-                   }
-                   System.out.println("EMMM");
-                break;
-               }default: {
-                    System.out.println("Invalid outer choice");
-                break;
-                }
-            
-           } //////////////
-           System.out.println("EMMM main");
-           exit(0);
-       }
+                            System.out.println("Add title");
+                            String title = input.nextLine();
 
+                            System.out.println("Current Date and Time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                            String dateString = input.nextLine();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+                            LocalDateTime date = LocalDateTime.parse(dateString, formatter);
+
+
+                            System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+                            String dueDateTimeString = input.nextLine();
+
+                            LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
+
+
+                            System.out.println("Add description");
+                            String description = input.nextLine();
+
+                            System.out.println("Give status of the project (true/false)");
+                            boolean status = requestBoolean("true/false");
+
+                            Project myProject = new Project(title, description, dueDateTime,status);
+                            writeProjectToFile(myProject,eventsList);
+                            
+                            break;
+                        } 
+                       
+                    }
+                   
+                  
+                }case 2:{
+                
+                    System.out.println("bakaa");
+                    break;
+                }
+                
+              
+            } 
+           System.out.println("End of the main method.");
+        }  
+    //END OF MAIN
     
-    
-    //this method is used for the request of the minutes and seconds because it allows the user to input 0>=
+    //This method is used for the request of the minutes and seconds because it allows the user to input 0>=
     static private int requestChoice(int maxChoice , String inputType){
     Scanner input = new java.util.Scanner(System.in);
     boolean isValidChoice=false;
@@ -201,7 +210,7 @@ import java.time.LocalTime;
     }
     return number;
 }    
-        
+    //Method used for checking if the type the user is giving for a year is valid or not   
     public static int requestInt(String inputType){
         Scanner input = new java.util.Scanner(System.in);
         int number=0;
@@ -221,28 +230,34 @@ import java.time.LocalTime;
         return number; 
     }
     
-    
+    //Method used for checking whether the status for the project provided is valid or not
     public static boolean requestBoolean(String inputType){
         Scanner input = new java.util.Scanner(System.in);
         String userInput;
         boolean bool=false;
         boolean valid=false;
         do{
+            try{
             System.out.println("Please input " + inputType);
             userInput=input.nextLine().toLowerCase();
             if(userInput.equals("true")||userInput.equals("false")){
                 bool=Boolean.parseBoolean(userInput);
                 valid=true; 
+            
             }else{
 
                 System.out.println("Invalid input.Please provide " + inputType);
+                input.nextLine();
+            }
+            }catch(InputMismatchException e){
+                System.out.println("This is not a valid input");
             }
         }while(!valid);
         
         return bool; 
     }
         
-    
+    //Method used for reading 
     private static void readEventsFromFile(String fileName) throws ParseException{
         BufferedReader reader = null;
 
@@ -288,8 +303,10 @@ import java.time.LocalTime;
                 }
             }
         }
+         
     }
     
+    //Method used for a reading appointments from file
     private static ArrayList<Event> readAppointmentsFromFile(String fileName, ArrayList<Event> eventsList) {
         BufferedReader reader = null;
 
@@ -359,7 +376,8 @@ import java.time.LocalTime;
         }
         return eventsList;
     }
-    //MALAKIA PROS TO PARON
+    
+    //Method used for reading projects from file
     private static ArrayList<Event> readProjectsFromFile(String fileName, ArrayList<Event> eventsList){
         BufferedReader reader2 = null;
         try  {
@@ -419,18 +437,12 @@ import java.time.LocalTime;
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if (reader2 != null) {
-                try {
-                    reader2.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
+        
         return eventsList;
     }
     
+    //Method for writting an appointment to the ical file
     private static void writeAppointmentToFile(Appointment appointment, ArrayList<Event> eventsList) {
         
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
@@ -461,6 +473,8 @@ import java.time.LocalTime;
             System.err.println("Error writing appointment to file: " + e.getMessage());
         }
     }
+    
+    //Method for writting a project to the ical file 
     private static void writeProjectToFile(Project project, ArrayList<Event> eventsList){
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics",true))) {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
@@ -492,6 +506,8 @@ import java.time.LocalTime;
                             e.printStackTrace();
                         }
     }
+    
+    //Method used for writing the events sorted to a file
     private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
@@ -501,7 +517,7 @@ import java.time.LocalTime;
 
             for (Event event : eventsList) {
                 // Add an event
-                if (event instanceof Appointment) {
+                if (event instanceof Appointment) { //Case which the event is an appointment
                     Appointment appointment = (Appointment) event;
                     writer.write("BEGIN:VEVENT\n");
                     writer.write("SUMMARY:" + appointment.getTitle() + "\n");
@@ -511,12 +527,12 @@ import java.time.LocalTime;
                     // End the event
                     writer.write("END:VEVENT\n");
                     writer.write("\n");
-                } else if (event instanceof Project) {
+                } else if (event instanceof Project) { //Case which the event is a project
                     Project project = (Project) event;
                     writer.write("BEGIN:VTODO\n");
                     writer.write("SUMMARY:" + project.getTitle() + "\n");
                     writer.write("DUE;VALUE=DATE:" + formatter.format(project.getDate()) + "\n");
-                    if (project.getStatus() == false) {
+                    if (project.getStatus() == false) { 
                         writer.write("STATUS:NEEDS-ACTION\n");
                     } else if (project.getStatus() == true) {
                         writer.write("STATUS:DOESNT-NEED-ACTION\n");
@@ -533,6 +549,7 @@ import java.time.LocalTime;
         }
 }
     
+    //Method used for printing events for a day the user suggest
     public static void printEventsForTheDay(ArrayList<Event> eventsList, LocalDateTime date) {
         LocalTime time = date.toLocalTime();
         
@@ -563,7 +580,9 @@ import java.time.LocalTime;
     public void removeTimeListener(TimeListener tl) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+        
+        // i am not sure
+        
         private static ArrayList<Event> readAppointmentsFromFileTest(String fileName, ArrayList<Event> printEventList) {
         BufferedReader reader = null;
 
@@ -790,49 +809,3 @@ import java.time.LocalTime;
 //                }
 //            }
 //        }    
-//        // Reading from an iCalendar (.ics) file
-////        try (BufferedReader reader = new BufferedReader(new FileReader("output.ics"))) {
-////            String line;
-////            String summary = null;
-////            String startDate = null;
-////
-////            while ((line = reader.readLine()) != null) {
-////                if (line.startsWith("SUMMARY:")) {
-////                    // Extracting the event title (SUMMARY)
-////                    summary = line.substring("SUMMARY:".length());
-////                } else if (line.startsWith("DTSTART:")) {
-////                    // Extracting the event start date (DTSTART)
-////                    startDate = line.substring("DTSTART:".length());
-////                }
-//////dateFormat.format(event.getDate())
-////                // Assuming the end of the event information is marked by "END:VEVENT"
-////                if (line.equals("END:VEVENT")) {
-////                    // Print the event details
-////                    if (summary != null && startDate != null) {
-////                        System.out.println("Title: " + summary);
-////                        System.out.println("Date: " + startDate);
-////                        System.out.println();
-////                    }
-////
-////                    // Reset variables for the next event
-////                    summary = null;
-////                    startDate = null;
-////                }
-////            }
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////        }
-////      
-//
-////            Event myEvent = new Event("Meeting", "20231215", "Discuss project progress"); 
-////        
-////        eventsList.add(testEvent);
-////        eventsList.add(testProject);
-//        
-//        //System.out.println(testEvent.getDescription());
-//        //System.out.println(testProject.getDueDate());
-//
-//    
-//}}
-
-   
