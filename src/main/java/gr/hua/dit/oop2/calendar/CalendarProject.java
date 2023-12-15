@@ -10,16 +10,16 @@
    import java.util.ArrayList;
    import java.util.Scanner;
    import java.io.BufferedWriter;
-import java.io.File;
+   import java.io.File;
    import java.io.FileWriter;
    import java.io.IOException;
    import java.text.ParseException;
    import java.util.Comparator;
-   
    import java.time.DayOfWeek;
    import java.time.LocalDateTime;
    import java.time.LocalTime;
    import java.time.format.DateTimeFormatter;
+   import java.time.temporal.Temporal;
    import java.util.InputMismatchException;
    /**
     *
@@ -33,29 +33,29 @@ import java.io.File;
            
             ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
             TimeTeller teller = TimeService.getTeller();
-            
-            
-
             String calendarChoice = args[0].toLowerCase();
-            String fileName = args[1];//"C:\\Users\\leftp\\OneDrive\\Έγγραφα\\NetBeansProjects\\Calendar\\output.ics" ;    
-            fileName=getDirectoryPath()+ "\\" + fileName ;
-                    
-
-    
+            String fileName = null;
+            if(args.length == 1){
+                  fileName = args[0];
+            }else{
+                 fileName = args[1];
+            }
             
-            
-            
+            //fileName=getDirectoryPath()+ "//" + fileName ;
             
             int year=requestInt("Year");
             int month=requestChoice2(12,"Month (up to 12)");
             int day=requestChoice2(30,"Day (up to 30)" );
-            int hours=requestChoice2(23,"Hours(up to 23)");
+            int hours=requestChoice(23,"Hours(up to 23)");
             int minutes=requestChoice(59,"Minutes(up to 59)");
             int seconds=requestChoice(59,"Seconds(up to 59)");
+            
             LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
             LocalDateTime dt = teller.now();
+            
             System.out.println(time.adjustInto(dt));
-
+            Temporal timeNow = time.adjustInto(dt);
+            
             eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
             eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
 
@@ -128,35 +128,35 @@ import java.io.File;
                 
                     switch (calendarChoice){
                         case "day":{
-                            printEventsForTheDay(eventsList,time);
+                            printEventsForTheDay(eventsList,timeNow);
                             break;
                             }
                         case "week":{
-                            printEventsForTheWeek(eventsList,time);
+                            printEventsForTheWeek(eventsList,timeNow);
                             break;
                         }
                         case "month":{
-                            printEventsForTheMonth(eventsList,time);
+                            printEventsForTheMonth(eventsList,timeNow);
                             break;
                         }
                         case "pastday":{
-                            printEventsForThePastDay(eventsList,time);
+                            printEventsForThePastDay(eventsList,timeNow);
                             break;
                         }
                         case "pastweek":{
-                            printEventsForThePastWeek(eventsList,time);
+                            printEventsForThePastWeek(eventsList,timeNow);
                             break;
                         }
                         case "pastmonth":{
-                            printEventsForThePastMonth(eventsList,time);
+                            printEventsForThePastMonth(eventsList,timeNow);
                             break;
                         }
                         case "todo":{
-                            printEventsForTheToDo(eventsList,time);
+                            printEventsForTheToDo(eventsList,timeNow);
                             break;
                         }
                         case "due":{
-                            printEventsForTheDue(eventsList,time);
+                            printEventsForTheDue(eventsList,timeNow);
                             break;
                         }
                     }
@@ -554,13 +554,18 @@ import java.io.File;
 }
     
     //Method used for printing events for a day the user suggest
-    public static void printEventsForTheDay(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForTheDay(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
         LocalTime time = date.toLocalTime();
-        
-        //LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
         LocalDateTime endOfDay = LocalDateTime.of(date.toLocalDate(), time.MAX);
 
-        System.out.println("Events for The Day" + date.toLocalDate() + ":");
+        System.out.println("Events for The Day " + date.toLocalDate() + ":");
 
         for (Event event : eventsList) {
             LocalDateTime eventDate = event.getDate();
@@ -570,13 +575,20 @@ import java.io.File;
             }
         }
     }
-    public static void printEventsForTheWholeDay(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForTheWholeDay(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
         LocalTime time = date.toLocalTime();
         
         LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
         LocalDateTime endOfDay = LocalDateTime.of(date.toLocalDate(), time.MAX);
 
-        System.out.println("Events for The Day" + date.toLocalDate() + ":");
+        System.out.println("Events for The Day " + date.toLocalDate() + ":");
 
         for (Event event : eventsList) {
             LocalDateTime eventDate = event.getDate();
@@ -586,9 +598,15 @@ import java.io.File;
             }
         }
     }
-    public static void printEventsForThePastDay(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForThePastDay(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
         LocalTime time = date.toLocalTime();
-        
         LocalDateTime startOfDay = LocalDateTime.of(date.toLocalDate(),time.MIN);
         
 
@@ -603,7 +621,15 @@ import java.io.File;
         }
     }
     
-    public static void printEventsForTheWeek(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForTheWeek(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
+        
         System.out.println("Events for this week:");
 
         // Get the current day of the week
@@ -619,7 +645,14 @@ import java.io.File;
             printEventsForTheDay(eventsList, currentDate);
         }
     }
-    public static void printEventsForThePastWeek(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForThePastWeek(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+        LocalDateTime date = (LocalDateTime) timeNow;
+        
         System.out.println("Events for the past week:");
 
         // Get the current day of the week
@@ -636,7 +669,15 @@ import java.io.File;
         }
     }
     
-    public static void printEventsForTheMonth(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForTheMonth(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
+        
         System.out.println("Events for the rest of the month:");
 
         // Get the last day of the month
@@ -651,7 +692,15 @@ import java.io.File;
             date = date.plusDays(1);
         }
     }
-    public static void printEventsForThePastMonth(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForThePastMonth(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
+        
         System.out.println("Events from the beginning of the month until today:");
 
         // Get the first day of the month
@@ -667,7 +716,15 @@ import java.io.File;
         }
     }
     
-    public static void printEventsForTheToDo(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForTheToDo(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
+        
         System.out.println("Incomplete projects before the deadline:");
 
         for (Event event : eventsList) {
@@ -681,7 +738,15 @@ import java.io.File;
             }
         }
     }
-    public static void printEventsForTheDue(ArrayList<Event> eventsList, LocalDateTime date) {
+    public static void printEventsForTheDue(ArrayList<Event> eventsList, Temporal timeNow) {
+            if (!(timeNow instanceof LocalDateTime)) {
+            // Handle the case where the provided Temporal is not a LocalDateTime
+            System.out.println("Invalid Temporal type. Expected LocalDateTime.");
+            return;
+        }
+
+        LocalDateTime date = (LocalDateTime) timeNow;
+        
         System.out.println("Incomplete projects after the deadline:");
 
         for (Event event : eventsList) {
@@ -696,27 +761,27 @@ import java.io.File;
         }
     }
 
-
-    public static String getDirectoryPath(){
-       String currentDirectory = System.getProperty("user.dir");
-
-       
-        File currentDirFile = new File(currentDirectory);
-
-        
-        File parentDirFile = currentDirFile.getParentFile();
-
-        if (parentDirFile != null) {
-            
-            String parentDirectoryPath = parentDirFile.getAbsolutePath();
-            return parentDirectoryPath;
-        } else {
-            System.out.println("No parent directory (already at the root).");
-            return "";
-        }
-        
-    }
-    
+        // chat gpt generated code to find file in system, actually not used...
+//    public static String getDirectoryPath(){
+//       String currentDirectory = System.getProperty("user.dir");
+//
+//       
+//        File currentDirFile = new File(currentDirectory);
+//
+//        
+//        File parentDirFile = currentDirFile.getParentFile();
+//
+//        if (parentDirFile != null) {
+//            
+//            String parentDirectoryPath = parentDirFile.getAbsolutePath();
+//            return parentDirectoryPath;
+//        } else {
+//            System.out.println("No parent directory (already at the root).");
+//            return "";
+//        }
+//        
+//    }
+//    
 
 
 }
