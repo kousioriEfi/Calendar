@@ -1,0 +1,29 @@
+ΓΙΑ ΤΗΝ ΜΕΤΑΓΛΩΤΤΙΣΗ:
+
+javac Assigment.java Project.java Event.java TimeTeller.java CalendarProject.java
+
+ΓΙΑ ΤΟ ΤΡΕΞΙΜΟ:
+
+-ΑΝ ΘΕΛΕΙ 1 ΟΡΙΣΜΑ(output.ics)
+
+java -jar CalendarProject-1.0-SNAPSHOT.jar output.ics
+
+-ΑΝ ΘΕΛΕΙ 2 ΟΡΙΣΜΑTA(output.ics)
+
+java -jar CalendarProject-1.0-SNAPSHOT.jar day output.ics 
+                          ή
+java -jar CalendarProject-1.0-SNAPSHOT.jar week output.ics 
+			  ή
+java -jar CalendarProject-1.0-SNAPSHOT.jar month output.ics
+			  ή
+java -jar CalendarProject-1.0-SNAPSHOT.jar pastday output.ics
+			  ή
+java -jar CalendarProject-1.0-SNAPSHOT.jar pastweek output.ics
+			  ή
+java -jar CalendarProject-1.0-SNAPSHOT.jar pastmonth output.ics
+			  ή
+java -jar CalendarProject-1.0-SNAPSHOT.jar todo output.ics
+			  ή		
+java -jar CalendarProject-1.0-SNAPSHOT.jar due output.ics
+			  
+                          
