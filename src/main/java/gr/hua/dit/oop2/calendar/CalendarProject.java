@@ -41,7 +41,7 @@
                  fileName = args[1];
             }
             
-            //fileName=getDirectoryPath()+ "//" + fileName ;
+            fileName=getDirectoryPath()+ "//" + fileName ;
             
             int year=requestInt("Year");
             int month=requestChoice2(12,"Month (up to 12)");
@@ -66,7 +66,7 @@
 
                 case 1 :{ //Case the option is add an event
                    //Message in order for the user to decide wether they want to add an appointment or project
-                   System.out.println("Print Appointment /Project Type(1/2)");
+                   System.out.println("Create Appointment /Project |Type(1/2)");
                     
                    int ev_opt = requestChoice2(2,"1/2");
                    input.nextLine();
@@ -762,26 +762,26 @@
     }
 
         // chat gpt generated code to find file in system, actually not used...
-//    public static String getDirectoryPath(){
-//       String currentDirectory = System.getProperty("user.dir");
-//
-//       
-//        File currentDirFile = new File(currentDirectory);
-//
-//        
-//        File parentDirFile = currentDirFile.getParentFile();
-//
-//        if (parentDirFile != null) {
-//            
-//            String parentDirectoryPath = parentDirFile.getAbsolutePath();
-//            return parentDirectoryPath;
-//        } else {
-//            System.out.println("No parent directory (already at the root).");
-//            return "";
-//        }
-//        
-//    }
-//    
+    public static String getDirectoryPath(){
+       String currentDirectory = System.getProperty("user.dir");
+
+       
+        File currentDirFile = new File(currentDirectory);
+
+        
+        File parentDirFile = currentDirFile.getParentFile();
+
+        if (parentDirFile != null) {
+            
+            String parentDirectoryPath = parentDirFile.getAbsolutePath();
+            return parentDirectoryPath;
+        } else {
+            System.out.println("No parent directory (already at the root).");
+            return "";
+        }
+        
+    }
+    
 
 
 }
