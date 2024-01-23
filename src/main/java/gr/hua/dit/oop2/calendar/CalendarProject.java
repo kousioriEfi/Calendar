@@ -5,6 +5,20 @@
    //All libraries used throughout the code
    package gr.hua.dit.oop2.calendar;
    
+    import java.awt.BorderLayout;
+    import java.awt.Color;
+    import java.awt.Dimension;
+    import java.awt.GradientPaint;
+    import java.awt.Graphics;
+    import java.awt.Graphics2D;
+    import java.awt.GridLayout;
+    import java.awt.geom.Rectangle2D;
+    import javax.swing.JButton;
+    import javax.swing.JFrame;
+    import javax.swing.JLabel;
+    import javax.swing.JPanel;
+    import javax.swing.SwingUtilities;
+   
    import java.io.BufferedReader;
    import java.io.FileReader;
    import java.util.ArrayList;
@@ -29,10 +43,50 @@
        
        //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
-            Scanner input = new java.util.Scanner(System.in);
+                SwingUtilities.invokeLater(() -> {
+
+            JFrame frame = new JFrame();
+            frame.setTitle("Calendar");
+            frame.setSize(500, 500);
+            frame.setLayout(new BorderLayout());
+
+            JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+            
+            greenPanel.setPreferredSize(new Dimension(150, 500));
+            frame.add(greenPanel, BorderLayout.WEST);
+
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            frame.add(mainPanel, BorderLayout.CENTER);
+
+            JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+            mainPanel.add(bluePanel, BorderLayout.CENTER);
+
+            for (int i = 1; i <= 31; i++) {
+                JButton button = new JButton(Integer.toString(i));
+                bluePanel.add(button);
+            }
+
+            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            
+
+            JLabel label = new JLabel("      M              T               W               T               F               S");
+            label.setForeground(Color.green);
+            labelPanel.add(label, BorderLayout.CENTER);
+
+            mainPanel.add(labelPanel, BorderLayout.NORTH);
+
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });   
+        
+        
+        
+        
+        Scanner input = new java.util.Scanner(System.in);
            
             ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
-            TimeTeller teller = TimeService.getTeller();
+            TimeTeller teller = TimeService.getTeller();     
             String calendarChoice = args[0].toLowerCase();
             String fileName = null;
             if(args.length == 1){
@@ -163,7 +217,7 @@
                     break;
                 }
             } 
-           System.out.println("End of the main method.");
+           
            TimeService.stop();
         }  
     //END OF MAIN
@@ -783,5 +837,25 @@
     }
     
 
+    
+       private static JPanel createGradientPanel(Color startColor, Color endColor) {
+        return new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
 
-}
+                Graphics2D g2d = (Graphics2D) g;
+                int width = getWidth();
+                int height = getHeight();
+
+                GradientPaint gradientPaint = new GradientPaint(-300, 0, startColor, width, height, endColor);
+                g2d.setPaint(gradientPaint);
+                g2d.fill(new Rectangle2D.Double(0, 0, width, height));
+            }
+        };
+    }
+   
+   }
+
+
+
