@@ -7,11 +7,14 @@
    
     import java.awt.BorderLayout;
     import java.awt.Color;
+import java.awt.Component;
     import java.awt.Dimension;
     import java.awt.GradientPaint;
     import java.awt.Graphics;
     import java.awt.Graphics2D;
     import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
     import java.awt.geom.Rectangle2D;
     import javax.swing.JButton;
     import javax.swing.JFrame;
@@ -54,6 +57,17 @@
             
             greenPanel.setPreferredSize(new Dimension(150, 500));
             frame.add(greenPanel, BorderLayout.WEST);
+            
+            JButton calshowbutton1 = new JButton("day");           
+            JButton calshowbutton2 = new JButton("week");
+            JButton calshowbutton3 = new JButton("month");
+            
+            
+            greenPanel.setLayout(new  GridLayout(20,20,5,5));
+            greenPanel.add(calshowbutton1);///
+            greenPanel.add(calshowbutton2);
+            greenPanel.add(calshowbutton3);
+
 
             JPanel mainPanel = new JPanel(new BorderLayout());
             frame.add(mainPanel, BorderLayout.CENTER);
@@ -61,20 +75,85 @@
             JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
             mainPanel.add(bluePanel, BorderLayout.CENTER);
-
-            for (int i = 1; i <= 31; i++) {
-                JButton button = new JButton(Integer.toString(i));
-                bluePanel.add(button);
-            }
-
-            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             
-
+            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             JLabel label = new JLabel("      M              T               W               T               F               S");
             label.setForeground(Color.green);
             labelPanel.add(label, BorderLayout.CENTER);
 
             mainPanel.add(labelPanel, BorderLayout.NORTH);
+            
+            calshowbutton1.addActionListener(e -> {
+                Component[] components = bluePanel.getComponents();
+                bluePanel.remove(label);
+                // Remove each component from bluePanel
+                for (Component component : components) {
+                    bluePanel.remove(component);
+                }
+
+                // Repaint bluePanel to reflect the changes
+                bluePanel.revalidate();
+                bluePanel.repaint();
+                
+                for (int i = 1; i <= 24; i++) {
+                    bluePanel.setLayout(new GridLayout(24, 1, 5, 5)); 
+                    JButton button = new JButton(Integer.toString(i));
+                    bluePanel.add(button);
+                }
+                
+             
+            });
+            
+            calshowbutton2.addActionListener(e -> {
+                Component[] components = bluePanel.getComponents();
+
+                // Remove each component from bluePanel
+                for (Component component : components) {
+                    bluePanel.remove(component);
+                }
+
+                // Repaint bluePanel to reflect the changes
+                bluePanel.revalidate();
+                bluePanel.repaint();
+                
+                for (int i = 1; i <= 7; i++) {
+                    bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+                    JButton button = new JButton(Integer.toString(i));
+                    bluePanel.add(button);
+                }
+                
+                
+            });
+            
+            calshowbutton3.addActionListener(e -> {
+                Component[] components = bluePanel.getComponents();
+
+                // Remove each component from bluePanel
+                for (Component component : components) {
+                    bluePanel.remove(component);
+                }
+
+                // Repaint bluePanel to reflect the changes
+                bluePanel.revalidate();
+                bluePanel.repaint();
+                
+                for (int i = 1; i <= 31; i++) {
+                    bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+                    JButton button = new JButton(Integer.toString(i));
+                    bluePanel.add(button);
+                }
+                
+                
+            });
+            
+            
+
+            for (int i = 1; i <= 31; i++) {
+                JButton button = new JButton(Integer.toString(i));
+                bluePanel.add(button);
+            }
+            
+
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
@@ -82,6 +161,15 @@
         
         
         
+                
+                
+                
+               //ΚΕΝΟ ΓΙΑ ΝΑ ΞΕΧΩΡΙΖΕΙ ΤΟ SWING ΑΠΟ ΤΟΝ ΥΠΟΛΟΙΠΠΟ ΚΩΔΙΚΑ 
+                
+                
+                
+                
+                
         
         Scanner input = new java.util.Scanner(System.in);
            
@@ -837,6 +925,20 @@
     }
     
 
+    
+    
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if(e.getSource()==){
+//            System.out.println("Button 1 clicked!");
+//            // Add your code here for handling the button click
+//            }
+//        }
+        
+    
+    
+    
+    
     
        private static JPanel createGradientPanel(Color startColor, Color endColor) {
         return new JPanel() {
