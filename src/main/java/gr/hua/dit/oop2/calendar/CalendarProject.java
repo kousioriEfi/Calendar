@@ -38,6 +38,8 @@ import java.awt.event.ActionListener;
    import java.time.format.DateTimeFormatter;
    import java.time.temporal.Temporal;
    import java.util.InputMismatchException;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
    /**
     *
     * @author leftp
@@ -52,7 +54,10 @@ import java.awt.event.ActionListener;
             frame.setTitle("Calendar");
             frame.setSize(500, 500);
             frame.setLayout(new BorderLayout());
-
+            
+            ImageIcon image= new ImageIcon("Resources/calendar-green-icon-png-17.png");
+            frame.setIconImage(image.getImage());
+            
             JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
             
             greenPanel.setPreferredSize(new Dimension(150, 500));
@@ -76,16 +81,41 @@ import java.awt.event.ActionListener;
             bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
             mainPanel.add(bluePanel, BorderLayout.CENTER);
             
-            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-            JLabel label = new JLabel("      M              T               W               T               F               S");
-            label.setForeground(Color.green);
-            labelPanel.add(label, BorderLayout.CENTER);
+            
+            
+//            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+//            labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 1 row, 7 columns
+//            JLabel label = new JLabel("      M              T               W               T               F               S");
+//            label.setForeground(Color.green);
+//            labelPanel.add(label, BorderLayout.CENTER);
+
+JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 2 rows, 7 columns
+
+            String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
+
+            for (String dayLabel : dayLabels) {
+                JLabel label = new JLabel(dayLabel);
+                label.setForeground(Color.green);
+                label.setHorizontalAlignment(SwingConstants.CENTER);
+                labelPanel.add(label);
+            }
+
+            mainPanel.add(labelPanel, BorderLayout.NORTH);
+
+            // ... (same code as before)
+
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        
+    
 
             mainPanel.add(labelPanel, BorderLayout.NORTH);
             
             calshowbutton1.addActionListener(e -> {
                 Component[] components = bluePanel.getComponents();
-                bluePanel.remove(label);
+                labelPanel.setVisible(false);
+                bluePanel.remove(labelPanel);
                 // Remove each component from bluePanel
                 for (Component component : components) {
                     bluePanel.remove(component);
@@ -106,7 +136,7 @@ import java.awt.event.ActionListener;
             
             calshowbutton2.addActionListener(e -> {
                 Component[] components = bluePanel.getComponents();
-
+                labelPanel.setVisible(false);
                 // Remove each component from bluePanel
                 for (Component component : components) {
                     bluePanel.remove(component);
@@ -127,7 +157,7 @@ import java.awt.event.ActionListener;
             
             calshowbutton3.addActionListener(e -> {
                 Component[] components = bluePanel.getComponents();
-
+                labelPanel.setVisible(true);
                 // Remove each component from bluePanel
                 for (Component component : components) {
                     bluePanel.remove(component);
@@ -147,6 +177,8 @@ import java.awt.event.ActionListener;
             });
             
             
+            
+            
 
             for (int i = 1; i <= 31; i++) {
                 JButton button = new JButton(Integer.toString(i));
@@ -161,8 +193,7 @@ import java.awt.event.ActionListener;
         
         
         
-                
-                
+            
                 
                //ΚΕΝΟ ΓΙΑ ΝΑ ΞΕΧΩΡΙΖΕΙ ΤΟ SWING ΑΠΟ ΤΟΝ ΥΠΟΛΟΙΠΠΟ ΚΩΔΙΚΑ 
                 
