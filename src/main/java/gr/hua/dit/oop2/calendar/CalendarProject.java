@@ -7,8 +7,9 @@
    
     import java.awt.BorderLayout;
     import java.awt.Color;
-import java.awt.Component;
+    import java.awt.Component;
     import java.awt.Dimension;
+import java.awt.FlowLayout;
     import java.awt.GradientPaint;
     import java.awt.Graphics;
     import java.awt.Graphics2D;
@@ -36,8 +37,9 @@ import java.awt.Component;
    import java.time.format.DateTimeFormatter;
    import java.time.temporal.Temporal;
    import java.util.InputMismatchException;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
+import javax.swing.BoxLayout;
+   import javax.swing.ImageIcon;
+   import javax.swing.SwingConstants;
    /**
     *
     * @author leftp
@@ -48,7 +50,7 @@ import javax.swing.SwingConstants;
     public static void main(String[] args) throws ParseException {
                 SwingUtilities.invokeLater(() -> {
 
-            LaunchPage launchPage = new LaunchPage();        
+            //LaunchPage launchPage = new LaunchPage();        
                     
             JFrame frame = new JFrame();
             frame.setTitle("Calendar");
@@ -59,19 +61,48 @@ import javax.swing.SwingConstants;
             frame.setIconImage(image.getImage());
             
             JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+            greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
             
-            greenPanel.setPreferredSize(new Dimension(150, 500));
+            greenPanel.setPreferredSize(new Dimension(250, 500));
             frame.add(greenPanel, BorderLayout.WEST);
             
             JButton calshowbutton1 = new JButton("day");           
             JButton calshowbutton2 = new JButton("week");
             JButton calshowbutton3 = new JButton("month");
             
+           
             
-            greenPanel.setLayout(new  GridLayout(20,20,5,5));
+            greenPanel.setLayout(new  GridLayout(7,1,3,3));
             greenPanel.add(calshowbutton1);///
             greenPanel.add(calshowbutton2);
             greenPanel.add(calshowbutton3);
+            
+            JPanel eventPanel1 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            JLabel seldayevent = new JLabel("Events for selected day");
+            seldayevent.setForeground(Color.green);
+            eventPanel1.add(seldayevent);
+            JPanel eventPanel2 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            JLabel monthevents = new JLabel("Events for whole month");
+            monthevents.setForeground(Color.green);
+            eventPanel2.add(monthevents);
+            JPanel eventPanel3 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            JLabel upcoming = new JLabel("Upcoming events");
+            upcoming.setForeground(Color.green);
+            eventPanel3.add(upcoming);
+            
+            greenPanel.add(eventPanel1);
+            greenPanel.add(eventPanel2);
+            greenPanel.add(eventPanel3);
+            
+            JButton chooseDate = new JButton("CHOOSE DATE");
+            
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            buttonPanel.add(chooseDate, BorderLayout.CENTER);
+
+            // Add the green panel and button panel to the main panel
+            greenPanel.add(buttonPanel, BorderLayout.SOUTH);
+            //mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+            
 
 
             JPanel mainPanel = new JPanel(new BorderLayout());
@@ -179,27 +210,32 @@ import javax.swing.SwingConstants;
             for (int i = 1; i <= 31; i++) {
                 JButton button = new JButton(Integer.toString(i));
                 
+                button.addActionListener(e ->{
+                
+                   
+                
+                
+                
+                
+                
+                });
                 
                 bluePanel.add(button);
             }
             
             
-
-
+            
+           
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
         });   
         
         
-       
-            
-                
+          
                //ΚΕΝΟ ΓΙΑ ΝΑ ΞΕΧΩΡΙΖΕΙ ΤΟ SWING ΑΠΟ ΤΟΝ ΥΠΟΛΟΙΠΠΟ ΚΩΔΙΚΑ 
                 
                 
-                
-                
-                
+               
         
         Scanner input = new java.util.Scanner(System.in);
            
