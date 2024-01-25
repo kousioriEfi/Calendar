@@ -13,8 +13,6 @@ import java.awt.Component;
     import java.awt.Graphics;
     import java.awt.Graphics2D;
     import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
     import java.awt.geom.Rectangle2D;
     import javax.swing.JButton;
     import javax.swing.JFrame;
@@ -50,6 +48,8 @@ import javax.swing.SwingConstants;
     public static void main(String[] args) throws ParseException {
                 SwingUtilities.invokeLater(() -> {
 
+            LaunchPage launchPage = new LaunchPage();        
+                    
             JFrame frame = new JFrame();
             frame.setTitle("Calendar");
             frame.setSize(500, 500);
@@ -89,7 +89,7 @@ import javax.swing.SwingConstants;
 //            label.setForeground(Color.green);
 //            labelPanel.add(label, BorderLayout.CENTER);
 
-JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 2 rows, 7 columns
 
             String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
@@ -105,8 +105,7 @@ JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 
 
             // ... (same code as before)
 
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
+           
         
     
 
@@ -177,13 +176,13 @@ JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 
             });
             
             
-            
-            
-
             for (int i = 1; i <= 31; i++) {
                 JButton button = new JButton(Integer.toString(i));
+                
+                
                 bluePanel.add(button);
             }
+            
             
 
 
@@ -192,7 +191,7 @@ JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 
         });   
         
         
-        
+       
             
                 
                //ΚΕΝΟ ΓΙΑ ΝΑ ΞΕΧΩΡΙΖΕΙ ΤΟ SWING ΑΠΟ ΤΟΝ ΥΠΟΛΟΙΠΠΟ ΚΩΔΙΚΑ 
