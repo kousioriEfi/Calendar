@@ -39,13 +39,14 @@ import java.awt.FlowLayout;
    import java.util.InputMismatchException;
 import javax.swing.BoxLayout;
    import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
    import javax.swing.SwingConstants;
    /**
     *
     * @author leftp
     */
    public class CalendarProject{
-       
+       private static LocalDateTime chosenDate;
        //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
                 SwingUtilities.invokeLater(() -> {
@@ -95,6 +96,8 @@ import javax.swing.BoxLayout;
             greenPanel.add(eventPanel3);
             
             JButton chooseDate = new JButton("CHOOSE DATE");
+            
+            
             
             JPanel buttonPanel = new JPanel(new FlowLayout());
             buttonPanel.add(chooseDate, BorderLayout.CENTER);
@@ -185,26 +188,66 @@ import javax.swing.BoxLayout;
                 
             });
             
-            calshowbutton3.addActionListener(e -> {
-                Component[] components = bluePanel.getComponents();
-                labelPanel.setVisible(true);
-                // Remove each component from bluePanel
-                for (Component component : components) {
-                    bluePanel.remove(component);
-                }
+chooseDate.addActionListener(e -> {
+    // Reset chosenDate to null before asking the user for a new date
+    chosenDate = null;
 
-                // Repaint bluePanel to reflect the changes
-                bluePanel.revalidate();
-                bluePanel.repaint();
-                
-                for (int i = 1; i <= 31; i++) {
-                    bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
-                    JButton button = new JButton(Integer.toString(i));
-                    bluePanel.add(button);
-                }
-                
-                
-            });
+    // Ask the user for the year, month, and day using JOptionPane
+    int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
+    int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
+    int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day of the month:"));
+
+    // Set the chosen date
+    chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0); // Assuming time is 00:00
+});
+
+// ... (other code)
+
+calshowbutton3.addActionListener(e -> {
+    Component[] components = bluePanel.getComponents();
+    labelPanel.setVisible(true);
+    // Remove each component from bluePanel
+    for (Component component : components) {
+        bluePanel.remove(component);
+    }
+
+    // Use the chosenDate if it's set, otherwise use the current date
+    LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+
+    int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
+    int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
+
+    int totalCells = 5 * 7; // Total cells in a 5x7 grid
+
+    // Remove all components from bluePanel
+    bluePanel.removeAll();
+
+    // Set the layout to the intended 5x7 grid layout for the month
+    bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+
+    for (int i = 1; i <= totalCells; i++) {
+        JButton button = new JButton();
+
+        // Calculate the day number based on the starting day of the month
+        int dayNumber = i - startingDayOfMonth + 1;
+
+        if (dayNumber > 0 && dayNumber <= daysInMonth) {
+            button.setText(Integer.toString(dayNumber));
+        }
+
+        bluePanel.add(button);
+
+        // Add an action listener to each button for future actions
+        button.addActionListener(buttonEvent -> {
+            // You can perform additional actions when a button is clicked
+            JOptionPane.showMessageDialog(null, "You clicked button " + button.getText());
+        });
+    }
+
+    // Repaint bluePanel to reflect the changes
+    bluePanel.revalidate();
+    bluePanel.repaint();
+});
             
             
             for (int i = 1; i <= 31; i++) {
