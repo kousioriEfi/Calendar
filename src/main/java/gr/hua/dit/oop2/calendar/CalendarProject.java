@@ -13,6 +13,7 @@ import java.awt.FlowLayout;
     import java.awt.GradientPaint;
     import java.awt.Graphics;
     import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
     import java.awt.GridLayout;
     import java.awt.geom.Rectangle2D;
     import javax.swing.JButton;
@@ -82,10 +83,12 @@ import javax.swing.JOptionPane;
             JLabel seldayevent = new JLabel("Events for selected day");
             seldayevent.setForeground(Color.green);
             eventPanel1.add(seldayevent);
+            
             JPanel eventPanel2 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             JLabel monthevents = new JLabel("Events for whole month");
             monthevents.setForeground(Color.green);
             eventPanel2.add(monthevents);
+            
             JPanel eventPanel3 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             JLabel upcoming = new JLabel("Upcoming events");
             upcoming.setForeground(Color.green);
@@ -113,16 +116,10 @@ import javax.swing.JOptionPane;
 
             JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+            
             mainPanel.add(bluePanel, BorderLayout.CENTER);
             
             
-            
-//            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-//            labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 1 row, 7 columns
-//            JLabel label = new JLabel("      M              T               W               T               F               S");
-//            label.setForeground(Color.green);
-//            labelPanel.add(label, BorderLayout.CENTER);
-
             JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 2 rows, 7 columns
 
@@ -136,14 +133,12 @@ import javax.swing.JOptionPane;
             }
 
             mainPanel.add(labelPanel, BorderLayout.NORTH);
+            ///////////////////
+            
+            
+            
 
-            // ... (same code as before)
-
-           
-        
-    
-
-            mainPanel.add(labelPanel, BorderLayout.NORTH);
+           // JFrame addevent = new JFrame
             
             calshowbutton1.addActionListener(e -> {
                 Component[] components = bluePanel.getComponents();
@@ -239,8 +234,33 @@ calshowbutton3.addActionListener(e -> {
 
         // Add an action listener to each button for future actions
         button.addActionListener(buttonEvent -> {
+            
             // You can perform additional actions when a button is clicked
-            JOptionPane.showMessageDialog(null, "You clicked button " + button.getText());
+            JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+            
+            for (int j = 1; j <= totalCells; j++) {
+                bluePanel.removeAll();
+                button.setVisible(false);
+            }
+            ////////////
+             JPanel addEvent= createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+             addEvent.setPreferredSize(new Dimension(250, 500));
+             bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
+             
+             JPanel titlePanel =  new JPanel();
+             titlePanel.setForeground(Color.white);
+             
+             
+             JLabel title =  new JLabel("Title");
+             
+             titlePanel.add(title);
+             bluePanel.add(titlePanel);
+           
+            
+            bluePanel.revalidate();
+            bluePanel.repaint();
+            
+            bluePanel.add(addEvent, BorderLayout.CENTER);
         });
     }
 
@@ -256,11 +276,6 @@ calshowbutton3.addActionListener(e -> {
                 button.addActionListener(e ->{
                 
                    
-                
-                
-                
-                
-                
                 });
                 
                 bluePanel.add(button);
