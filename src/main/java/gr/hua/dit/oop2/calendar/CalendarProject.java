@@ -1147,11 +1147,11 @@ public class CalendarProject{
     }
 
     public static void handleDayButton() {
-        handleButton(24, 1, 5, 5);
+        handleButton(24, 1, 5, 5,0);
     }
 
     public static void handleWeekButton() {
-         handleButton(7, 5, 7, 5);
+         handleButton(7, 5, 7, 5,0);
     }
 
     public static void handleMonthButton() {
@@ -1217,14 +1217,55 @@ public class CalendarProject{
     }
 
 
+    
+    
     public static void handleChooseDateButton() {
         int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
         int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day of the month:"));
+        int dayOfMonth = 1; // Set to the 1st day of the month
+
+        // Calculate the day of the week for the 1st day of the entered month
+        LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+        DayOfWeek dayOfWeek = firstDayOfMonth.getDayOfWeek();
+
         chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+
+        // Use the dayOfWeek to determine the layout of your month view
+        int startingDay = 0; // 0 corresponds to Sunday, 1 to Monday, ..., 6 to Saturday
+
+        switch (dayOfWeek) {
+            case MONDAY:
+                startingDay = 1;
+                break;
+            case TUESDAY:
+                startingDay = 2;
+                break;
+            case WEDNESDAY:
+                startingDay = 3;
+                break;
+            case THURSDAY:
+                startingDay = 4;
+                break;
+            case FRIDAY:
+                startingDay = 5;
+                break;
+            case SATURDAY:
+                startingDay = 6;
+                break;
+            case SUNDAY:
+                startingDay = 0;
+                break;
+        }
+
+        
+        handleButton(31, 6, 7, 5, startingDay); // Handle day buttons
+        handleMonthButton(); // Automatically display the month layout because else it would show a random month layout.
     }
-    
-    public static void handleButton(int maxIterations, int rows, int cols, int gap) {
+
+
+
+    // The handleButton method is modified to consider the starting day of the week
+    public static void handleButton(int maxIterations, int rows, int cols, int gap, int startingDay) {
         Component[] components = bluePanel.getComponents();
         labelPanel.setVisible(false);
         bluePanel.removeAll();
@@ -1238,11 +1279,23 @@ public class CalendarProject{
 
         bluePanel.setLayout(new GridLayout(rows, cols, gap, gap));
 
-        for (int i = 1; i <= maxIterations; i++) {
+        // Adjust the starting day of the week
+        for (int i = 0; i < startingDay; i++) {
+            JButton emptyButton = new JButton("");
+            emptyButton.setEnabled(false);
+            bluePanel.add(emptyButton);
+        }
+
+        int totalCells = rows * cols;
+
+        for (int i = 1; i <= totalCells - startingDay; i++) {
             JButton button = new JButton(Integer.toString(i));
             bluePanel.add(button);
         }
-}
+    }
+
+
+
 
     public static JPanel createBluePanel() {
         JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
