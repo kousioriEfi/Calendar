@@ -3,290 +3,300 @@
     */
 
    //All libraries used throughout the code
-   package gr.hua.dit.oop2.calendar;
-   
-    import java.awt.BorderLayout;
-    import java.awt.Color;
-    import java.awt.Component;
-    import java.awt.Dimension;
+package gr.hua.dit.oop2.calendar;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-    import java.awt.GradientPaint;
-    import java.awt.Graphics;
-    import java.awt.Graphics2D;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
-    import java.awt.GridLayout;
-    import java.awt.geom.Rectangle2D;
-    import javax.swing.JButton;
-    import javax.swing.JFrame;
-    import javax.swing.JLabel;
-    import javax.swing.JPanel;
-    import javax.swing.SwingUtilities;
-   
-   import java.io.BufferedReader;
-   import java.io.FileReader;
-   import java.util.ArrayList;
-   import java.util.Scanner;
-   import java.io.BufferedWriter;
-   import java.io.File;
-   import java.io.FileWriter;
-   import java.io.IOException;
-   import java.text.ParseException;
-   import java.util.Comparator;
-   import java.time.DayOfWeek;
-   import java.time.LocalDateTime;
-   import java.time.LocalTime;
-   import java.time.format.DateTimeFormatter;
-   import java.time.temporal.Temporal;
-   import java.util.InputMismatchException;
+import java.awt.GridLayout;
+import java.awt.geom.Rectangle2D;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Comparator;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.InputMismatchException;
+import java.util.List;
 import javax.swing.BoxLayout;
-   import javax.swing.ImageIcon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-   import javax.swing.SwingConstants;
+import javax.swing.SwingConstants;
    /**
     *
     * @author leftp
     */
-   public class CalendarProject{
-       private static LocalDateTime chosenDate;
-       //BEGINNING OF MAIN
+public class CalendarProject{
+    private static JPanel bluePanel;
+    private static JPanel labelPanel;
+    private static LocalDateTime chosenDate;
+    //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
-                SwingUtilities.invokeLater(() -> {
-
-            //LaunchPage launchPage = new LaunchPage();        
-                    
-            JFrame frame = new JFrame();
-            frame.setTitle("Calendar");
-            frame.setSize(500, 500);
-            frame.setLayout(new BorderLayout());
-            
-            ImageIcon image= new ImageIcon("Resources/calendar-green-icon-png-17.png");
-            frame.setIconImage(image.getImage());
-            
-            JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
-            greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
-            
-            greenPanel.setPreferredSize(new Dimension(250, 500));
-            frame.add(greenPanel, BorderLayout.WEST);
-            
-            JButton calshowbutton1 = new JButton("day");           
-            JButton calshowbutton2 = new JButton("week");
-            JButton calshowbutton3 = new JButton("month");
-            
-           
-            
-            greenPanel.setLayout(new  GridLayout(7,1,3,3));
-            greenPanel.add(calshowbutton1);///
-            greenPanel.add(calshowbutton2);
-            greenPanel.add(calshowbutton3);
-            
-            JPanel eventPanel1 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-            JLabel seldayevent = new JLabel("Events for selected day");
-            seldayevent.setForeground(Color.green);
-            eventPanel1.add(seldayevent);
-            
-            JPanel eventPanel2 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-            JLabel monthevents = new JLabel("Events for whole month");
-            monthevents.setForeground(Color.green);
-            eventPanel2.add(monthevents);
-            
-            JPanel eventPanel3 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-            JLabel upcoming = new JLabel("Upcoming events");
-            upcoming.setForeground(Color.green);
-            eventPanel3.add(upcoming);
-            
-            greenPanel.add(eventPanel1);
-            greenPanel.add(eventPanel2);
-            greenPanel.add(eventPanel3);
-            
-            JButton chooseDate = new JButton("CHOOSE DATE");
-            
-            
-            
-            JPanel buttonPanel = new JPanel(new FlowLayout());
-            buttonPanel.add(chooseDate, BorderLayout.CENTER);
-
-            // Add the green panel and button panel to the main panel
-            greenPanel.add(buttonPanel, BorderLayout.SOUTH);
-            //mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-            
-
-
-            JPanel mainPanel = new JPanel(new BorderLayout());
-            frame.add(mainPanel, BorderLayout.CENTER);
-
-            JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-            bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
-            
-            mainPanel.add(bluePanel, BorderLayout.CENTER);
-            
-            
-            JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-            labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 2 rows, 7 columns
-
-            String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
-
-            for (String dayLabel : dayLabels) {
-                JLabel label = new JLabel(dayLabel);
-                label.setForeground(Color.green);
-                label.setHorizontalAlignment(SwingConstants.CENTER);
-                labelPanel.add(label);
-            }
-
-            mainPanel.add(labelPanel, BorderLayout.NORTH);
-            ///////////////////
-            
-            
-            
-
-           // JFrame addevent = new JFrame
-            
-            calshowbutton1.addActionListener(e -> {
-                Component[] components = bluePanel.getComponents();
-                labelPanel.setVisible(false);
-                bluePanel.remove(labelPanel);
-                // Remove each component from bluePanel
-                for (Component component : components) {
-                    bluePanel.remove(component);
-                }
-
-                // Repaint bluePanel to reflect the changes
-                bluePanel.revalidate();
-                bluePanel.repaint();
-                
-                for (int i = 1; i <= 24; i++) {
-                    bluePanel.setLayout(new GridLayout(24, 1, 5, 5)); 
-                    JButton button = new JButton(Integer.toString(i));
-                    bluePanel.add(button);
-                }
-                
-             
-            });
-            
-            calshowbutton2.addActionListener(e -> {
-                Component[] components = bluePanel.getComponents();
-                labelPanel.setVisible(false);
-                // Remove each component from bluePanel
-                for (Component component : components) {
-                    bluePanel.remove(component);
-                }
-
-                // Repaint bluePanel to reflect the changes
-                bluePanel.revalidate();
-                bluePanel.repaint();
-                
-                for (int i = 1; i <= 7; i++) {
-                    bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
-                    JButton button = new JButton(Integer.toString(i));
-                    bluePanel.add(button);
-                }
-                
-                
-            });
-            
-chooseDate.addActionListener(e -> {
-    // Reset chosenDate to null before asking the user for a new date
-    chosenDate = null;
-
-    // Ask the user for the year, month, and day using JOptionPane
-    int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
-    int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-    int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day of the month:"));
-
-    // Set the chosen date
-    chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0); // Assuming time is 00:00
-});
-
-// ... (other code)
-
-calshowbutton3.addActionListener(e -> {
-    Component[] components = bluePanel.getComponents();
-    labelPanel.setVisible(true);
-    // Remove each component from bluePanel
-    for (Component component : components) {
-        bluePanel.remove(component);
-    }
-
-    // Use the chosenDate if it's set, otherwise use the current date
-    LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
-
-    int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
-    int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
-
-    int totalCells = 5 * 7; // Total cells in a 5x7 grid
-
-    // Remove all components from bluePanel
-    bluePanel.removeAll();
-
-    // Set the layout to the intended 5x7 grid layout for the month
-    bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
-
-    for (int i = 1; i <= totalCells; i++) {
-        JButton button = new JButton();
-
-        // Calculate the day number based on the starting day of the month
-        int dayNumber = i - startingDayOfMonth + 1;
-
-        if (dayNumber > 0 && dayNumber <= daysInMonth) {
-            button.setText(Integer.toString(dayNumber));
-        }
-
-        bluePanel.add(button);
-
-        // Add an action listener to each button for future actions
-        button.addActionListener(buttonEvent -> {
-            
-            // You can perform additional actions when a button is clicked
-            JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
-            
-            for (int j = 1; j <= totalCells; j++) {
-                bluePanel.removeAll();
-                button.setVisible(false);
-            }
-            ////////////
-             JPanel addEvent= createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
-             addEvent.setPreferredSize(new Dimension(250, 500));
-             bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
-             
-             JPanel titlePanel =  new JPanel();
-             titlePanel.setForeground(Color.white);
-             
-             
-             JLabel title =  new JLabel("Title");
-             
-             titlePanel.add(title);
-             bluePanel.add(titlePanel);
-           
-            
-            bluePanel.revalidate();
-            bluePanel.repaint();
-            
-            bluePanel.add(addEvent, BorderLayout.CENTER);
-        });
-    }
-
-    // Repaint bluePanel to reflect the changes
-    bluePanel.revalidate();
-    bluePanel.repaint();
-});
-            
-            
-            for (int i = 1; i <= 31; i++) {
-                JButton button = new JButton(Integer.toString(i));
-                
-                button.addActionListener(e ->{
-                
-                   
-                });
-                
-                bluePanel.add(button);
-            }
-            
-            
-            
-           
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = createMainFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
-        });   
+        });
+//        SwingUtilities.invokeLater(() -> {
+//
+//        //LaunchPage launchPage = new LaunchPage();        
+//
+//        JFrame frame = new JFrame();
+//        frame.setTitle("Calendar");
+//        frame.setSize(500, 500);
+//        frame.setLayout(new BorderLayout());
+//
+//        ImageIcon image= new ImageIcon("Resources/calendar-green-icon-png-17.png");
+//        frame.setIconImage(image.getImage());
+//
+//        JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+//        greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
+//
+//        greenPanel.setPreferredSize(new Dimension(250, 500));
+//        frame.add(greenPanel, BorderLayout.WEST);
+//
+//        JButton calshowbutton1 = new JButton("day");           
+//        JButton calshowbutton2 = new JButton("week");
+//        JButton calshowbutton3 = new JButton("month");
+//
+//
+//
+//        greenPanel.setLayout(new  GridLayout(7,1,3,3));
+//        greenPanel.add(calshowbutton1);///
+//        greenPanel.add(calshowbutton2);
+//        greenPanel.add(calshowbutton3);
+//
+//        JPanel eventPanel1 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+//        JLabel seldayevent = new JLabel("Events for selected day");
+//        seldayevent.setForeground(Color.green);
+//        eventPanel1.add(seldayevent);
+//
+//        JPanel eventPanel2 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+//        JLabel monthevents = new JLabel("Events for whole month");
+//        monthevents.setForeground(Color.green);
+//        eventPanel2.add(monthevents);
+//
+//        JPanel eventPanel3 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+//        JLabel upcoming = new JLabel("Upcoming events");
+//        upcoming.setForeground(Color.green);
+//        eventPanel3.add(upcoming);
+//
+//        greenPanel.add(eventPanel1);
+//        greenPanel.add(eventPanel2);
+//        greenPanel.add(eventPanel3);
+//
+//        JButton chooseDate = new JButton("CHOOSE DATE");
+//
+//
+//
+//        JPanel buttonPanel = new JPanel(new FlowLayout());
+//        buttonPanel.add(chooseDate, BorderLayout.CENTER);
+//
+//        // Add the green panel and button panel to the main panel
+//        greenPanel.add(buttonPanel, BorderLayout.SOUTH);
+//        //mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+//
+//
+//
+//        JPanel mainPanel = new JPanel(new BorderLayout());
+//        frame.add(mainPanel, BorderLayout.CENTER);
+//
+//        JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+//        bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+//
+//        mainPanel.add(bluePanel, BorderLayout.CENTER);
+//
+//
+//        JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+//        labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 2 rows, 7 columns
+//
+//        String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
+//
+//        for (String dayLabel : dayLabels) {
+//            JLabel label = new JLabel(dayLabel);
+//            label.setForeground(Color.green);
+//            label.setHorizontalAlignment(SwingConstants.CENTER);
+//            labelPanel.add(label);
+//        }
+//
+//        mainPanel.add(labelPanel, BorderLayout.NORTH);
+//        ///////////////////
+//
+//
+//
+//
+//       // JFrame addevent = new JFrame
+//
+//        calshowbutton1.addActionListener(e -> {
+//            Component[] components = bluePanel.getComponents();
+//            labelPanel.setVisible(false);
+//            bluePanel.remove(labelPanel);
+//            // Remove each component from bluePanel
+//            for (Component component : components) {
+//                bluePanel.remove(component);
+//            }
+//
+//            // Repaint bluePanel to reflect the changes
+//            bluePanel.revalidate();
+//            bluePanel.repaint();
+//
+//            for (int i = 1; i <= 24; i++) {
+//                bluePanel.setLayout(new GridLayout(24, 1, 5, 5)); 
+//                JButton button = new JButton(Integer.toString(i));
+//                bluePanel.add(button);
+//            }
+//        });
+//
+//        calshowbutton2.addActionListener(e -> {
+//            Component[] components = bluePanel.getComponents();
+//            labelPanel.setVisible(false);
+//            // Remove each component from bluePanel
+//            for (Component component : components) {
+//                bluePanel.remove(component);
+//            }
+//
+//            // Repaint bluePanel to reflect the changes
+//            bluePanel.revalidate();
+//            bluePanel.repaint();
+//
+//            for (int i = 1; i <= 7; i++) {
+//                bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+//                JButton button = new JButton(Integer.toString(i));
+//                bluePanel.add(button);
+//            }
+//
+//
+//        });
+//            
+//        chooseDate.addActionListener(e -> {
+//            // Reset chosenDate to null before asking the user for a new date
+//            chosenDate = null;
+//
+//            // Ask the user for the year, month, and day using JOptionPane
+//            int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
+//            int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
+//            int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day of the month:"));
+//
+//            // Set the chosen date
+//            chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0); // Assuming time is 00:00
+//        });
+//
+//
+//
+//        calshowbutton3.addActionListener(e -> {
+//            Component[] components = bluePanel.getComponents();
+//            labelPanel.setVisible(true);
+//            // Remove each component from bluePanel
+//            for (Component component : components) {
+//                bluePanel.remove(component);
+//            }
+//
+//            // Use the chosenDate if it's set, otherwise use the current date
+//            LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+//
+//            int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
+//            int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
+//
+//            int totalCells = 5 * 7; // Total cells in a 5x7 grid
+//
+//            // Remove all components from bluePanel
+//            bluePanel.removeAll();
+//
+//            // Set the layout to the intended 5x7 grid layout for the month
+//            bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+//
+//            for (int i = 1; i <= totalCells; i++) {
+//                JButton button = new JButton();
+//
+//                // Calculate the day number based on the starting day of the month
+//                int dayNumber = i - startingDayOfMonth + 1;
+//
+//                if (dayNumber > 0 && dayNumber <= daysInMonth) {
+//                    button.setText(Integer.toString(dayNumber));
+//                }
+//
+//                bluePanel.add(button);
+//
+//                // Add an action listener to each button for future actions
+//                button.addActionListener(buttonEvent -> {
+//
+//                    // You can perform additional actions when a button is clicked
+//                    JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+//
+//                    for (int j = 1; j <= totalCells; j++) {
+//                        bluePanel.removeAll();
+//                        button.setVisible(false);
+//                    }
+//                    ////////////
+//                     JPanel addEvent= createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+//                     addEvent.setPreferredSize(new Dimension(250, 500));
+//                     bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
+//
+//                     JPanel titlePanel =  new JPanel();
+//                     titlePanel.setForeground(Color.white);
+//
+//
+//                     JLabel title =  new JLabel("Title");
+//
+//                     titlePanel.add(title);
+//                     bluePanel.add(titlePanel);
+//
+//
+//                    bluePanel.revalidate();
+//                    bluePanel.repaint();
+//
+//                    bluePanel.add(addEvent, BorderLayout.CENTER);
+//                });
+//            }
+//
+//            // Repaint bluePanel to reflect the changes
+//            bluePanel.revalidate();
+//            bluePanel.repaint();
+//        });
+//            
+//            
+//        for (int i = 1; i <= 31; i++) {
+//            JButton button = new JButton(Integer.toString(i));
+//        button.addActionListener(e ->{
+//
+//
+//            });
+//
+//            bluePanel.add(button);
+//        }
+//            button.addActionListener(e ->{
+//
+//
+//            });
+//
+//            bluePanel.add(button);
+//        }
+//        
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setVisible(true);
+//    });   
         
         
           
@@ -1048,6 +1058,8 @@ calshowbutton3.addActionListener(e -> {
         
     }
     
+    
+    
 
     
     
@@ -1060,25 +1072,215 @@ calshowbutton3.addActionListener(e -> {
 //        }
         
     
+
     
+    public static JFrame createMainFrame() {
+        JFrame frame = new JFrame();
+        frame.setTitle("Calendar");
+        frame.setSize(500, 500);
+        frame.setLayout(new BorderLayout());
+
+        ImageIcon image = new ImageIcon("Resources/calendar-green-icon-png-17.png");
+        frame.setIconImage(image.getImage());
+        
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        frame.add(mainPanel, BorderLayout.CENTER);
+
+        bluePanel = createBluePanel();
+        mainPanel.add(bluePanel, BorderLayout.CENTER);
+        
+        JPanel greenPanel = createGreenPanel();
+        frame.add(greenPanel, BorderLayout.WEST);
+        
+        labelPanel = createLabelPanel();
+        mainPanel.add(labelPanel, BorderLayout.NORTH);
+
+        return frame;
+    }
+
+    public static JPanel createGreenPanel() {
+        JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+        greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
+
+        greenPanel.setPreferredSize(new Dimension(250, 500));
+
+        JButton calshowbutton1 = new JButton("day");
+        JButton calshowbutton2 = new JButton("week");
+        JButton calshowbutton3 = new JButton("month");
+
+        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3)));
+
+        List<String> eventLabels = Arrays.asList("Events for selected day", "Events for whole month", "Upcoming events");
+        greenPanel.add(createEventPanels(eventLabels));
+
+        JButton chooseDate = new JButton("CHOOSE DATE");
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(chooseDate, BorderLayout.CENTER);
+        greenPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        calshowbutton1.addActionListener(e -> handleDayButton());
+        calshowbutton2.addActionListener(e -> handleWeekButton());
+        calshowbutton3.addActionListener(e -> handleMonthButton());
+        chooseDate.addActionListener(e -> handleChooseDateButton());
+
+        return greenPanel;
+    }
+
+    public static JPanel createButtonsPanel(List<JButton> buttons) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(buttons.size(), 1, 3, 3));
+        buttons.forEach(panel::add);
+        return panel;
+    }
+
+    public static JPanel createEventPanels(List<String> eventLabels) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(eventLabels.size(), 1, 3, 3));
+        eventLabels.forEach(label -> {
+            JPanel eventPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            JLabel eventLabel = new JLabel(label);
+            eventLabel.setForeground(Color.green);
+            eventPanel.add(eventLabel);
+            panel.add(eventPanel);
+        });
+        return panel;
+    }
+
+    public static void handleDayButton() {
+        handleButton(24, 1, 5, 5);
+    }
+
+    public static void handleWeekButton() {
+         handleButton(7, 5, 7, 5);
+    }
+
+    public static void handleMonthButton() {
+        labelPanel.setVisible(true);
+
+        // Use the chosenDate if it's set, otherwise use the current date
+        LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+
+        int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
+        int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
+
+        int totalCells = 5 * 7; // Total cells in a 5x7 grid
+
+        // Remove all components from bluePanel
+        bluePanel.removeAll();
+
+        // Set the layout to the intended 5x7 grid layout for the month
+        bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+
+        for (int i = 1; i <= totalCells; i++) {
+            JButton button = new JButton();
+
+            // Calculate the day number based on the starting day of the month
+            int dayNumber = i - startingDayOfMonth + 1;
+
+            if (dayNumber > 0 && dayNumber <= daysInMonth) {
+                button.setText(Integer.toString(dayNumber));
+
+                // Add an action listener to each day button for future actions
+                button.addActionListener(dayButtonEvent -> {
+                    // You can perform additional actions when a day button is clicked
+                    JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+
+                    // Remove all components from bluePanel
+                    bluePanel.removeAll();
+
+                    ////////////
+                    JPanel addEvent = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+                    addEvent.setPreferredSize(new Dimension(250, 500));
+                    bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
+
+                    JPanel titlePanel = new JPanel();
+                    titlePanel.setForeground(Color.white);
+
+                    JLabel title = new JLabel("Title");
+
+                    titlePanel.add(title);
+                    bluePanel.add(titlePanel);
+
+                    bluePanel.revalidate();
+                    bluePanel.repaint();
+
+                    bluePanel.add(addEvent, BorderLayout.CENTER);
+                });
+            }
+
+            bluePanel.add(button);
+        }
+
+        // Repaint bluePanel to reflect the changes
+        bluePanel.revalidate();
+        bluePanel.repaint();
+    }
+
+
+    public static void handleChooseDateButton() {
+        int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
+        int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
+        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day of the month:"));
+        chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+    }
     
-    
-    
-       private static JPanel createGradientPanel(Color startColor, Color endColor) {
+    public static void handleButton(int maxIterations, int rows, int cols, int gap) {
+        Component[] components = bluePanel.getComponents();
+        labelPanel.setVisible(false);
+        bluePanel.removeAll();
+
+        for (Component component : components) {
+            bluePanel.remove(component);
+        }
+
+        bluePanel.revalidate();
+        bluePanel.repaint();
+
+        bluePanel.setLayout(new GridLayout(rows, cols, gap, gap));
+
+        for (int i = 1; i <= maxIterations; i++) {
+            JButton button = new JButton(Integer.toString(i));
+            bluePanel.add(button);
+        }
+}
+
+    public static JPanel createBluePanel() {
+        JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+        bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+        return bluePanel;
+    }
+
+    public static JPanel createLabelPanel() {
+        JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+        labelPanel.setLayout(new GridLayout(1, 7, 5, 5));
+
+        String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
+        Arrays.stream(dayLabels)
+                .map(label -> {
+                    JLabel dayLabel = new JLabel(label);
+                    dayLabel.setForeground(Color.green);
+                    dayLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    return dayLabel;
+                })
+                .forEach(labelPanel::add);
+
+        return labelPanel;
+    }
+    public static JPanel createGradientPanel(Color startColor, Color endColor) {
         return new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
+            super.paintComponent(g);
 
-                Graphics2D g2d = (Graphics2D) g;
-                int width = getWidth();
-                int height = getHeight();
+            Graphics2D g2d = (Graphics2D) g;
+            int width = getWidth();
+            int height = getHeight();
 
-                GradientPaint gradientPaint = new GradientPaint(-300, 0, startColor, width, height, endColor);
-                g2d.setPaint(gradientPaint);
-                g2d.fill(new Rectangle2D.Double(0, 0, width, height));
-            }
-        };
+            GradientPaint gradientPaint = new GradientPaint(-300, 0, startColor, width, height, endColor);
+            g2d.setPaint(gradientPaint);
+            g2d.fill(new Rectangle2D.Double(0, 0, width, height));
+         }
+     };
     }
    
    }
