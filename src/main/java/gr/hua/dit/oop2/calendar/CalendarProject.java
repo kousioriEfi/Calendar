@@ -1222,7 +1222,7 @@ public class CalendarProject{
     public static void handleChooseDateButton() {
         int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
         int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-        int dayOfMonth = 1; // Set to the 1st day of the month
+        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
 
         // Calculate the day of the week for the 1st day of the entered month
         LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
@@ -1257,11 +1257,10 @@ public class CalendarProject{
                 break;
         }
 
+        handleButton(31, 6, 7, 5, startingDay);
+        handleMonthButton();// automatic press to see month 
         
-        handleButton(31, 6, 7, 5, startingDay); // Handle day buttons
-        handleMonthButton(); // Automatically display the month layout because else it would show a random month layout.
     }
-
 
 
     // The handleButton method is modified to consider the starting day of the week
@@ -1286,15 +1285,11 @@ public class CalendarProject{
             bluePanel.add(emptyButton);
         }
 
-        int totalCells = rows * cols;
-
-        for (int i = 1; i <= totalCells - startingDay; i++) {
+        for (int i = 1; i <= maxIterations; i++) {
             JButton button = new JButton(Integer.toString(i));
             bluePanel.add(button);
         }
     }
-
-
 
 
     public static JPanel createBluePanel() {
