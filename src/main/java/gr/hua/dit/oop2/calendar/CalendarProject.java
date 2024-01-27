@@ -10,11 +10,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,12 +39,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
    /**
     *
@@ -51,397 +56,157 @@ import javax.swing.SwingConstants;
 public class CalendarProject{
     private static JPanel bluePanel;
     private static JPanel labelPanel;
+    private static JPanel eventsPanel;
     private static LocalDateTime chosenDate;
+    private static ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
+    private static JLabel chosenDateLabel = new JLabel("Current Date: ");
+
     //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
-        SwingUtilities.invokeLater(() -> {
+        
+        Scanner input = new java.util.Scanner(System.in);
+
+        
+        TimeTeller teller = TimeService.getTeller();     
+//      String calendarChoice = args[0].toLowerCase();
+        String fileName = null;
+//        if(args.length == 1){
+//              fileName = args[0];
+//        }else{
+//             fileName = args[1];
+//        }
+
+        fileName="calendar.ics";        //getDirectoryPath()+ "//" + fileName ;
+
+//        int year=requestInt("Year");
+//        int month=requestChoice2(12,"Month (up to 12)");
+//        int day=requestChoice2(30,"Day (up to 30)" );
+//        int hours=requestChoice(23,"Hours(up to 23)");
+//        int minutes=requestChoice(59,"Minutes(up to 59)");
+//        int seconds=requestChoice(59,"Seconds(up to 59)");
+//
+//        LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
+//        LocalDateTime dt = teller.now();
+//
+//        System.out.println(time.adjustInto(dt));
+//        Temporal timeNow = time.adjustInto(dt);
+
+        eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
+        eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
+
+        Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
+        eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
+        
+         SwingUtilities.invokeLater(() -> {
             JFrame frame = createMainFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
         });
-//        SwingUtilities.invokeLater(() -> {
+         
+//        switch (args.length){
 //
-//        //LaunchPage launchPage = new LaunchPage();        
+//            case 1 :{ //Case the option is add an event
+//               //Message in order for the user to decide wether they want to add an appointment or project
+//               System.out.println("Create Appointment /Project |Type(1/2)");
 //
-//        JFrame frame = new JFrame();
-//        frame.setTitle("Calendar");
-//        frame.setSize(500, 500);
-//        frame.setLayout(new BorderLayout());
+//               int ev_opt = requestChoice2(2,"1/2");
+//               input.nextLine();
 //
-//        ImageIcon image= new ImageIcon("Resources/calendar-green-icon-png-17.png");
-//        frame.setIconImage(image.getImage());
+//                switch (ev_opt) { 
 //
-//        JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
-//        greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
+//                    case 1:{ //Case they chose to add appointment
 //
-//        greenPanel.setPreferredSize(new Dimension(250, 500));
-//        frame.add(greenPanel, BorderLayout.WEST);
+//                       System.out.println("Add title");
+//                       String title = input.nextLine();
 //
-//        JButton calshowbutton1 = new JButton("day");           
-//        JButton calshowbutton2 = new JButton("week");
-//        JButton calshowbutton3 = new JButton("month");
+//                       System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+//                       String dateString = input.nextLine();
 //
+//                       //Instant instant = dateString.toInstant;
+//                       //LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+//                       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+//                       LocalDateTime date = LocalDateTime.parse(dateString, formatter);
+//                       System.out.println("Converted LocalDateTime: " + date);
+//                       //Date date = dateFormat.parse(dateString);
 //
+//                       System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
+//                       String durationString = input.nextLine();
 //
-//        greenPanel.setLayout(new  GridLayout(7,1,3,3));
-//        greenPanel.add(calshowbutton1);///
-//        greenPanel.add(calshowbutton2);
-//        greenPanel.add(calshowbutton3);
+//                       LocalDateTime duration = LocalDateTime.parse(durationString, formatter);
+//                       System.out.println("Add description");
+//                       String description = input.nextLine();
 //
-//        JPanel eventPanel1 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-//        JLabel seldayevent = new JLabel("Events for selected day");
-//        seldayevent.setForeground(Color.green);
-//        eventPanel1.add(seldayevent);
+//                       Appointment myAppointment = new Appointment(title,description,date,duration);
+//                       writeAppointmentToFile(myAppointment,eventsList,fileName);
 //
-//        JPanel eventPanel2 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-//        JLabel monthevents = new JLabel("Events for whole month");
-//        monthevents.setForeground(Color.green);
-//        eventPanel2.add(monthevents);
-//
-//        JPanel eventPanel3 = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-//        JLabel upcoming = new JLabel("Upcoming events");
-//        upcoming.setForeground(Color.green);
-//        eventPanel3.add(upcoming);
-//
-//        greenPanel.add(eventPanel1);
-//        greenPanel.add(eventPanel2);
-//        greenPanel.add(eventPanel3);
-//
-//        JButton chooseDate = new JButton("CHOOSE DATE");
+//                       break;
 //
 //
+//                    }case 2 : { //Case they want to add a project
 //
-//        JPanel buttonPanel = new JPanel(new FlowLayout());
-//        buttonPanel.add(chooseDate, BorderLayout.CENTER);
+//                        System.out.println("Add title");
+//                        String title = input.nextLine();
 //
-//        // Add the green panel and button panel to the main panel
-//        greenPanel.add(buttonPanel, BorderLayout.SOUTH);
-//        //mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+//                        System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
+//                        String dueDateTimeString = input.nextLine();
+//                        LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
 //
+//                        System.out.println("Add description");
+//                        String description = input.nextLine();
 //
+//                        System.out.println("Give status of the project (true/false)");
+//                        boolean status = requestBoolean("true/false");
 //
-//        JPanel mainPanel = new JPanel(new BorderLayout());
-//        frame.add(mainPanel, BorderLayout.CENTER);
+//                        Project myProject = new Project(title, description, dueDateTime,status);
+//                        writeProjectToFile(myProject,eventsList,fileName);
 //
-//        JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-//        bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
+//                        break;
+//                    } 
 //
-//        mainPanel.add(bluePanel, BorderLayout.CENTER);
-//
-//
-//        JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
-//        labelPanel.setLayout(new GridLayout(1, 7, 5, 5)); // 2 rows, 7 columns
-//
-//        String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
-//
-//        for (String dayLabel : dayLabels) {
-//            JLabel label = new JLabel(dayLabel);
-//            label.setForeground(Color.green);
-//            label.setHorizontalAlignment(SwingConstants.CENTER);
-//            labelPanel.add(label);
-//        }
-//
-//        mainPanel.add(labelPanel, BorderLayout.NORTH);
-//        ///////////////////
-//
-//
-//
-//
-//       // JFrame addevent = new JFrame
-//
-//        calshowbutton1.addActionListener(e -> {
-//            Component[] components = bluePanel.getComponents();
-//            labelPanel.setVisible(false);
-//            bluePanel.remove(labelPanel);
-//            // Remove each component from bluePanel
-//            for (Component component : components) {
-//                bluePanel.remove(component);
-//            }
-//
-//            // Repaint bluePanel to reflect the changes
-//            bluePanel.revalidate();
-//            bluePanel.repaint();
-//
-//            for (int i = 1; i <= 24; i++) {
-//                bluePanel.setLayout(new GridLayout(24, 1, 5, 5)); 
-//                JButton button = new JButton(Integer.toString(i));
-//                bluePanel.add(button);
-//            }
-//        });
-//
-//        calshowbutton2.addActionListener(e -> {
-//            Component[] components = bluePanel.getComponents();
-//            labelPanel.setVisible(false);
-//            // Remove each component from bluePanel
-//            for (Component component : components) {
-//                bluePanel.remove(component);
-//            }
-//
-//            // Repaint bluePanel to reflect the changes
-//            bluePanel.revalidate();
-//            bluePanel.repaint();
-//
-//            for (int i = 1; i <= 7; i++) {
-//                bluePanel.setLayout(new GridLayout(5, 7, 5, 5)); 
-//                JButton button = new JButton(Integer.toString(i));
-//                bluePanel.add(button);
-//            }
-//
-//
-//        });
-//            
-//        chooseDate.addActionListener(e -> {
-//            // Reset chosenDate to null before asking the user for a new date
-//            chosenDate = null;
-//
-//            // Ask the user for the year, month, and day using JOptionPane
-//            int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
-//            int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-//            int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day of the month:"));
-//
-//            // Set the chosen date
-//            chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0); // Assuming time is 00:00
-//        });
-//
-//
-//
-//        calshowbutton3.addActionListener(e -> {
-//            Component[] components = bluePanel.getComponents();
-//            labelPanel.setVisible(true);
-//            // Remove each component from bluePanel
-//            for (Component component : components) {
-//                bluePanel.remove(component);
-//            }
-//
-//            // Use the chosenDate if it's set, otherwise use the current date
-//            LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
-//
-//            int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
-//            int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
-//
-//            int totalCells = 5 * 7; // Total cells in a 5x7 grid
-//
-//            // Remove all components from bluePanel
-//            bluePanel.removeAll();
-//
-//            // Set the layout to the intended 5x7 grid layout for the month
-//            bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
-//
-//            for (int i = 1; i <= totalCells; i++) {
-//                JButton button = new JButton();
-//
-//                // Calculate the day number based on the starting day of the month
-//                int dayNumber = i - startingDayOfMonth + 1;
-//
-//                if (dayNumber > 0 && dayNumber <= daysInMonth) {
-//                    button.setText(Integer.toString(dayNumber));
 //                }
+//            }case 2:{
 //
-//                bluePanel.add(button);
-//
-//                // Add an action listener to each button for future actions
-//                button.addActionListener(buttonEvent -> {
-//
-//                    // You can perform additional actions when a button is clicked
-//                    JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
-//
-//                    for (int j = 1; j <= totalCells; j++) {
-//                        bluePanel.removeAll();
-//                        button.setVisible(false);
+//                switch (calendarChoice){
+//                    case "day":{
+//                        printEventsForTheDay(eventsList,timeNow);
+//                        break;
+//                        }
+//                    case "week":{
+//                        printEventsForTheWeek(eventsList,timeNow);
+//                        break;
 //                    }
-//                    ////////////
-//                     JPanel addEvent= createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
-//                     addEvent.setPreferredSize(new Dimension(250, 500));
-//                     bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
-//
-//                     JPanel titlePanel =  new JPanel();
-//                     titlePanel.setForeground(Color.white);
-//
-//
-//                     JLabel title =  new JLabel("Title");
-//
-//                     titlePanel.add(title);
-//                     bluePanel.add(titlePanel);
-//
-//
-//                    bluePanel.revalidate();
-//                    bluePanel.repaint();
-//
-//                    bluePanel.add(addEvent, BorderLayout.CENTER);
-//                });
+//                    case "month":{
+//                        printEventsForTheMonth(eventsList,timeNow);
+//                        break;
+//                    }
+//                    case "pastday":{
+//                        printEventsForThePastDay(eventsList,timeNow);
+//                        break;
+//                    }
+//                    case "pastweek":{
+//                        printEventsForThePastWeek(eventsList,timeNow);
+//                        break;
+//                    }
+//                    case "pastmonth":{
+//                        printEventsForThePastMonth(eventsList,timeNow);
+//                        break;
+//                    }
+//                    case "todo":{
+//                        printEventsForTheToDo(eventsList,timeNow);
+//                        break;
+//                    }
+//                    case "due":{
+//                        printEventsForTheDue(eventsList,timeNow);
+//                        break;
+//                    }
+//                }
+//                break;
 //            }
+//        } 
 //
-//            // Repaint bluePanel to reflect the changes
-//            bluePanel.revalidate();
-//            bluePanel.repaint();
-//        });
-//            
-//            
-//        for (int i = 1; i <= 31; i++) {
-//            JButton button = new JButton(Integer.toString(i));
-//        button.addActionListener(e ->{
-//
-//
-//            });
-//
-//            bluePanel.add(button);
-//        }
-//            button.addActionListener(e ->{
-//
-//
-//            });
-//
-//            bluePanel.add(button);
-//        }
-//        
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setVisible(true);
-//    });   
-        
-        
-          
-               //ΚΕΝΟ ΓΙΑ ΝΑ ΞΕΧΩΡΙΖΕΙ ΤΟ SWING ΑΠΟ ΤΟΝ ΥΠΟΛΟΙΠΠΟ ΚΩΔΙΚΑ 
-                
-                
-               
-        
-        Scanner input = new java.util.Scanner(System.in);
-           
-            ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
-            TimeTeller teller = TimeService.getTeller();     
-            String calendarChoice = args[0].toLowerCase();
-            String fileName = null;
-            if(args.length == 1){
-                  fileName = args[0];
-            }else{
-                 fileName = args[1];
-            }
-            
-            fileName=getDirectoryPath()+ "//" + fileName ;
-            
-            int year=requestInt("Year");
-            int month=requestChoice2(12,"Month (up to 12)");
-            int day=requestChoice2(30,"Day (up to 30)" );
-            int hours=requestChoice(23,"Hours(up to 23)");
-            int minutes=requestChoice(59,"Minutes(up to 59)");
-            int seconds=requestChoice(59,"Seconds(up to 59)");
-            
-            LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
-            LocalDateTime dt = teller.now();
-            
-            System.out.println(time.adjustInto(dt));
-            Temporal timeNow = time.adjustInto(dt);
-            
-            eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
-            eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
-
-            Comparator<Event> eventComparator = Comparator.comparing(Event::getDate);//A comparator created to compare the events besed on their day
-            eventsList.sort(eventComparator);//EventList is getting sorted by their date with the comparator
-
-            switch (args.length){
-
-                case 1 :{ //Case the option is add an event
-                   //Message in order for the user to decide wether they want to add an appointment or project
-                   System.out.println("Create Appointment /Project |Type(1/2)");
-                    
-                   int ev_opt = requestChoice2(2,"1/2");
-                   input.nextLine();
-
-                    switch (ev_opt) { 
-
-                        case 1:{ //Case they chose to add appointment
-
-                           System.out.println("Add title");
-                           String title = input.nextLine();
-
-                           System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                           String dateString = input.nextLine();
-
-                           //Instant instant = dateString.toInstant;
-                           //LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-                           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-                           LocalDateTime date = LocalDateTime.parse(dateString, formatter);
-                           System.out.println("Converted LocalDateTime: " + date);
-                           //Date date = dateFormat.parse(dateString);
-
-                           System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                           String durationString = input.nextLine();
-
-                           LocalDateTime duration = LocalDateTime.parse(durationString, formatter);
-                           System.out.println("Add description");
-                           String description = input.nextLine();
-
-                           Appointment myAppointment = new Appointment(title,description,date,duration);
-                           writeAppointmentToFile(myAppointment,eventsList,fileName);
-                          
-                           break;
-                           
-                           
-                        }case 2 : { //Case they want to add a project
-                       
-                            System.out.println("Add title");
-                            String title = input.nextLine();
-                            
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-                            System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-                            String dueDateTimeString = input.nextLine();
-                            LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
-                            
-                            System.out.println("Add description");
-                            String description = input.nextLine();
-
-                            System.out.println("Give status of the project (true/false)");
-                            boolean status = requestBoolean("true/false");
-
-                            Project myProject = new Project(title, description, dueDateTime,status);
-                            writeProjectToFile(myProject,eventsList,fileName);
-                            
-                            break;
-                        } 
-                       
-                    }
-                }case 2:{
-                
-                    switch (calendarChoice){
-                        case "day":{
-                            printEventsForTheDay(eventsList,timeNow);
-                            break;
-                            }
-                        case "week":{
-                            printEventsForTheWeek(eventsList,timeNow);
-                            break;
-                        }
-                        case "month":{
-                            printEventsForTheMonth(eventsList,timeNow);
-                            break;
-                        }
-                        case "pastday":{
-                            printEventsForThePastDay(eventsList,timeNow);
-                            break;
-                        }
-                        case "pastweek":{
-                            printEventsForThePastWeek(eventsList,timeNow);
-                            break;
-                        }
-                        case "pastmonth":{
-                            printEventsForThePastMonth(eventsList,timeNow);
-                            break;
-                        }
-                        case "todo":{
-                            printEventsForTheToDo(eventsList,timeNow);
-                            break;
-                        }
-                        case "due":{
-                            printEventsForTheDue(eventsList,timeNow);
-                            break;
-                        }
-                    }
-                    break;
-                }
-            } 
-           
-           TimeService.stop();
-        }  
+//       TimeService.stop();
+   }  
     //END OF MAIN
     
     //This method is used for the request of the minutes and seconds because it allows the user to input 0>=
@@ -1058,26 +823,13 @@ public class CalendarProject{
         
     }
     
+    ///////BUTTON METHODS/////////////////////////////////
     
-    
-
-    
-    
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if(e.getSource()==){
-//            System.out.println("Button 1 clicked!");
-//            // Add your code here for handling the button click
-//            }
-//        }
-        
-    
-
     
     public static JFrame createMainFrame() {
         JFrame frame = new JFrame();
         frame.setTitle("Calendar");
-        frame.setSize(500, 500);
+        frame.setSize(800, 800);
         frame.setLayout(new BorderLayout());
 
         ImageIcon image = new ImageIcon("Resources/calendar-green-icon-png-17.png");
@@ -1102,8 +854,10 @@ public class CalendarProject{
         JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
         greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
 
-        greenPanel.setPreferredSize(new Dimension(250, 500));
-
+        greenPanel.setPreferredSize(new Dimension(450, 500));
+        
+        greenPanel.add(chosenDateLabel);
+        
         JButton calshowbutton1 = new JButton("day");
         JButton calshowbutton2 = new JButton("week");
         JButton calshowbutton3 = new JButton("month");
@@ -1111,7 +865,8 @@ public class CalendarProject{
         greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3)));
 
         List<String> eventLabels = Arrays.asList("Events for selected day", "Events for whole month", "Upcoming events");
-        greenPanel.add(createEventPanels(eventLabels));
+        eventsPanel = new JPanel();
+        greenPanel.add(createEventPanels(eventsPanel, eventLabels));
 
         JButton chooseDate = new JButton("CHOOSE DATE");
         JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -1122,30 +877,26 @@ public class CalendarProject{
         calshowbutton2.addActionListener(e -> handleWeekButton());
         calshowbutton3.addActionListener(e -> handleMonthButton());
         chooseDate.addActionListener(e -> handleChooseDateButton());
-
+        
         return greenPanel;
     }
-
     public static JPanel createButtonsPanel(List<JButton> buttons) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(buttons.size(), 1, 3, 3));
         buttons.forEach(panel::add);
         return panel;
     }
-
-    public static JPanel createEventPanels(List<String> eventLabels) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(eventLabels.size(), 1, 3, 3));
+    public static JPanel createEventPanels(JPanel targetPanel, List<String> eventLabels) {
+        targetPanel.setLayout(new GridLayout(eventLabels.size(), 1, 3, 3));
         eventLabels.forEach(label -> {
             JPanel eventPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
             JLabel eventLabel = new JLabel(label);
             eventLabel.setForeground(Color.green);
             eventPanel.add(eventLabel);
-            panel.add(eventPanel);
+            targetPanel.add(eventPanel);
         });
-        return panel;
+        return targetPanel;
     }
-
     public static void handleDayButton() {
         handleButton(24, 1, 5, 5,0);
     }
@@ -1190,16 +941,113 @@ public class CalendarProject{
 
                     ////////////
                     JPanel addEvent = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
-                    addEvent.setPreferredSize(new Dimension(250, 500));
-                    bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
+                    addEvent.setPreferredSize(new Dimension(500, 500));
+                    //bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
 
                     JPanel titlePanel = new JPanel();
                     titlePanel.setForeground(Color.white);
 
+                    addEvent.setLayout(new GridLayout(3, 1, 10, 10)); // 2 rows, 2 columns, horizontal and vertical gap of 10
+                    
                     JLabel title = new JLabel("Title");
-
-                    titlePanel.add(title);
-                    bluePanel.add(titlePanel);
+                    JTextField titleField = new JTextField();
+                    titleField.setPreferredSize(new Dimension(250, 40));
+                    
+                    JLabel description = new JLabel("Description");
+                    JTextField descriptionField = new JTextField();
+                    descriptionField.setPreferredSize(new Dimension(250, 40));
+                    
+                    JCheckBox checkBox1 = new JCheckBox("Project");
+                    
+                    JCheckBox checkBox2 = new JCheckBox("Assigment");
+                    
+                    //JButton submitButton = new JButton("Submit");
+                    
+                    
+                    checkBox1.addItemListener(e ->{
+                       
+                        if (e.getStateChange() == ItemEvent.SELECTED ){
+                        addEvent.setLayout(new GridLayout(6, 1, 10, 10));
+                        
+                        
+                        JLabel projdue = new JLabel("Project due");
+                        JTextField projdueField = new JTextField();
+                        projdueField.setPreferredSize(new Dimension(250, 40));
+                        
+                        JLabel projstatus = new JLabel("Status(True/false)");
+                        JTextField projstatusField = new JTextField();
+                        projstatusField.setPreferredSize(new Dimension(250, 40));
+                        
+                        JButton submit = new JButton("Submit");
+                        submit.setPreferredSize(new Dimension(500, 40));
+                    
+                        addEvent.add(projdue, 0);
+                        addEvent.add(projdueField, 1);
+                        addEvent.add(projstatus, 0);
+                        addEvent.add(projstatusField, 1);
+                        addEvent.add(submit);
+                        
+                        
+                        addEvent.revalidate();
+                        addEvent.repaint();
+                        
+                         submit.addActionListener(f -> {
+                            addEvent.setVisible(false);
+                            handleMonthButton();
+                            
+                        });
+                        
+                        }
+                      
+                    });
+                    
+                    checkBox2.addItemListener(e ->{
+                       
+                        if (e.getStateChange() == ItemEvent.SELECTED ){
+                        addEvent.setLayout(new GridLayout(6, 1, 10, 10));
+                        
+                        
+                        JLabel start = new JLabel("Appointment start");
+                        JTextField startField = new JTextField();
+                        startField.setPreferredSize(new Dimension(250, 40));
+                        
+                        JLabel end = new JLabel("Appointment ends");
+                        JTextField endField = new JTextField();
+                        endField.setPreferredSize(new Dimension(250, 40));
+                        
+                        JButton submit = new JButton("Submit");
+                        submit.setPreferredSize(new Dimension(500, 40));
+                    
+                        addEvent.add(end, 0);
+                        addEvent.add(endField, 1);
+                        addEvent.add(start, 0);
+                        addEvent.add(startField, 1);
+                        addEvent.add(submit);
+                        
+                        addEvent.revalidate();
+                        addEvent.repaint();
+                        
+                        submit.addActionListener(f -> {
+                            addEvent.setVisible(false);
+                            handleMonthButton();
+                            
+                        });
+                        
+                        }
+                      
+                    });
+                    
+                    
+                    
+                    
+                    addEvent.add(title);
+                    addEvent.add(titleField);
+                    addEvent.add(description);
+                    addEvent.add(descriptionField);
+                    addEvent.add(checkBox1);
+                    addEvent.add(checkBox2);
+                    
+                    
 
                     bluePanel.revalidate();
                     bluePanel.repaint();
@@ -1215,20 +1063,19 @@ public class CalendarProject{
         bluePanel.revalidate();
         bluePanel.repaint();
     }
-
-
-    
     
     public static void handleChooseDateButton() {
         int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
         int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
+        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
 
         // Calculate the day of the week for the 1st day of the entered month
         LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
         DayOfWeek dayOfWeek = firstDayOfMonth.getDayOfWeek();
 
         chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+        chosenDateLabel.setText("Current Date: " + formatDate(chosenDate));
+
 
         // Use the dayOfWeek to determine the layout of your month view
         int startingDay = 0; // 0 corresponds to Sunday, 1 to Monday, ..., 6 to Saturday
@@ -1261,7 +1108,10 @@ public class CalendarProject{
         handleMonthButton();// automatic press to see month 
         
     }
-
+    private static String formatDate(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // You can customize the pattern
+        return date.format(formatter);
+    }
 
     // The handleButton method is modified to consider the starting day of the week
     public static void handleButton(int maxIterations, int rows, int cols, int gap, int startingDay) {
@@ -1289,15 +1139,13 @@ public class CalendarProject{
             JButton button = new JButton(Integer.toString(i));
             bluePanel.add(button);
         }
+        displayEventsForDate(chosenDate);
     }
-
-
     public static JPanel createBluePanel() {
         JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
         bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
         return bluePanel;
     }
-
     public static JPanel createLabelPanel() {
         JPanel labelPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
         labelPanel.setLayout(new GridLayout(1, 7, 5, 5));
@@ -1330,8 +1178,107 @@ public class CalendarProject{
          }
      };
     }
-   
-   }
+    
+    private static void displayEventsForDate(LocalDateTime date) {
+        ArrayList<Event> dayEvents = getEventsForDate(date);
+        ArrayList<Event> monthEvents = getEventsForMonth(date);
+        ArrayList<Event> upcomingEvents = getEventsForUpcoming(date);
+
+        JPanel dayEventsPanel = createEventsPanel(dayEvents, "Selected Day Events");
+        JPanel monthEventsPanel = createEventsPanel(monthEvents, "Whole Month Events");
+        JPanel upcomingEventsPanel = createEventsPanel(upcomingEvents, "Upcoming Events");
+        // Clear existing components in the main events panel
+        eventsPanel.removeAll();
+
+        // Add day events panel to the main events panel
+        eventsPanel.add(dayEventsPanel);
+
+        // Add month events panel to the main events panel
+        eventsPanel.add(monthEventsPanel);
+        
+        // Add upcoming events panel to the main events panel
+        eventsPanel.add(upcomingEventsPanel);
 
 
+        // Repaint eventsPanel to reflect the changes
+        eventsPanel.revalidate();
+        eventsPanel.repaint();
+    }
+
+    // Example method to filter events for the specified date
+    private static ArrayList<Event> getEventsForDate(LocalDateTime date) {
+        ArrayList<Event> eventsForDate = new ArrayList<>();
+
+        for (Event event : eventsList) {
+            if (event.getDate().toLocalDate().equals(date.toLocalDate())) {
+                eventsForDate.add(event);
+            }
+        }
+
+        return eventsForDate;
+    }
+    private static ArrayList<Event> getEventsForMonth(LocalDateTime date) {
+        ArrayList<Event> eventsForMonth = new ArrayList<>();
+
+        for (Event event : eventsList) {
+            if (event.getDate().getMonth().equals(date.getMonth())) {
+                eventsForMonth.add(event);
+            }
+        }
+
+        return eventsForMonth;
+    }
+    private static ArrayList<Event> getEventsForUpcoming(LocalDateTime date) {
+        ArrayList<Event> eventsForUpcoming = new ArrayList<>();
+
+        LocalDateTime endOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
+
+        for (Event event : eventsList) {
+            if (event.getDate().isAfter(date) && event.getDate().isBefore(endOfMonth.plusDays(1))) {
+                eventsForUpcoming.add(event);
+            }
+        }
+
+        return eventsForUpcoming;
+    }
+
+
+    private static JPanel createEventsPanel(ArrayList<Event> events, String title) {
+        JPanel titleAndEventsPanel = new JPanel();
+        titleAndEventsPanel.setLayout(new BoxLayout(titleAndEventsPanel, BoxLayout.Y_AXIS));
+
+        // Add title label
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        titleAndEventsPanel.add(titleLabel);
+
+        // Check if events list is empty
+        if (events.isEmpty()) {
+            JPanel noEventsPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+            JLabel noEventsLabel = new JLabel("No Events");
+            noEventsLabel.setForeground(Color.green);
+            noEventsPanel.add(noEventsLabel);
+            titleAndEventsPanel.add(noEventsPanel);
+        } else {
+            // Add events to the same panel
+            for (Event event : events) {
+                JPanel eventPanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                String formattedDate = event.getDate().format(formatter);
+
+                JLabel eventLabel = new JLabel(event.getTitle() + " - " + formattedDate);
+                eventLabel.setForeground(Color.green);
+                eventLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+                eventPanel.add(eventLabel);
+
+                titleAndEventsPanel.add(eventPanel);
+            }
+        }
+
+        return titleAndEventsPanel;
+    }
+
+
+
+}
 
