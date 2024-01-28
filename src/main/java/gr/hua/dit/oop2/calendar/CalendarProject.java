@@ -38,6 +38,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
@@ -57,9 +58,9 @@ public class CalendarProject{
     private static JPanel bluePanel;
     private static JPanel labelPanel;
     private static JPanel eventsPanel;
-    private static LocalDateTime chosenDate;
+    private static LocalDateTime chosenDate = LocalDateTime.now();
     private static ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
-    private static JLabel chosenDateLabel = new JLabel("Current Date: ");
+    private static JLabel chosenDateLabel = new JLabel("Current Date: " + formatDate(chosenDate));
 
     //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
@@ -899,10 +900,12 @@ public class CalendarProject{
     }
     public static void handleDayButton() {
         handleButton(24, 1, 5, 5,0);
+        displayWholeDayAndUpcoming(chosenDate);
     }
 
     public static void handleWeekButton() {
          handleButton(7, 5, 7, 5,0);
+         displayWholeWeekAndUpcoming(chosenDate);
     }
 
     public static void handleMonthButton() {
@@ -940,115 +943,8 @@ public class CalendarProject{
                     bluePanel.removeAll();
 
                     ////////////
-                    JPanel addEvent = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
-                    addEvent.setPreferredSize(new Dimension(500, 500));
-                    //bluePanel.setLayout(new GridLayout(1, 1, 5, 5));
-
-                    JPanel titlePanel = new JPanel();
-                    titlePanel.setForeground(Color.white);
-
-                    addEvent.setLayout(new GridLayout(3, 1, 10, 10)); // 2 rows, 2 columns, horizontal and vertical gap of 10
+                    JPanel addEvent = createAddEventPanel();
                     
-                    JLabel title = new JLabel("Title");
-                    JTextField titleField = new JTextField();
-                    titleField.setPreferredSize(new Dimension(250, 40));
-                    
-                    JLabel description = new JLabel("Description");
-                    JTextField descriptionField = new JTextField();
-                    descriptionField.setPreferredSize(new Dimension(250, 40));
-                    
-                    JCheckBox checkBox1 = new JCheckBox("Project");
-                    
-                    JCheckBox checkBox2 = new JCheckBox("Assigment");
-                    
-                    //JButton submitButton = new JButton("Submit");
-                    
-                    
-                    checkBox1.addItemListener(e ->{
-                       
-                        if (e.getStateChange() == ItemEvent.SELECTED ){
-                        addEvent.setLayout(new GridLayout(6, 1, 10, 10));
-                        
-                        
-                        JLabel projdue = new JLabel("Project due");
-                        JTextField projdueField = new JTextField();
-                        projdueField.setPreferredSize(new Dimension(250, 40));
-                        
-                        JLabel projstatus = new JLabel("Status(True/false)");
-                        JTextField projstatusField = new JTextField();
-                        projstatusField.setPreferredSize(new Dimension(250, 40));
-                        
-                        JButton submit = new JButton("Submit");
-                        submit.setPreferredSize(new Dimension(500, 40));
-                    
-                        addEvent.add(projdue, 0);
-                        addEvent.add(projdueField, 1);
-                        addEvent.add(projstatus, 0);
-                        addEvent.add(projstatusField, 1);
-                        addEvent.add(submit);
-                        
-                        
-                        addEvent.revalidate();
-                        addEvent.repaint();
-                        
-                         submit.addActionListener(f -> {
-                            addEvent.setVisible(false);
-                            handleMonthButton();
-                            
-                        });
-                        
-                        }
-                      
-                    });
-                    
-                    checkBox2.addItemListener(e ->{
-                       
-                        if (e.getStateChange() == ItemEvent.SELECTED ){
-                        addEvent.setLayout(new GridLayout(6, 1, 10, 10));
-                        
-                        
-                        JLabel start = new JLabel("Appointment start");
-                        JTextField startField = new JTextField();
-                        startField.setPreferredSize(new Dimension(250, 40));
-                        
-                        JLabel end = new JLabel("Appointment ends");
-                        JTextField endField = new JTextField();
-                        endField.setPreferredSize(new Dimension(250, 40));
-                        
-                        JButton submit = new JButton("Submit");
-                        submit.setPreferredSize(new Dimension(500, 40));
-                    
-                        addEvent.add(end, 0);
-                        addEvent.add(endField, 1);
-                        addEvent.add(start, 0);
-                        addEvent.add(startField, 1);
-                        addEvent.add(submit);
-                        
-                        addEvent.revalidate();
-                        addEvent.repaint();
-                        
-                        submit.addActionListener(f -> {
-                            addEvent.setVisible(false);
-                            handleMonthButton();
-                            
-                        });
-                        
-                        }
-                      
-                    });
-                    
-                    
-                    
-                    
-                    addEvent.add(title);
-                    addEvent.add(titleField);
-                    addEvent.add(description);
-                    addEvent.add(descriptionField);
-                    addEvent.add(checkBox1);
-                    addEvent.add(checkBox2);
-                    
-                    
-
                     bluePanel.revalidate();
                     bluePanel.repaint();
 
@@ -1058,7 +954,9 @@ public class CalendarProject{
 
             bluePanel.add(button);
         }
-
+        
+        displayWholeMonthAndUpcoming(currentDate);
+        
         // Repaint bluePanel to reflect the changes
         bluePanel.revalidate();
         bluePanel.repaint();
@@ -1068,12 +966,14 @@ public class CalendarProject{
         int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
         int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
         int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
+        int hours = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
+        int minutes = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
 
         // Calculate the day of the week for the 1st day of the entered month
-        LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+        LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
         DayOfWeek dayOfWeek = firstDayOfMonth.getDayOfWeek();
 
-        chosenDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+        chosenDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
         chosenDateLabel.setText("Current Date: " + formatDate(chosenDate));
 
 
@@ -1108,39 +1008,76 @@ public class CalendarProject{
         handleMonthButton();// automatic press to see month 
         
     }
+    
     private static String formatDate(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // You can customize the pattern
         return date.format(formatter);
     }
 
-    // The handleButton method is modified to consider the starting day of the week
-    public static void handleButton(int maxIterations, int rows, int cols, int gap, int startingDay) {
-        Component[] components = bluePanel.getComponents();
-        labelPanel.setVisible(false);
+    private static void handleButton(int rows, int cols, int hgap, int vgap, int buttonColor) {
+        labelPanel.setVisible(true);
+
+        // Use the chosenDate if it's set, otherwise use the current date
+        LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+
+        // Calculate the start date of the week (Monday)
+        LocalDateTime startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        // Calculate the end date of the week (Sunday)
+        LocalDateTime endOfWeek = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        // Calculate the number of days in the week
+        int daysInWeek = (int) ChronoUnit.DAYS.between(startOfWeek, endOfWeek) + 1;
+
+        // Remove all components from bluePanel
         bluePanel.removeAll();
 
-        for (Component component : components) {
-            bluePanel.remove(component);
-        }
+        // Set the layout to the intended grid layout for the week
+        bluePanel.setLayout(new GridLayout(rows, cols, hgap, vgap));
 
-        bluePanel.revalidate();
-        bluePanel.repaint();
+        for (int i = 0; i < daysInWeek; i++) {
+            JButton button = new JButton();
 
-        bluePanel.setLayout(new GridLayout(rows, cols, gap, gap));
+            // Calculate the date for each day in the week
+            LocalDateTime dayDate = startOfWeek.plusDays(i);
 
-        // Adjust the starting day of the week
-        for (int i = 0; i < startingDay; i++) {
-            JButton emptyButton = new JButton("");
-            emptyButton.setEnabled(false);
-            bluePanel.add(emptyButton);
-        }
+            // Set the text of the button to the day number
+            button.setText(Integer.toString(dayDate.getDayOfMonth()));
 
-        for (int i = 1; i <= maxIterations; i++) {
-            JButton button = new JButton(Integer.toString(i));
+            // Set the background color of the button based on the chosen day
+            if (dayDate.toLocalDate().isEqual(currentDate.toLocalDate())) {
+                button.setBackground(new Color(buttonColor, 200, 200));
+            } else {
+                button.setBackground(new Color(buttonColor, 240, 240));
+            }
+
+            // Add an action listener to each day button for future actions
+            button.addActionListener(dayButtonEvent -> {
+                // You can perform additional actions when a day button is clicked
+                JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+
+                // Remove all components from bluePanel
+                bluePanel.removeAll();
+
+                ////////////
+
+                // Your existing code for creating and displaying event panels goes here
+
+                // Repaint bluePanel to reflect the changes
+                bluePanel.revalidate();
+                bluePanel.repaint();
+            });
+
+            // Add the button to bluePanel
             bluePanel.add(button);
         }
-        displayEventsForDate(chosenDate);
+
+        // Repaint bluePanel to reflect the changes
+        bluePanel.revalidate();
+        bluePanel.repaint();
     }
+
+    
     public static JPanel createBluePanel() {
         JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
         bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
@@ -1178,15 +1115,156 @@ public class CalendarProject{
          }
      };
     }
-    
-    private static void displayEventsForDate(LocalDateTime date) {
+    private static JPanel createAddEventPanel() {
+        JPanel addEvent = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
+        addEvent.setPreferredSize(new Dimension(500, 500));
+
+        JPanel titlePanel = new JPanel();
+        titlePanel.setForeground(Color.white);
+
+        addEvent.setLayout(new GridLayout(3, 1, 10, 10)); // 2 rows, 2 columns, horizontal and vertical gap of 10
+
+        JLabel title = new JLabel("Title");
+        JTextField titleField = new JTextField();
+        titleField.setPreferredSize(new Dimension(250, 40));
+
+        JLabel description = new JLabel("Description");
+        JTextField descriptionField = new JTextField();
+        descriptionField.setPreferredSize(new Dimension(250, 40));
+
+        JCheckBox checkBox1 = new JCheckBox("Project");
+
+        JCheckBox checkBox2 = new JCheckBox("Assignment");
+
+        checkBox1.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                addEvent.setLayout(new GridLayout(6, 1, 10, 10));
+
+                JLabel projdue = new JLabel("Project due");
+                JTextField projdueField = new JTextField();
+                projdueField.setPreferredSize(new Dimension(250, 40));
+
+                JLabel projstatus = new JLabel("Status (True/false)");
+                JTextField projstatusField = new JTextField();
+                projstatusField.setPreferredSize(new Dimension(250, 40));
+
+                JButton submit = new JButton("Submit");
+                submit.setPreferredSize(new Dimension(500, 40));
+
+                addEvent.add(projdue, 0);
+                addEvent.add(projdueField, 1);
+                addEvent.add(projstatus, 0);
+                addEvent.add(projstatusField, 1);
+                addEvent.add(submit);
+
+                addEvent.revalidate();
+                addEvent.repaint();
+
+                submit.addActionListener(f -> {
+                    addEvent.setVisible(false);
+                    handleMonthButton();
+                });
+            }
+        });
+
+        checkBox2.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                addEvent.setLayout(new GridLayout(6, 1, 10, 10));
+
+                JLabel start = new JLabel("Appointment start");
+                JTextField startField = new JTextField();
+                startField.setPreferredSize(new Dimension(250, 40));
+
+                JLabel end = new JLabel("Appointment ends");
+                JTextField endField = new JTextField();
+                endField.setPreferredSize(new Dimension(250, 40));
+
+                JButton submit = new JButton("Submit");
+                submit.setPreferredSize(new Dimension(500, 40));
+
+                addEvent.add(end, 0);
+                addEvent.add(endField, 1);
+                addEvent.add(start, 0);
+                addEvent.add(startField, 1);
+                addEvent.add(submit);
+
+                addEvent.revalidate();
+                addEvent.repaint();
+
+                submit.addActionListener(f -> {
+                    addEvent.setVisible(false);
+                    handleMonthButton();
+                });
+            }
+        });
+
+        addEvent.add(title);
+        addEvent.add(titleField);
+        addEvent.add(description);
+        addEvent.add(descriptionField);
+        addEvent.add(checkBox1);
+        addEvent.add(checkBox2);
+
+        return addEvent;
+    }
+
+    private static void displayWholeDayAndUpcoming(LocalDateTime date) {
+        
+        ArrayList<Event> dayEvents = getEventsForDate(date);
+        ArrayList<Event> upcomingEvents = getEventsForUpcomingDay(date);
+
+        
+        JPanel dayEventsPanel = createEventsPanel(dayEvents, " Today's Events");
+        JPanel upcomingEventsPanel = createEventsPanel(upcomingEvents, "Upcoming Events for Today");
+        // Clear existing components in the main events panel
+        eventsPanel.removeAll();
+
+        
+
+        // Add month events panel to the main events panel
+        eventsPanel.add(dayEventsPanel);
+        
+        // Add upcoming events panel to the main events panel
+        eventsPanel.add(upcomingEventsPanel);
+
+
+        // Repaint eventsPanel to reflect the changes
+        eventsPanel.revalidate();
+        eventsPanel.repaint();
+    }
+    private static void displayWholeWeekAndUpcoming(LocalDateTime date) {
+        ArrayList<Event> dayEvents = getEventsForDate(date);
+        ArrayList<Event> weekEvents = getEventsForWeek(date);
+        ArrayList<Event> upcomingEvents = getEventsForUpcomingWeek(date);
+
+        JPanel dayEventsPanel = createEventsPanel(dayEvents, "Selected Day Events");
+        JPanel weekEventsPanel = createEventsPanel(weekEvents, "Whole Week Events");
+        JPanel upcomingEventsPanel = createEventsPanel(upcomingEvents, "Upcoming Week Events");
+
+        // Clear existing components in the main events panel
+        eventsPanel.removeAll();
+
+        // Add day events panel to the main events panel
+        eventsPanel.add(dayEventsPanel);
+
+        // Add week events panel to the main events panel
+        eventsPanel.add(weekEventsPanel);
+
+        // Add upcoming events panel to the main events panel
+        eventsPanel.add(upcomingEventsPanel);
+
+        // Repaint eventsPanel to reflect the changes
+        eventsPanel.revalidate();
+        eventsPanel.repaint();
+    }
+    private static void displayWholeMonthAndUpcoming(LocalDateTime date) {
         ArrayList<Event> dayEvents = getEventsForDate(date);
         ArrayList<Event> monthEvents = getEventsForMonth(date);
-        ArrayList<Event> upcomingEvents = getEventsForUpcoming(date);
+        ArrayList<Event> upcomingEvents = getEventsForUpcomingMonth(date);
 
         JPanel dayEventsPanel = createEventsPanel(dayEvents, "Selected Day Events");
         JPanel monthEventsPanel = createEventsPanel(monthEvents, "Whole Month Events");
-        JPanel upcomingEventsPanel = createEventsPanel(upcomingEvents, "Upcoming Events");
+        JPanel upcomingEventsPanel = createEventsPanel(upcomingEvents, "Upcoming Month Events");
         // Clear existing components in the main events panel
         eventsPanel.removeAll();
 
@@ -1205,30 +1283,46 @@ public class CalendarProject{
         eventsPanel.repaint();
     }
 
-    // Example method to filter events for the specified date
     private static ArrayList<Event> getEventsForDate(LocalDateTime date) {
         ArrayList<Event> eventsForDate = new ArrayList<>();
 
         for (Event event : eventsList) {
-            if (event.getDate().toLocalDate().equals(date.toLocalDate())) {
+            if (event.getDate().toLocalDate().equals(date.toLocalDate()) && event.getDate().getYear() == date.getYear()) {
                 eventsForDate.add(event);
             }
         }
 
         return eventsForDate;
     }
+    private static ArrayList<Event> getEventsForWeek(LocalDateTime date) {
+        ArrayList<Event> eventsForWeek = new ArrayList<>();
+        
+        LocalDateTime startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        
+        LocalDateTime endOfWeek = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        
+        for (Event event : eventsList) {
+            if (event.getDate().isAfter(startOfWeek) && event.getDate().isBefore(endOfWeek.plusDays(1)) && event.getDate().getYear() == date.getYear()) {
+                eventsForWeek.add(event);
+            }
+        }
+
+        return eventsForWeek;
+    }
     private static ArrayList<Event> getEventsForMonth(LocalDateTime date) {
         ArrayList<Event> eventsForMonth = new ArrayList<>();
 
         for (Event event : eventsList) {
-            if (event.getDate().getMonth().equals(date.getMonth())) {
+            if (event.getDate().getMonth().equals(date.getMonth()) && event.getDate().getYear() == date.getYear()) {
                 eventsForMonth.add(event);
             }
+
         }
 
         return eventsForMonth;
     }
-    private static ArrayList<Event> getEventsForUpcoming(LocalDateTime date) {
+    
+    private static ArrayList<Event> getEventsForUpcomingMonth(LocalDateTime date) {
         ArrayList<Event> eventsForUpcoming = new ArrayList<>();
 
         LocalDateTime endOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
@@ -1241,8 +1335,39 @@ public class CalendarProject{
 
         return eventsForUpcoming;
     }
+    private static ArrayList<Event> getEventsForUpcomingWeek(LocalDateTime date) {
+        ArrayList<Event> eventsForUpcomingWeek = new ArrayList<>();
+
+               LocalDateTime endOfWeek = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        for (Event event : eventsList) {
+                if (event.getDate().isAfter(date) && event.getDate().isBefore(endOfWeek.plusDays(1))) {
+                    eventsForUpcomingWeek.add(event);
+                }
+        }
+        
 
 
+        return eventsForUpcomingWeek;
+    }
+    private static ArrayList<Event> getEventsForUpcomingDay(LocalDateTime date) {
+        ArrayList<Event> eventsForUpcomingDay = new ArrayList<>();
+
+        for (Event event : eventsList) {
+            LocalDateTime eventDateTime = event.getDate();
+
+            // Check if the event is on the same day as the chosen date
+            if (eventDateTime.toLocalDate().isEqual(date.toLocalDate())) {
+                // Check if the event time is after the current time
+                if (eventDateTime.toLocalTime().isAfter(date.toLocalTime())) {
+                    eventsForUpcomingDay.add(event);
+                }
+            }
+        }
+
+        return eventsForUpcomingDay;
+    }
+    
     private static JPanel createEventsPanel(ArrayList<Event> events, String title) {
         JPanel titleAndEventsPanel = new JPanel();
         titleAndEventsPanel.setLayout(new BoxLayout(titleAndEventsPanel, BoxLayout.Y_AXIS));
