@@ -38,12 +38,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -899,15 +901,129 @@ public class CalendarProject{
         return targetPanel;
     }
     public static void handleDayButton() {
-        handleButton(24, 1, 5, 5,0);
+        labelPanel.setVisible(true);
+
+        // Use the chosenDate if it's set, otherwise use the current date
+        LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+
+        int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
+        int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
+
+        int totalCells = 5 * 7; // Total cells in a 5x7 grid
+
+        // Remove all components from bluePanel
+        bluePanel.removeAll();
+
+        // Set the layout to the intended 5x7 grid layout for the month
+        bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+
+        for (int i = 1; i <= totalCells; i++) {
+            JButton button = new JButton();
+
+            // Calculate the day number based on the starting day of the month
+            int dayNumber = i - startingDayOfMonth + 1;
+
+            if (dayNumber > 0 && dayNumber <= daysInMonth) {
+                button.setText(Integer.toString(dayNumber));
+                
+                LocalDateTime dayDate = currentDate.withDayOfMonth(dayNumber);
+
+                // Check if the current button corresponds to today's date
+                if (dayDate.toLocalDate().isEqual(currentDate.toLocalDate())) {
+                    button.setBackground(Color.GREEN);
+                }
+                
+                // Add an action listener to each day button for future actions
+                button.addActionListener(dayButtonEvent -> {
+                    // You can perform additional actions when a day button is clicked
+                    JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+
+                    // Remove all components from bluePanel
+                    bluePanel.removeAll();
+
+                    ////////////
+                    JPanel addEvent = createAddEventPanel();
+                    
+                    bluePanel.revalidate();
+                    bluePanel.repaint();
+
+                    bluePanel.add(addEvent, BorderLayout.CENTER);
+                });
+            }
+
+            bluePanel.add(button);
+        }
+        
         displayWholeDayAndUpcoming(chosenDate);
+        
+        // Repaint bluePanel to reflect the changes
+        bluePanel.revalidate();
+        bluePanel.repaint();
+        
     }
-
     public static void handleWeekButton() {
-         handleButton(7, 5, 7, 5,0);
-         displayWholeWeekAndUpcoming(chosenDate);
-    }
+        labelPanel.setVisible(true);
 
+        // Use the chosenDate if it's set, otherwise use the current date
+        LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+
+        int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
+        int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
+
+        int totalCells = 5 * 7; // Total cells in a 5x7 grid
+
+        // Remove all components from bluePanel
+        bluePanel.removeAll();
+
+        // Set the layout to the intended 5x7 grid layout for the month
+        bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+
+        // Get the start and end dates of the current week
+        LocalDateTime startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDateTime endOfWeek = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        for (int i = 1; i <= totalCells; i++) {
+            JButton button = new JButton();
+
+            // Calculate the day number based on the starting day of the month
+            int dayNumber = i - startingDayOfMonth + 1;
+
+            if (dayNumber > 0 && dayNumber <= daysInMonth) {
+                button.setText(Integer.toString(dayNumber));
+                LocalDateTime dayDate = currentDate.withDayOfMonth(dayNumber);
+
+                // Check if the day is in the current week
+                if (dayDate.isEqual(startOfWeek) || (dayDate.isAfter(startOfWeek) && dayDate.isBefore(endOfWeek.plusDays(1)))) {
+                    button.setBackground(Color.GREEN);
+                }
+
+                // Add an action listener to each day button for future actions
+                button.addActionListener(dayButtonEvent -> {
+                    // You can perform additional actions when a day button is clicked
+                    JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+
+                    // Remove all components from bluePanel
+                    bluePanel.removeAll();
+
+                    ////////////
+                    JPanel addEvent = createAddEventPanel();
+
+                    bluePanel.revalidate();
+                    bluePanel.repaint();
+
+                    bluePanel.add(addEvent, BorderLayout.CENTER);
+                });
+            }
+
+            bluePanel.add(button);
+        }
+
+        displayWholeWeekAndUpcoming(chosenDate);
+
+        // Repaint bluePanel to reflect the changes
+        bluePanel.revalidate();
+        bluePanel.repaint();
+    }
     public static void handleMonthButton() {
         labelPanel.setVisible(true);
 
@@ -961,7 +1077,6 @@ public class CalendarProject{
         bluePanel.revalidate();
         bluePanel.repaint();
     }
-    
     public static void handleChooseDateButton() {
         int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
         int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
@@ -1003,8 +1118,7 @@ public class CalendarProject{
                 startingDay = 0;
                 break;
         }
-
-        handleButton(31, 6, 7, 5, startingDay);
+        
         handleMonthButton();// automatic press to see month 
         
     }
@@ -1013,70 +1127,6 @@ public class CalendarProject{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // You can customize the pattern
         return date.format(formatter);
     }
-
-    private static void handleButton(int rows, int cols, int hgap, int vgap, int buttonColor) {
-        labelPanel.setVisible(true);
-
-        // Use the chosenDate if it's set, otherwise use the current date
-        LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
-
-        // Calculate the start date of the week (Monday)
-        LocalDateTime startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
-        // Calculate the end date of the week (Sunday)
-        LocalDateTime endOfWeek = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-
-        // Calculate the number of days in the week
-        int daysInWeek = (int) ChronoUnit.DAYS.between(startOfWeek, endOfWeek) + 1;
-
-        // Remove all components from bluePanel
-        bluePanel.removeAll();
-
-        // Set the layout to the intended grid layout for the week
-        bluePanel.setLayout(new GridLayout(rows, cols, hgap, vgap));
-
-        for (int i = 0; i < daysInWeek; i++) {
-            JButton button = new JButton();
-
-            // Calculate the date for each day in the week
-            LocalDateTime dayDate = startOfWeek.plusDays(i);
-
-            // Set the text of the button to the day number
-            button.setText(Integer.toString(dayDate.getDayOfMonth()));
-
-            // Set the background color of the button based on the chosen day
-            if (dayDate.toLocalDate().isEqual(currentDate.toLocalDate())) {
-                button.setBackground(new Color(buttonColor, 200, 200));
-            } else {
-                button.setBackground(new Color(buttonColor, 240, 240));
-            }
-
-            // Add an action listener to each day button for future actions
-            button.addActionListener(dayButtonEvent -> {
-                // You can perform additional actions when a day button is clicked
-                JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
-
-                // Remove all components from bluePanel
-                bluePanel.removeAll();
-
-                ////////////
-
-                // Your existing code for creating and displaying event panels goes here
-
-                // Repaint bluePanel to reflect the changes
-                bluePanel.revalidate();
-                bluePanel.repaint();
-            });
-
-            // Add the button to bluePanel
-            bluePanel.add(button);
-        }
-
-        // Repaint bluePanel to reflect the changes
-        bluePanel.revalidate();
-        bluePanel.repaint();
-    }
-
     
     public static JPanel createBluePanel() {
         JPanel bluePanel = createGradientPanel(new Color(173, 216, 230), new Color(25, 25, 80));
@@ -1402,8 +1452,5 @@ public class CalendarProject{
 
         return titleAndEventsPanel;
     }
-
-
-
 }
 
