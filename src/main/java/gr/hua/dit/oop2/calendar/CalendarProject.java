@@ -63,7 +63,7 @@ public class CalendarProject{
     private static LocalDateTime chosenDate = LocalDateTime.now();
     private static ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
     private static JLabel chosenDateLabel = new JLabel("Current Date: " + formatDate(chosenDate));
-
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
     //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
         
@@ -1184,7 +1184,7 @@ public class CalendarProject{
 
         JCheckBox checkBox1 = new JCheckBox("Project");
 
-        JCheckBox checkBox2 = new JCheckBox("Assignment");
+        JCheckBox checkBox2 = new JCheckBox("Appointment");
 
         checkBox1.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -1201,6 +1201,8 @@ public class CalendarProject{
                 JButton submit = new JButton("Submit");
                 submit.setPreferredSize(new Dimension(500, 40));
 
+
+                
                 addEvent.add(projdue, 0);
                 addEvent.add(projdueField, 1);
                 addEvent.add(projstatus, 0);
@@ -1210,9 +1212,15 @@ public class CalendarProject{
                 addEvent.revalidate();
                 addEvent.repaint();
 
+
                 submit.addActionListener(f -> {
                     addEvent.setVisible(false);
                     handleMonthButton();
+                    
+                boolean booleanValue = Boolean.parseBoolean(projstatusField.getText());
+                LocalDateTime dueDateTime = LocalDateTime.parse(projdueField.getText(), formatter);
+                Project myProject = new Project(titleField.getText(),descriptionField.getText(),dueDateTime,booleanValue);
+                writeProjectToFile(myProject, eventsList,"output.ics");    
                 });
             }
         });
@@ -1232,6 +1240,8 @@ public class CalendarProject{
                 JButton submit = new JButton("Submit");
                 submit.setPreferredSize(new Dimension(500, 40));
 
+
+                
                 addEvent.add(end, 0);
                 addEvent.add(endField, 1);
                 addEvent.add(start, 0);
@@ -1241,9 +1251,15 @@ public class CalendarProject{
                 addEvent.revalidate();
                 addEvent.repaint();
 
+
                 submit.addActionListener(f -> {
                     addEvent.setVisible(false);
                     handleMonthButton();
+                    
+                LocalDateTime dateTime = LocalDateTime.parse(startField.getText(), formatter);
+                LocalDateTime durationTime = LocalDateTime.parse(endField.getText(), formatter);
+                Appointment myAppointment = new Appointment(titleField.getText(),descriptionField.getText(),dateTime,durationTime);
+                writeAppointmentToFile(myAppointment,eventsList,"output.ics");
                 });
             }
         });
