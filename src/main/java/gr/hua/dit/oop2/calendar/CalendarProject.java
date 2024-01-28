@@ -559,6 +559,7 @@ public class CalendarProject{
                                 LocalDateTime newDate, String newDescription, boolean newStatus) {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
         
+         
 
         if (eventsList.isEmpty()) {
             // Write calendar header if the list is empty
@@ -909,8 +910,10 @@ public class CalendarProject{
         JButton calshowbutton1 = new JButton("day");
         JButton calshowbutton2 = new JButton("week");
         JButton calshowbutton3 = new JButton("month");
-
-        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3)));
+        JButton edit = new JButton("edit");
+        
+      
+        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3, edit)));
 
         List<String> eventLabels = Arrays.asList("Events for selected day", "Events for whole month", "Upcoming events");
         eventsPanel = new JPanel();
@@ -924,6 +927,18 @@ public class CalendarProject{
         calshowbutton1.addActionListener(e -> handleDayButton());
         calshowbutton2.addActionListener(e -> handleWeekButton());
         calshowbutton3.addActionListener(e -> handleMonthButton());
+        edit.addActionListener(e -> {
+        
+        String oldTitle = "Old Title";
+        String newTitle = "New Title";
+        LocalDateTime newDate = LocalDateTime.now();
+        String newDescription = "New Description";
+        boolean newStatus = true;
+
+        // Call the editEvent method with the provided arguments
+        editEvent("filename", eventsList, oldTitle, newTitle, newDate, newDescription, newStatus);
+        
+        });
         chooseDate.addActionListener(e -> handleChooseDateButton());
         
         return greenPanel;
