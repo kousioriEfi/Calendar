@@ -70,7 +70,7 @@ public class CalendarProject{
         Scanner input = new java.util.Scanner(System.in);
 
         
-        TimeTeller teller = TimeService.getTeller();     
+        TimeTeller teller = TimeService.getTeller(); 
 //      String calendarChoice = args[0].toLowerCase();
         String fileName = null;
 //        if(args.length == 1){
@@ -315,7 +315,7 @@ public class CalendarProject{
             String title = null;
             String date = null;
             String dueDate = null;
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+
 
             while ((line = reader.readLine()) != null) {
                 if(line.equals("BEGIN:VEVENT")){
@@ -367,7 +367,7 @@ public class CalendarProject{
             String description = null;
             
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+
 
             while ((line = reader.readLine()) != null) {
                 if(line.equals("BEGIN:VEVENT")){
@@ -437,7 +437,7 @@ public class CalendarProject{
             String description2 = null;
             boolean status = false;
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+
             while ((line2 = reader2.readLine()) != null){
                 if(line2.equals("BEGIN:VTODO")){
                     while((line2 = reader2.readLine())!=null){
@@ -494,7 +494,7 @@ public class CalendarProject{
     private static void writeAppointmentToFile(Appointment appointment, ArrayList<Event> eventsList, String file) {
         
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+
             
             
             if (eventsList.isEmpty()) {
@@ -525,7 +525,7 @@ public class CalendarProject{
     //Method for writting a project to the ical file 
     private static void writeProjectToFile(Project project, ArrayList<Event> eventsList, String file){
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))) {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+
                             
                             eventsList.add(project);
                         
@@ -555,10 +555,55 @@ public class CalendarProject{
                         }
     }
     
+    private static void editEvent(String fileName, ArrayList<Event> eventsList, String oldTitle, String newTitle,
+                                LocalDateTime newDate, String newDescription, boolean newStatus) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        
+
+        if (eventsList.isEmpty()) {
+            // Write calendar header if the list is empty
+            writer.write("BEGIN:VCALENDAR\n");
+            writer.write("VERSION:2.0\n");
+        }
+
+        for (Event event : eventsList) {
+            if (event instanceof Project) {
+                Project project = (Project) event;
+
+                // Check if the current event matches the event to be edited
+                if (project.getTitle().equals(oldTitle)) {
+                    // Update the event details
+                    project.setTitle(newTitle);
+                    project.setDate(newDate);
+                    project.setDescription(newDescription);
+                    project.setStatus(newStatus);
+                }
+
+                // Write the event to the file
+                writer.write("BEGIN:VTODO\n");
+                writer.write("SUMMARY:" + project.getTitle() + "\n");
+                writer.write("DUE;VALUE=DATE:" + formatter.format(project.getDate()) + "\n");
+                writer.write("STATUS:" + (project.getStatus() ? "DOESNT-NEED-ACTION" : "NEEDS-ACTION") + "\n");
+                writer.write("DESCRIPTION:" + project.getDescription() + "\n");
+                writer.write("END:VTODO\n");
+            } else if (event instanceof Appointment) {
+                // Handle the case for appointments similarly if needed
+            }
+        }
+
+        writer.write("END:VCALENDAR\n");
+
+        System.out.println("iCalendar file updated successfully.");
+    } catch (IOException e) {
+        e.printStackTrace();
+        System.err.println("Error editing event in file: " + e.getMessage());
+    }
+}
+    
     //Method used for writing the events sorted to a file
     private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+
 
             writer.write("BEGIN:VCALENDAR\n");
             writer.write("VERSION:2.0\n");
@@ -1083,7 +1128,6 @@ public class CalendarProject{
         int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
         int hours = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
         int minutes = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
-
         // Calculate the day of the week for the 1st day of the entered month
         LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
         DayOfWeek dayOfWeek = firstDayOfMonth.getDayOfWeek();
@@ -1121,6 +1165,16 @@ public class CalendarProject{
         
         handleMonthButton();// automatic press to see month 
         
+//        TimeTeller teller = TimeService.getTeller();
+//        
+//        teller.addTimeListener(new TimeListener() {
+//            @Override
+//            public void timeChanged(TimeEvent e) {
+//            System.out.println("Time has changed to " + e.getDateTime());
+//    }
+//});
+//        TimeService.waitUntilTimeEnds();
+
     }
     
     private static String formatDate(LocalDateTime date) {

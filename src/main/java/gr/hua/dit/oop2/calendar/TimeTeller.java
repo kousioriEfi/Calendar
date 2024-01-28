@@ -13,5 +13,8 @@ import java.time.LocalDateTime;
 public interface TimeTeller {
 
     public LocalDateTime now();
+
+    public void addTimeListener(TimeListener timeListener);
+    
     
 }
