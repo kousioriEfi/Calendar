@@ -286,19 +286,18 @@ public class CalendarProject{
         boolean valid=false;
         do{
             try{
-            System.out.println("Please input " + inputType);
-            userInput=input.nextLine().toLowerCase();
-            if(userInput.equals("true")||userInput.equals("false")){
-                bool=Boolean.parseBoolean(userInput);
+            userInput = JOptionPane.showInputDialog("Please input " + inputType);
+            String toLowerCase = userInput.toLowerCase();
+            if(toLowerCase.equals("true")||toLowerCase.equals("false")){
+                bool=Boolean.parseBoolean(toLowerCase);
                 valid=true; 
             
             }else{
 
-                System.out.println("Invalid input.Please provide " + inputType);
-                input.nextLine();
+                JOptionPane.showMessageDialog(null, "Invalid input. Please enter true/false");
             }
             }catch(InputMismatchException e){
-                System.out.println("This is not a valid input");
+               JOptionPane.showMessageDialog(null, "Invalid input.");
             }
         }while(!valid);
         
@@ -609,52 +608,7 @@ public class CalendarProject{
                         }
     }
     
-    private static void editEvent(String fileName, ArrayList<Event> eventsList, String oldTitle, String newTitle,LocalDateTime newDate, String newDescription, boolean newStatus) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-
-            if (eventsList.isEmpty()) {
-                // Write calendar header if the list is empty
-                writer.write("BEGIN:VCALENDAR\n");
-                writer.write("VERSION:2.0\n");
-            }
-
-            for (Event event : eventsList) {
-                if (event instanceof Project) {
-                    Project project = (Project) event;
-
-                    // Check if the current event matches the event to be edited
-                    if (project.getTitle().equals(oldTitle)) {
-                        // Update the event details
-                        project.setTitle(newTitle);
-                        project.setDate(newDate);
-                        project.setDescription(newDescription);
-                        project.setStatus(newStatus);
-                    }
-
-                    // Write the event to the file
-                    writer.write("BEGIN:VTODO\n");
-                    writer.write("SUMMARY:" + project.getTitle() + "\n");
-                    writer.write("DUE;VALUE=DATE:" + formatter.format(project.getDate()) + "\n");
-                    writer.write("STATUS:" + (project.getStatus() ? "DOESNT-NEED-ACTION" : "NEEDS-ACTION") + "\n");
-                    writer.write("DESCRIPTION:" + project.getDescription() + "\n");
-                    writer.write("END:VTODO\n");
-                } else if (event instanceof Appointment) {
-                    // Handle the case for appointments similarly if needed
-                }
-            }
-
-            writer.write("END:VCALENDAR\n");
-
-            System.out.println("iCalendar file updated successfully.");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error editing event in file: " + e.getMessage());
-        }
-}
-    
-    
-    
-    
+ 
     
      private static void updateEventInList(ArrayList<Event> eventsList, String searchTitle) {
     Scanner scanner = new Scanner(System.in);
@@ -663,8 +617,8 @@ public class CalendarProject{
         if (event.getTitle().equals(searchTitle)) {
             // Ask the user for the updated information
         int year =requestChoiceWin2(9999,"year");
-        int month = requestChoiceWin2(24,"month");
-        int dayOfMonth = requestChoiceWin2(24,"day");
+        int month = requestChoiceWin2(12,"month");
+        int dayOfMonth = requestChoiceWin2(31,"day");
         int hours =requestChoiceWin(24,"hour");
         int minutes = requestChoiceWin(59,"minute");
         int seconds = requestChoiceWin(59,"second");
@@ -682,8 +636,8 @@ public class CalendarProject{
             if (event instanceof Appointment) {
                 // It's an appointment
         int years =requestChoiceWin2(9999,"year");
-        int months = requestChoiceWin2(24,"month");
-        int dayOfMonths = requestChoiceWin2(24,"day");
+        int months = requestChoiceWin2(12,"month");
+        int dayOfMonths = requestChoiceWin2(31,"day");
         int hourss =requestChoiceWin(24,"hour");
         int minutess = requestChoiceWin(59,"minute");
         int secondss = requestChoiceWin(59,"second");
@@ -692,17 +646,19 @@ public class CalendarProject{
                 ((Appointment) event).setDuration(updatedEndDate);
             } else if (event instanceof Project) {
                 // It's a project
-                System.out.println("Enter the updated status (true or false):");
-                boolean updatedStatus = scanner.nextBoolean();
+
+                boolean updatedStatus = requestBoolean("true/false");
                 ((Project) event).setStatus(updatedStatus);
             }
 
             System.out.println("Event updated successfully.");
             return; // Event found and updated, exit the method
+        }else{
+         
         }
     }
 
-    System.out.println("Event with title '" + searchTitle + "' not found.");
+    JOptionPane.showMessageDialog(null, "Invalid input. Please press edit button and try again!");
 }
     
     
@@ -1043,7 +999,7 @@ public class CalendarProject{
     public static void handleEditButton(){
         
         
-       String searchTitle="Kourema Skylou";
+       String searchTitle=JOptionPane.showInputDialog("Enter the name of an Event:");
        updateEventInList(eventsList, searchTitle);
 
     // Write the updated events back to the file
