@@ -305,6 +305,60 @@ public class CalendarProject{
         return bool; 
     }
         
+    public static int requestChoiceWin(int maxChoice,String inputType){
+        boolean validInput = false;
+        int timeChoice=0;
+        while (!validInput) {
+            try {
+                String userInput = JOptionPane.showInputDialog("Enter the " + inputType +  "(0-"+ maxChoice + "):");
+                if (userInput == null) {
+                    // User clicked cancel or closed the dialog
+                    System.exit(0); // or handle it appropriately
+                }
+
+                timeChoice = Integer.parseInt(userInput);
+
+                // Validate the input
+                if (timeChoice >= 0 && timeChoice <= maxChoice) {
+                    validInput = true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid input. Please enter a number between 0 and 59.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid integer.");
+            }
+    
+        }
+        return timeChoice;
+    }
+    
+    //Does the same as requestChoiceWin but this time it doesnt allow 0
+        public static int requestChoiceWin2(int maxChoice,String inputType){
+        boolean validInput = false;
+        int timeChoice=0;
+        while (!validInput) {
+            try {
+                String userInput = JOptionPane.showInputDialog("Enter the " + inputType +  "(0-"+ maxChoice + "):");
+                if (userInput == null) {
+                    // User clicked cancel or closed the dialog
+                    System.exit(0); // or handle it appropriately
+                }
+
+                timeChoice = Integer.parseInt(userInput);
+
+                // Validate the input
+                if (timeChoice >= 1 && timeChoice <= maxChoice) {
+                    validInput = true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid input. Please enter a number between 0 and 59.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid integer.");
+            }
+        }
+        return timeChoice;
+    }
+    
     //Method used for reading 
     private static void readEventsFromFile(String fileName) throws ParseException{
         BufferedReader reader = null;
@@ -600,24 +654,25 @@ public class CalendarProject{
     
     
     
+    
+    
      private static void updateEventInList(ArrayList<Event> eventsList, String searchTitle) {
     Scanner scanner = new Scanner(System.in);
 
     for (Event event : eventsList) {
         if (event.getTitle().equals(searchTitle)) {
             // Ask the user for the updated information
-        int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
-        int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
-        int hours = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
-        int minutes = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
-        int seconds = Integer.parseInt(JOptionPane.showInputDialog("Enter the seconds (0-59): "));
+        int year =requestChoiceWin2(9999,"year");
+        int month = requestChoiceWin2(24,"month");
+        int dayOfMonth = requestChoiceWin2(24,"day");
+        int hours =requestChoiceWin(24,"hour");
+        int minutes = requestChoiceWin(59,"minute");
+        int seconds = requestChoiceWin(59,"second");
         // Calculate the day of the week for the 1st day of the entered month
         LocalDateTime updatedDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes,seconds);
 
         chosenDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
-            System.out.println("Enter the updated description:");
-            String updatedDescription = scanner.nextLine();
+            String updatedDescription = JOptionPane.showInputDialog("Enter the updated description:");
 
             // Update the date and description in the event
             event.setDate(updatedDate);
@@ -626,12 +681,12 @@ public class CalendarProject{
             // Check if it's a project or an appointment and update accordingly
             if (event instanceof Appointment) {
                 // It's an appointment
-        int years = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
-        int months = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-        int dayOfMonths = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
-        int hourss = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
-        int minutess = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
-        int secondss = Integer.parseInt(JOptionPane.showInputDialog("Enter the seconds (0-59): "));
+        int years =requestChoiceWin2(9999,"year");
+        int months = requestChoiceWin2(24,"month");
+        int dayOfMonths = requestChoiceWin2(24,"day");
+        int hourss =requestChoiceWin(24,"hour");
+        int minutess = requestChoiceWin(59,"minute");
+        int secondss = requestChoiceWin(59,"second");
         // Calculate the day of the week for the 1st day of the entered month
         LocalDateTime updatedEndDate = LocalDateTime.of(years, months, dayOfMonths, hourss, minutess,secondss);
                 ((Appointment) event).setDuration(updatedEndDate);
