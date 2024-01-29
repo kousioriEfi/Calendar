@@ -555,50 +555,47 @@ public class CalendarProject{
                         }
     }
     
-    private static void editEvent(String fileName, ArrayList<Event> eventsList, String oldTitle, String newTitle,
-                                LocalDateTime newDate, String newDescription, boolean newStatus) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-        
-         
+    private static void editEvent(String fileName, ArrayList<Event> eventsList, String oldTitle, String newTitle,LocalDateTime newDate, String newDescription, boolean newStatus) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
 
-        if (eventsList.isEmpty()) {
-            // Write calendar header if the list is empty
-            writer.write("BEGIN:VCALENDAR\n");
-            writer.write("VERSION:2.0\n");
-        }
-
-        for (Event event : eventsList) {
-            if (event instanceof Project) {
-                Project project = (Project) event;
-
-                // Check if the current event matches the event to be edited
-                if (project.getTitle().equals(oldTitle)) {
-                    // Update the event details
-                    project.setTitle(newTitle);
-                    project.setDate(newDate);
-                    project.setDescription(newDescription);
-                    project.setStatus(newStatus);
-                }
-
-                // Write the event to the file
-                writer.write("BEGIN:VTODO\n");
-                writer.write("SUMMARY:" + project.getTitle() + "\n");
-                writer.write("DUE;VALUE=DATE:" + formatter.format(project.getDate()) + "\n");
-                writer.write("STATUS:" + (project.getStatus() ? "DOESNT-NEED-ACTION" : "NEEDS-ACTION") + "\n");
-                writer.write("DESCRIPTION:" + project.getDescription() + "\n");
-                writer.write("END:VTODO\n");
-            } else if (event instanceof Appointment) {
-                // Handle the case for appointments similarly if needed
+            if (eventsList.isEmpty()) {
+                // Write calendar header if the list is empty
+                writer.write("BEGIN:VCALENDAR\n");
+                writer.write("VERSION:2.0\n");
             }
+
+            for (Event event : eventsList) {
+                if (event instanceof Project) {
+                    Project project = (Project) event;
+
+                    // Check if the current event matches the event to be edited
+                    if (project.getTitle().equals(oldTitle)) {
+                        // Update the event details
+                        project.setTitle(newTitle);
+                        project.setDate(newDate);
+                        project.setDescription(newDescription);
+                        project.setStatus(newStatus);
+                    }
+
+                    // Write the event to the file
+                    writer.write("BEGIN:VTODO\n");
+                    writer.write("SUMMARY:" + project.getTitle() + "\n");
+                    writer.write("DUE;VALUE=DATE:" + formatter.format(project.getDate()) + "\n");
+                    writer.write("STATUS:" + (project.getStatus() ? "DOESNT-NEED-ACTION" : "NEEDS-ACTION") + "\n");
+                    writer.write("DESCRIPTION:" + project.getDescription() + "\n");
+                    writer.write("END:VTODO\n");
+                } else if (event instanceof Appointment) {
+                    // Handle the case for appointments similarly if needed
+                }
+            }
+
+            writer.write("END:VCALENDAR\n");
+
+            System.out.println("iCalendar file updated successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error editing event in file: " + e.getMessage());
         }
-
-        writer.write("END:VCALENDAR\n");
-
-        System.out.println("iCalendar file updated successfully.");
-    } catch (IOException e) {
-        e.printStackTrace();
-        System.err.println("Error editing event in file: " + e.getMessage());
-    }
 }
     
     //Method used for writing the events sorted to a file
@@ -910,10 +907,11 @@ public class CalendarProject{
         JButton calshowbutton1 = new JButton("day");
         JButton calshowbutton2 = new JButton("week");
         JButton calshowbutton3 = new JButton("month");
+        JButton clashowbutton4 = new JButton("Due/To Do");
         JButton edit = new JButton("edit");
         
       
-        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3, edit)));
+        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3,clashowbutton4, edit)));
 
         List<String> eventLabels = Arrays.asList("Events for selected day", "Events for whole month", "Upcoming events");
         eventsPanel = new JPanel();
@@ -927,6 +925,7 @@ public class CalendarProject{
         calshowbutton1.addActionListener(e -> handleDayButton());
         calshowbutton2.addActionListener(e -> handleWeekButton());
         calshowbutton3.addActionListener(e -> handleMonthButton());
+        clashowbutton4.addActionListener(e -> handleDueToDoButton());
         edit.addActionListener(e -> {
         
         String oldTitle = "Old Title";
@@ -1132,6 +1131,59 @@ public class CalendarProject{
         }
         
         displayWholeMonthAndUpcoming(currentDate);
+        
+        // Repaint bluePanel to reflect the changes
+        bluePanel.revalidate();
+        bluePanel.repaint();
+    }
+    public static void handleDueToDoButton() {
+        labelPanel.setVisible(true);
+
+        // Use the chosenDate if it's set, otherwise use the current date
+        LocalDateTime currentDate = (chosenDate != null) ? chosenDate : LocalDateTime.now();
+
+        int daysInMonth = currentDate.getMonth().length(currentDate.toLocalDate().isLeapYear());
+        int startingDayOfMonth = currentDate.withDayOfMonth(1).getDayOfWeek().getValue(); // 1 is Monday, 2 is Tuesday, ..., 7 is Sunday
+
+        int totalCells = 5 * 7; // Total cells in a 5x7 grid
+
+        // Remove all components from bluePanel
+        bluePanel.removeAll();
+
+        // Set the layout to the intended 5x7 grid layout for the month
+        bluePanel.setLayout(new GridLayout(5, 7, 5, 5));
+
+        for (int i = 1; i <= totalCells; i++) {
+            JButton button = new JButton();
+
+            // Calculate the day number based on the starting day of the month
+            int dayNumber = i - startingDayOfMonth + 1;
+
+            if (dayNumber > 0 && dayNumber <= daysInMonth) {
+                button.setText(Integer.toString(dayNumber));
+
+                // Add an action listener to each day button for future actions
+                button.addActionListener(dayButtonEvent -> {
+                    // You can perform additional actions when a day button is clicked
+                    JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
+
+                    // Remove all components from bluePanel
+                    bluePanel.removeAll();
+
+                    ////////////
+                    JPanel addEvent = createAddEventPanel();
+                    
+                    bluePanel.revalidate();
+                    bluePanel.repaint();
+
+                    bluePanel.add(addEvent, BorderLayout.CENTER);
+                });
+            }
+
+            bluePanel.add(button);
+        }
+        
+        displayDueToDo(currentDate);
         
         // Repaint bluePanel to reflect the changes
         bluePanel.revalidate();
@@ -1417,6 +1469,24 @@ public class CalendarProject{
         eventsPanel.revalidate();
         eventsPanel.repaint();
     }
+    private static void displayDueToDo(LocalDateTime date) {
+        ArrayList<Event> due = getEventsForDue(date);
+        ArrayList<Event> toDo = getEventsForToDo(date);
+
+        JPanel dueEventsPanel = createEventsPanel(due, "Incomplete projects after the deadline:");
+        JPanel toDoEventsPanel = createEventsPanel(toDo, "Incomplete projects before the deadline:");
+        // Clear existing components in the main events panel
+        eventsPanel.removeAll();
+
+        eventsPanel.add(dueEventsPanel);
+
+        
+        eventsPanel.add(toDoEventsPanel);
+
+        // Repaint eventsPanel to reflect the changes
+        eventsPanel.revalidate();
+        eventsPanel.repaint();
+    }
 
     private static ArrayList<Event> getEventsForDate(LocalDateTime date) {
         ArrayList<Event> eventsForDate = new ArrayList<>();
@@ -1455,6 +1525,37 @@ public class CalendarProject{
         }
 
         return eventsForMonth;
+    }
+    private static ArrayList<Event> getEventsForDue(LocalDateTime date) {
+        ArrayList<Event> eventsForDue = new ArrayList<>();
+
+        for (Event event : eventsList) {
+            if (event instanceof Project) {
+                Project project = (Project) event;
+
+                // Check if it's a project, incomplete, and past the deadline
+                if (project.getStatus()== false && project.getDate().isBefore(date)) {
+                    eventsForDue.add(project);
+                }
+            }
+        }
+        return eventsForDue;
+    }
+    private static ArrayList<Event> getEventsForToDo(LocalDateTime date){
+        ArrayList<Event> eventsForToDo = new ArrayList<>();
+
+        for (Event event : eventsList) {
+            if (event instanceof Project) {
+                Project project = (Project) event;
+
+                // Check if it's a project, incomplete, and past the deadline
+                if (project.getStatus()== false && project.getDate().isAfter(date)) {
+                    eventsForToDo.add(project);
+                }
+            }
+        }
+        
+        return eventsForToDo;
     }
     
     private static ArrayList<Event> getEventsForUpcomingMonth(LocalDateTime date) {
