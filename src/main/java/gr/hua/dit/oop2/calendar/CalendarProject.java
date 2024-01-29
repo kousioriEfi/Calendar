@@ -598,6 +598,59 @@ public class CalendarProject{
         }
 }
     
+    
+    
+     private static void updateEventInList(ArrayList<Event> eventsList, String searchTitle) {
+    Scanner scanner = new Scanner(System.in);
+
+    for (Event event : eventsList) {
+        if (event.getTitle().equals(searchTitle)) {
+            // Ask the user for the updated information
+        int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
+        int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
+        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
+        int hours = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
+        int minutes = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
+        int seconds = Integer.parseInt(JOptionPane.showInputDialog("Enter the seconds (0-59): "));
+        // Calculate the day of the week for the 1st day of the entered month
+        LocalDateTime updatedDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes,seconds);
+
+        chosenDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
+            System.out.println("Enter the updated description:");
+            String updatedDescription = scanner.nextLine();
+
+            // Update the date and description in the event
+            event.setDate(updatedDate);
+            event.setDescription(updatedDescription);
+
+            // Check if it's a project or an appointment and update accordingly
+            if (event instanceof Appointment) {
+                // It's an appointment
+        int years = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
+        int months = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
+        int dayOfMonths = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
+        int hourss = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
+        int minutess = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
+        int secondss = Integer.parseInt(JOptionPane.showInputDialog("Enter the seconds (0-59): "));
+        // Calculate the day of the week for the 1st day of the entered month
+        LocalDateTime updatedEndDate = LocalDateTime.of(years, months, dayOfMonths, hourss, minutess,secondss);
+                ((Appointment) event).setDuration(updatedEndDate);
+            } else if (event instanceof Project) {
+                // It's a project
+                System.out.println("Enter the updated status (true or false):");
+                boolean updatedStatus = scanner.nextBoolean();
+                ((Project) event).setStatus(updatedStatus);
+            }
+
+            System.out.println("Event updated successfully.");
+            return; // Event found and updated, exit the method
+        }
+    }
+
+    System.out.println("Event with title '" + searchTitle + "' not found.");
+}
+    
+    
     //Method used for writing the events sorted to a file
     private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
@@ -908,10 +961,10 @@ public class CalendarProject{
         JButton calshowbutton2 = new JButton("week");
         JButton calshowbutton3 = new JButton("month");
         JButton clashowbutton4 = new JButton("Due/To Do");
-        JButton edit = new JButton("edit");
+        JButton clashowbutton5 = new JButton("edit");
         
       
-        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3,clashowbutton4, edit)));
+        greenPanel.add(createButtonsPanel(Arrays.asList(calshowbutton1, calshowbutton2, calshowbutton3,clashowbutton4, clashowbutton5)));
 
         List<String> eventLabels = Arrays.asList("Events for selected day", "Events for whole month", "Upcoming events");
         eventsPanel = new JPanel();
@@ -926,22 +979,22 @@ public class CalendarProject{
         calshowbutton2.addActionListener(e -> handleWeekButton());
         calshowbutton3.addActionListener(e -> handleMonthButton());
         clashowbutton4.addActionListener(e -> handleDueToDoButton());
-        edit.addActionListener(e -> {
-        
-        String oldTitle = "Old Title";
-        String newTitle = "New Title";
-        LocalDateTime newDate = LocalDateTime.now();
-        String newDescription = "New Description";
-        boolean newStatus = true;
-
-        // Call the editEvent method with the provided arguments
-        editEvent("filename", eventsList, oldTitle, newTitle, newDate, newDescription, newStatus);
-        
-        });
+        clashowbutton5.addActionListener(e -> handleEditButton());
         chooseDate.addActionListener(e -> handleChooseDateButton());
         
         return greenPanel;
     }
+    
+    public static void handleEditButton(){
+        
+        
+       String searchTitle="Kourema Skylou";
+       updateEventInList(eventsList, searchTitle);
+
+    // Write the updated events back to the file
+        writeSortedEventsToFile(eventsList);
+        }
+            
     public static JPanel createButtonsPanel(List<JButton> buttons) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(buttons.size(), 1, 3, 3));
