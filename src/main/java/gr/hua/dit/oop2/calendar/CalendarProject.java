@@ -65,35 +65,29 @@ public class CalendarProject{
     private static ArrayList<Event> eventsList = new ArrayList<>();//A list created to add events(Appointments and projects)
     private static JLabel chosenDateLabel = new JLabel("Current Date: " + formatDate(chosenDate));
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+    private static String fileName = null;
+    
     //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
         
-        Scanner input = new java.util.Scanner(System.in);
+        String fileName = JOptionPane.showInputDialog("Enter the file name:");
 
-        
-        TimeTeller teller = TimeService.getTeller(); 
-//      String calendarChoice = args[0].toLowerCase();
-        String fileName = null;
-//        if(args.length == 1){
-//              fileName = args[0];
-//        }else{
-//             fileName = args[1];
-//        }
+        // Check if the user clicked OK or canceled the dialog
+        if (fileName != null) {
+            // User entered a file name
+            System.out.println("File Name: " + fileName);
+            // Now you can use the fileName variable for further processing
 
-        fileName="calendar.ics";        //getDirectoryPath()+ "//" + fileName ;
+            // Example: Concatenate the directory path and file name
+            String directoryPath = getDirectoryPath(); // Assuming you have a method getDirectoryPath()
+            String fullPath = directoryPath + "//" + fileName;
 
-//        int year=requestInt("Year");
-//        int month=requestChoice2(12,"Month (up to 12)");
-//        int day=requestChoice2(30,"Day (up to 30)" );
-//        int hours=requestChoice(23,"Hours(up to 23)");
-//        int minutes=requestChoice(59,"Minutes(up to 59)");
-//        int seconds=requestChoice(59,"Seconds(up to 59)");
-//
-//        LocalDateTime time = LocalDateTime.of(year, month, day, hours, minutes, seconds);//The info for a specific day is added to a LocalDateTime variable
-//        LocalDateTime dt = teller.now();
-//
-//        System.out.println(time.adjustInto(dt));
-//        Temporal timeNow = time.adjustInto(dt);
+            // Perform other actions with the file name
+        } else {
+            // User clicked Cancel or closed the dialog
+            System.out.println("User canceled the operation.");
+        }
+
 
         eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
         eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
@@ -105,178 +99,7 @@ public class CalendarProject{
             JFrame frame = createMainFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
-        });
-         
-//        switch (args.length){
-//
-//            case 1 :{ //Case the option is add an event
-//               //Message in order for the user to decide wether they want to add an appointment or project
-//               System.out.println("Create Appointment /Project |Type(1/2)");
-//
-//               int ev_opt = requestChoice2(2,"1/2");
-//               input.nextLine();
-//
-//                switch (ev_opt) { 
-//
-//                    case 1:{ //Case they chose to add appointment
-//
-//                       System.out.println("Add title");
-//                       String title = input.nextLine();
-//
-//                       System.out.println("Date(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-//                       String dateString = input.nextLine();
-//
-//                       //Instant instant = dateString.toInstant;
-//                       //LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-//                       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-//                       LocalDateTime date = LocalDateTime.parse(dateString, formatter);
-//                       System.out.println("Converted LocalDateTime: " + date);
-//                       //Date date = dateFormat.parse(dateString);
-//
-//                       System.out.println("Date Ends (yyyyMMddTHHmmssZ) example 20231226T163000Z");
-//                       String durationString = input.nextLine();
-//
-//                       LocalDateTime duration = LocalDateTime.parse(durationString, formatter);
-//                       System.out.println("Add description");
-//                       String description = input.nextLine();
-//
-//                       Appointment myAppointment = new Appointment(title,description,date,duration);
-//                       writeAppointmentToFile(myAppointment,eventsList,fileName);
-//
-//                       break;
-//
-//
-//                    }case 2 : { //Case they want to add a project
-//
-//                        System.out.println("Add title");
-//                        String title = input.nextLine();
-//
-//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
-//                        System.out.println("Project due date and time(yyyyMMddTHHmmssZ) example 20231226T163000Z");
-//                        String dueDateTimeString = input.nextLine();
-//                        LocalDateTime dueDateTime = LocalDateTime.parse(dueDateTimeString, formatter);
-//
-//                        System.out.println("Add description");
-//                        String description = input.nextLine();
-//
-//                        System.out.println("Give status of the project (true/false)");
-//                        boolean status = requestBoolean("true/false");
-//
-//                        Project myProject = new Project(title, description, dueDateTime,status);
-//                        writeProjectToFile(myProject,eventsList,fileName);
-//
-//                        break;
-//                    } 
-//
-//                }
-//            }case 2:{
-//
-//                switch (calendarChoice){
-//                    case "day":{
-//                        printEventsForTheDay(eventsList,timeNow);
-//                        break;
-//                        }
-//                    case "week":{
-//                        printEventsForTheWeek(eventsList,timeNow);
-//                        break;
-//                    }
-//                    case "month":{
-//                        printEventsForTheMonth(eventsList,timeNow);
-//                        break;
-//                    }
-//                    case "pastday":{
-//                        printEventsForThePastDay(eventsList,timeNow);
-//                        break;
-//                    }
-//                    case "pastweek":{
-//                        printEventsForThePastWeek(eventsList,timeNow);
-//                        break;
-//                    }
-//                    case "pastmonth":{
-//                        printEventsForThePastMonth(eventsList,timeNow);
-//                        break;
-//                    }
-//                    case "todo":{
-//                        printEventsForTheToDo(eventsList,timeNow);
-//                        break;
-//                    }
-//                    case "due":{
-//                        printEventsForTheDue(eventsList,timeNow);
-//                        break;
-//                    }
-//                }
-//                break;
-//            }
-//        } 
-//
-//       TimeService.stop();
-   }  
-    //END OF MAIN
-    
-    //This method is used for the request of the minutes and seconds because it allows the user to input 0>=
-    static private int requestChoice(int maxChoice , String inputType){
-    Scanner input = new java.util.Scanner(System.in);
-    boolean isValidChoice=false;
-    int number=0;
-    while(!isValidChoice)
-    {
-        System.out.println("Enter a valid choice of " + inputType);
-        String choice = input.nextLine();
-        try{
-            number=Integer.parseInt(choice);
-            if((number>=0)&&(number<=maxChoice)){
-                isValidChoice=true;
-            }else{
-                System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
-            }
-        }catch(NumberFormatException e){
-            System.out.println("The input was not an integer");
-        }
-    }
-    return number;
-}
-
-    //This method is used for the request of the month day and hours because it allows the user to input 1>=
-    static private int requestChoice2(int maxChoice , String inputType){
-    Scanner input = new java.util.Scanner(System.in);
-    boolean isValidChoice=false;
-    int number=0;
-    while(!isValidChoice)
-    {
-        System.out.println("Enter a valid choice of " + inputType);
-        String choice = input.nextLine();
-        try{
-            number=Integer.parseInt(choice);
-            if((number>=1)&&(number<=maxChoice)){
-                isValidChoice=true;
-            }else{
-                System.out.println("Invalid choice. Please provide a number up to " + String.valueOf(maxChoice));
-            }
-        }catch(NumberFormatException e){
-            System.out.println("The input was not an integer");
-        }
-
-    }
-    return number;
-}    
-    //Method used for checking if the type the user is giving for a year is valid or not   
-    public static int requestInt(String inputType){
-        Scanner input = new java.util.Scanner(System.in);
-        int number=0;
-        boolean valid=false;
-        do{
-            try{
-                System.out.println("Please input " + inputType);
-                number=input.nextInt();
-                input.nextLine();
-                valid=true;
-            }catch(InputMismatchException e){
-                System.out.println("Invalid input.Please provide integer for the " + inputType);
-                input.nextLine();
-            }
-        }while(!valid);
-        
-        return number; 
+        });    
     }
     
     //Method used for checking whether the status for the project provided is valid or not
@@ -313,7 +136,7 @@ public class CalendarProject{
                 String userInput = JOptionPane.showInputDialog("Enter the " + inputType +  "(0-"+ maxChoice + "):");
                 if (userInput == null) {
                     // User clicked cancel or closed the dialog
-                    System.exit(0); // or handle it appropriately
+                    System.exit(0);
                 }
 
                 timeChoice = Integer.parseInt(userInput);
@@ -341,7 +164,7 @@ public class CalendarProject{
                 String userInput = JOptionPane.showInputDialog("Enter the " + inputType +  "(0-"+ maxChoice + "):");
                 if (userInput == null) {
                     // User clicked cancel or closed the dialog
-                    System.exit(0); // or handle it appropriately
+                    System.exit(0); 
                 }
 
                 timeChoice = Integer.parseInt(userInput);
@@ -611,61 +434,59 @@ public class CalendarProject{
     
  
     
-     private static void updateEventInList(ArrayList<Event> eventsList, String searchTitle) {
-    Scanner scanner = new Scanner(System.in);
+    private static void updateEventInList(ArrayList<Event> eventsList, String searchTitle) {
 
-    for (Event event : eventsList) {
-        if (event.getTitle().equals(searchTitle)) {
-            // Ask the user for the updated information
-        int year =requestChoiceWin2(9999,"year");
-        int month = requestChoiceWin2(12,"month");
-        int dayOfMonth = requestChoiceWin2(31,"day");
-        int hours =requestChoiceWin(24,"hour");
-        int minutes = requestChoiceWin(59,"minute");
-        int seconds = requestChoiceWin(59,"second");
-        // Calculate the day of the week for the 1st day of the entered month
-        LocalDateTime updatedDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes,seconds);
+        for (Event event : eventsList) {
+            if (event.getTitle().equals(searchTitle)) {
+                // Ask the user for the updated information
+                int year =requestChoiceWin2(9999,"updated year");
+                int month = requestChoiceWin2(12,"updated month");
+                int dayOfMonth = requestChoiceWin2(31,"updated day");
+                int hours =requestChoiceWin(24,"updated hour");
+                int minutes = requestChoiceWin(59,"updated minute");
+                int seconds = requestChoiceWin(59,"updated second");
+                // Calculate the day of the week for the 1st day of the entered month
+                LocalDateTime updatedDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes,seconds);
 
-        chosenDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
-            String updatedDescription = JOptionPane.showInputDialog("Enter the updated description:");
+                chosenDate = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
+                String updatedDescription = JOptionPane.showInputDialog("Enter the updated description:");
 
-            // Update the date and description in the event
-            event.setDate(updatedDate);
-            event.setDescription(updatedDescription);
+                // Update the date and description in the event
+                event.setDate(updatedDate);
+                event.setDescription(updatedDescription);
 
-            // Check if it's a project or an appointment and update accordingly
-            if (event instanceof Appointment) {
-                // It's an appointment
-        int years =requestChoiceWin2(9999,"year");
-        int months = requestChoiceWin2(12,"month");
-        int dayOfMonths = requestChoiceWin2(31,"day");
-        int hourss =requestChoiceWin(24,"hour");
-        int minutess = requestChoiceWin(59,"minute");
-        int secondss = requestChoiceWin(59,"second");
-        // Calculate the day of the week for the 1st day of the entered month
-        LocalDateTime updatedEndDate = LocalDateTime.of(years, months, dayOfMonths, hourss, minutess,secondss);
-                ((Appointment) event).setDuration(updatedEndDate);
-            } else if (event instanceof Project) {
-                // It's a project
+                // Check if it's a project or an appointment and update accordingly
+                if (event instanceof Appointment) {
+                    // It's an appointment
+                    int years =requestChoiceWin2(9999,"updated end year");
+                    int months = requestChoiceWin2(12,"updated end month");
+                    int dayOfMonths = requestChoiceWin2(31,"updated end day");
+                    int hourss =requestChoiceWin(24,"updated end hour");
+                    int minutess = requestChoiceWin(59,"updated end minute");
+                    int secondss = requestChoiceWin(59,"updated end second");
+                    // Calculate the day of the week for the 1st day of the entered month
+                    LocalDateTime updatedEndDate = LocalDateTime.of(years, months, dayOfMonths, hourss, minutess,secondss);
+                    ((Appointment) event).setDuration(updatedEndDate);
+                } else if (event instanceof Project) {
+                    // It's a project
 
-                boolean updatedStatus = requestBoolean("true/false");
-                ((Project) event).setStatus(updatedStatus);
+                    boolean updatedStatus = requestBoolean("true/false");
+                    ((Project) event).setStatus(updatedStatus);
+                }
+
+                System.out.println("Event updated successfully.");
+                return; // Event found and updated, exit the method
             }
-
-            System.out.println("Event updated successfully.");
-            return; // Event found and updated, exit the method
-        }else{
-         
         }
-    }
 
-    JOptionPane.showMessageDialog(null, "Invalid input. Please press edit button and try again!");
-}
+        JOptionPane.showMessageDialog(null, "Invalid input. Please press edit button and try again!");
+    }
+    
     
     
     //Method used for writing the events sorted to a file
     private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.ics"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
 
 
             writer.write("BEGIN:VCALENDAR\n");
@@ -1288,22 +1109,22 @@ public class CalendarProject{
         
         handleMonthButton();// automatic press to see month 
         
-//        TimeTeller teller = TimeService.getTeller();
-//        
-//        teller.addTimeListener(new TimeListener() {
-//            @Override
-//            public void timeChanged(TimeEvent e) {
-//            System.out.println("Time has changed to " + e.getDateTime());
-//    }
-//});
-//        TimeService.waitUntilTimeEnds();
+    //        TimeTeller teller = TimeService.getTeller();
+    //        
+    //        teller.addTimeListener(new TimeListener() {
+    //            @Override
+    //            public void timeChanged(TimeEvent e) {
+    //            System.out.println("Time has changed to " + e.getDateTime());
+    //    }
+    //});
+    //        TimeService.waitUntilTimeEnds();
 
     }
-    public static void handleEditButton(){
-       String searchTitle="Kourema Skylou";
+    public static void handleEditButton(){ 
+       String searchTitle=JOptionPane.showInputDialog("Enter the name of an Event:");
        updateEventInList(eventsList, searchTitle);
 
-        // Write the updated events back to the file
+    // Write the updated events back to the file
         writeSortedEventsToFile(eventsList);
     }
     
@@ -1417,7 +1238,7 @@ public class CalendarProject{
                         
                         // Create Project object and write to file
                         Project myProject = new Project(titleField.getText(),descriptionField.getText(),dueDateTime,booleanValue);
-                        writeProjectToFile(myProject, eventsList,"output.ics");    
+                        writeProjectToFile(myProject, eventsList,fileName);    
                     } catch (DateTimeParseException ex) {
                         // Handle parsing exception (invalid format)
                         JOptionPane.showMessageDialog(null, "Invalid time format. Please use HH:mm");
@@ -1431,11 +1252,11 @@ public class CalendarProject{
                 // Handle appointment checkbox selection
                 addEvent.setLayout(new GridLayout(7, 2, 10, 10));
 
-                JLabel startLabel = new JLabel("Appointment start time (format:yyyymmddThhmmssZ)");
+                JLabel startLabel = new JLabel("Appointment start time (format: format: HH:mm)");
                 JTextField startTimeField = new JTextField();
                 startTimeField.setPreferredSize(new Dimension(250, 40));
                 
-                JLabel endLabel = new JLabel("Appointment end time (format:yyyymmddThhmmssZ)");
+                JLabel endLabel = new JLabel("Appointment end time (format: HH:mm)");
                 JTextField endTimeField = new JTextField();
                 startTimeField.setPreferredSize(new Dimension(250, 40));
 
@@ -1470,7 +1291,7 @@ public class CalendarProject{
                         LocalDateTime appointmentEndDateTime = buttonDate.with(LocalTime.of(appointmentEndTime.getHour(), appointmentEndTime.getMinute()));
                         // Create Appointment object and write to file
                         Appointment myAppointment = new Appointment(titleField.getText(), descriptionField.getText(), appointmentDateTime,appointmentEndDateTime);
-                        writeAppointmentToFile(myAppointment, eventsList, "output.ics");
+                        writeAppointmentToFile(myAppointment, eventsList, fileName);
                     } catch (DateTimeParseException ex) {
                         // Handle parsing exception (invalid format)
                         JOptionPane.showMessageDialog(null, "Invalid time format. Please use HH:mm");
