@@ -7,14 +7,12 @@ package gr.hua.dit.oop2.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.geom.Rectangle2D;
@@ -39,14 +37,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Locale;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -70,7 +65,7 @@ public class CalendarProject{
     //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
         if(args.length == 1){
-            fileName = getDirectoryPath()+"//"+ args[0]; //Ifits not running with 
+            fileName = getDirectoryPath()+"//"+ args[0];
             
         }else if (args.length == 0){
             String InputfileName = JOptionPane.showInputDialog("Enter the file name:");
@@ -85,7 +80,6 @@ public class CalendarProject{
             }
         }
         
-
         eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
         eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
 
@@ -109,10 +103,10 @@ public class CalendarProject{
             try{
             userInput = JOptionPane.showInputDialog("Please input " + inputType);
             String toLowerCase = userInput.toLowerCase();
+            
             if(toLowerCase.equals("true")||toLowerCase.equals("false")){
                 bool=Boolean.parseBoolean(toLowerCase);
-                valid=true; 
-            
+                valid=true;
             }else{
 
                 JOptionPane.showMessageDialog(null, "Invalid input. Please enter true/false");
@@ -123,8 +117,7 @@ public class CalendarProject{
         }while(!valid);
         
         return bool; 
-    }
-        
+    } 
     public static int requestChoiceWin(int maxChoice,String inputType){
         boolean validInput = false;
         int timeChoice=0;
@@ -138,7 +131,6 @@ public class CalendarProject{
 
                 timeChoice = Integer.parseInt(userInput);
 
-                // Validate the input
                 if (timeChoice >= 0 && timeChoice <= maxChoice) {
                     validInput = true;
                 } else {
@@ -151,7 +143,6 @@ public class CalendarProject{
         }
         return timeChoice;
     }
-    
     //Does the same as requestChoiceWin but this time it doesnt allow 0
     public static int requestChoiceWin2(int maxChoice,String inputType){
         boolean validInput = false;
@@ -227,7 +218,6 @@ public class CalendarProject{
         }
          
     }
-    
     //Method used for reading appointments from file
     private static ArrayList<Event> readAppointmentsFromFile(String fileName, ArrayList<Event> eventsList) {
         BufferedReader reader = null;
@@ -240,9 +230,6 @@ public class CalendarProject{
             String duration = null;
             String description = null;
             
-
-
-
             while ((line = reader.readLine()) != null) {
                 if(line.equals("BEGIN:VEVENT")){
                     while((line = reader.readLine())!=null){
@@ -253,7 +240,7 @@ public class CalendarProject{
                             // Extracting the event start date (DTSTART)
                             date = line.substring("DTSTART:".length());
 
-                            // Parse the 'startDate' string using the iCalendar format
+                        // Parse the 'startDate' string using the iCalendar format
                             
                         }else if(line.startsWith("DTEND:")){
                             duration = line.substring("DTEND:".length());
@@ -268,14 +255,6 @@ public class CalendarProject{
                             // Date date = dateFormat.parse(dateString);
                             Appointment appointment = new Appointment(title,description,formattedDate,formattedDateEnd);
                             eventsList.add(appointment);
-                            // Print the event details
-//                            if (title != null) {
-//                                System.out.println("Title: " + title);
-//                                System.out.println("Date: " + formattedDate);
-//                                System.out.println("Date End: "+formattedDateEnd);
-//                                System.out.println("Description: "+ description);
-//                                System.out.println();
-//                            }
                             // Reset variables for the next event
                             title = null;
                             date = null;
@@ -338,14 +317,7 @@ public class CalendarProject{
                             // Date date = dateFormat.parse(dateString);
                             Project project = new Project(title2,description2,formattedDate,status);
                             eventsList.add(project);
-                            // Print the event details
-//                            if (title2 != null) {
-//                                System.out.println("Title: " + title2);
-//                                System.out.println("Due Date Time:" + formattedDate);
-//                                System.out.println("Status: "+ status);
-//                                System.out.println("Description: "+ description2);
-//                                System.out.println();
-//                            }
+                            
                             // Reset variables for the next event
                             title2 = null;
                             date2 = null;
@@ -395,7 +367,6 @@ public class CalendarProject{
             System.err.println("Error writing appointment to file: " + e.getMessage());
         }
     }
-    
     //Method for writting a project to the ical file 
     private static void writeProjectToFile(Project project, ArrayList<Event> eventsList, String file){
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))) {
@@ -428,8 +399,6 @@ public class CalendarProject{
                             e.printStackTrace();
                         }
     }
-    
- 
     
     private static void updateEventInList(ArrayList<Event> eventsList, String searchTitle) {
 
@@ -465,8 +434,7 @@ public class CalendarProject{
                     LocalDateTime updatedEndDate = LocalDateTime.of(years, months, dayOfMonths, hourss, minutess,secondss);
                     ((Appointment) event).setDuration(updatedEndDate);
                 } else if (event instanceof Project) {
-                    // It's a project
-
+                    
                     boolean updatedStatus = requestBoolean("true/false");
                     ((Project) event).setStatus(updatedStatus);
                 }
@@ -478,9 +446,6 @@ public class CalendarProject{
 
         JOptionPane.showMessageDialog(null, "Invalid input. Please press edit button and try again!");
     }
-    
-    
-    
     //Method used for writing the events sorted to a file
     private static void writeSortedEventsToFile(ArrayList<Event> eventsList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
@@ -777,7 +742,6 @@ public class CalendarProject{
 
         return frame;
     }
-
     public static JPanel createGreenPanel() {
         JPanel greenPanel = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
         greenPanel.setLayout(new BoxLayout(greenPanel, BoxLayout.Y_AXIS));
@@ -813,9 +777,6 @@ public class CalendarProject{
         
         return greenPanel;
     }
-    
-    
-            
     public static JPanel createButtonsPanel(List<JButton> buttons) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(buttons.size(), 1, 3, 3));
@@ -868,7 +829,7 @@ public class CalendarProject{
                 
                 // Add an action listener to each day button for future actions
                 button.addActionListener(dayButtonEvent -> {
-                    // You can perform additional actions when a day button is clicked
+
                     JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
 
                     // Remove all components from bluePanel
@@ -932,7 +893,7 @@ public class CalendarProject{
 
                 // Add an action listener to each day button for future actions
                 button.addActionListener(dayButtonEvent -> {
-                    // You can perform additional actions when a day button is clicked
+
                     JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
 
                     // Remove all components from bluePanel
@@ -985,7 +946,7 @@ public class CalendarProject{
 
                 // Add an action listener to each day button for future actions
                 button.addActionListener(dayButtonEvent -> {
-                    // You can perform additional actions when a day button is clicked
+
                     JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
 
                     // Remove all components from bluePanel
@@ -1038,7 +999,7 @@ public class CalendarProject{
 
                 // Add an action listener to each day button for future actions
                 button.addActionListener(dayButtonEvent -> {
-                    // You can perform additional actions when a day button is clicked
+
                     JOptionPane.showMessageDialog(null, "Add event in day " + button.getText());
 
                     // Remove all components from bluePanel
@@ -1077,7 +1038,6 @@ public class CalendarProject{
         chosenDateLabel.setText("Current Date: " + formatDate(chosenDate));
 
 
-        // Use the dayOfWeek to determine the layout of your month view
         int startingDay = 0; // 0 corresponds to Sunday, 1 to Monday, ..., 6 to Saturday
 
         switch (dayOfWeek) {
@@ -1237,7 +1197,7 @@ public class CalendarProject{
                         Project myProject = new Project(titleField.getText(),descriptionField.getText(),dueDateTime,booleanValue);
                         writeProjectToFile(myProject, eventsList,fileName);    
                     } catch (DateTimeParseException ex) {
-                        // Handle parsing exception (invalid format)
+
                         JOptionPane.showMessageDialog(null, "Invalid time format. Please use HH:mm");
                     }                
                 });
@@ -1290,7 +1250,7 @@ public class CalendarProject{
                         Appointment myAppointment = new Appointment(titleField.getText(), descriptionField.getText(), appointmentDateTime,appointmentEndDateTime);
                         writeAppointmentToFile(myAppointment, eventsList, fileName);
                     } catch (DateTimeParseException ex) {
-                        // Handle parsing exception (invalid format)
+
                         JOptionPane.showMessageDialog(null, "Invalid time format. Please use HH:mm");
                     }
                 });
@@ -1552,4 +1512,3 @@ public class CalendarProject{
         return titleAndEventsPanel;
     }
 }
-

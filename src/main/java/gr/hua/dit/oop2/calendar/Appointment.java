@@ -6,7 +6,6 @@ package gr.hua.dit.oop2.calendar;
 
 //Libraries used for appointment class
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  *
