@@ -38,6 +38,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -935,7 +936,6 @@ public class CalendarProject{
     
     ///////BUTTON METHODS/////////////////////////////////
     
-    
     public static JFrame createMainFrame() {
         JFrame frame = new JFrame();
         frame.setTitle("Calendar");
@@ -996,15 +996,7 @@ public class CalendarProject{
         return greenPanel;
     }
     
-    public static void handleEditButton(){
-        
-        
-       String searchTitle=JOptionPane.showInputDialog("Enter the name of an Event:");
-       updateEventInList(eventsList, searchTitle);
-
-    // Write the updated events back to the file
-        writeSortedEventsToFile(eventsList);
-        }
+    
             
     public static JPanel createButtonsPanel(List<JButton> buttons) {
         JPanel panel = new JPanel();
@@ -1065,7 +1057,7 @@ public class CalendarProject{
                     bluePanel.removeAll();
 
                     ////////////
-                    JPanel addEvent = createAddEventPanel();
+                    JPanel addEvent = createAddEventPanel(button);
                     
                     bluePanel.revalidate();
                     bluePanel.repaint();
@@ -1129,7 +1121,7 @@ public class CalendarProject{
                     bluePanel.removeAll();
 
                     ////////////
-                    JPanel addEvent = createAddEventPanel();
+                    JPanel addEvent = createAddEventPanel(button);
 
                     bluePanel.revalidate();
                     bluePanel.repaint();
@@ -1182,7 +1174,7 @@ public class CalendarProject{
                     bluePanel.removeAll();
 
                     ////////////
-                    JPanel addEvent = createAddEventPanel();
+                    JPanel addEvent = createAddEventPanel(button);
                     
                     bluePanel.revalidate();
                     bluePanel.repaint();
@@ -1235,7 +1227,7 @@ public class CalendarProject{
                     bluePanel.removeAll();
 
                     ////////////
-                    JPanel addEvent = createAddEventPanel();
+                    JPanel addEvent = createAddEventPanel(button);
                     
                     bluePanel.revalidate();
                     bluePanel.repaint();
@@ -1254,11 +1246,11 @@ public class CalendarProject{
         bluePanel.repaint();
     }
     public static void handleChooseDateButton() {
-        int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year (e.g., 2024): "));
-        int month = Integer.parseInt(JOptionPane.showInputDialog("Enter the month (1-12): "));
-        int dayOfMonth = Integer.parseInt(JOptionPane.showInputDialog("Enter the day (1-31): "));
-        int hours = Integer.parseInt(JOptionPane.showInputDialog("Enter the hour (0-24): "));
-        int minutes = Integer.parseInt(JOptionPane.showInputDialog("Enter the minutes (0-59): "));
+        int year =requestChoiceWin2(9999,"year");
+        int month = requestChoiceWin2(12,"month");
+        int dayOfMonth = requestChoiceWin2(31,"day");
+        int hours =requestChoiceWin(24,"hour");
+        int minutes = requestChoiceWin(59,"minute");
         // Calculate the day of the week for the 1st day of the entered month
         LocalDateTime firstDayOfMonth = LocalDateTime.of(year, month, dayOfMonth, hours, minutes);
         DayOfWeek dayOfWeek = firstDayOfMonth.getDayOfWeek();
@@ -1307,6 +1299,13 @@ public class CalendarProject{
 //        TimeService.waitUntilTimeEnds();
 
     }
+    public static void handleEditButton(){
+       String searchTitle="Kourema Skylou";
+       updateEventInList(eventsList, searchTitle);
+
+        // Write the updated events back to the file
+        writeSortedEventsToFile(eventsList);
+    }
     
     private static String formatDate(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // You can customize the pattern
@@ -1350,7 +1349,7 @@ public class CalendarProject{
          }
      };
     }
-    private static JPanel createAddEventPanel() {
+    private static JPanel createAddEventPanel(JButton button) {
         JPanel addEvent = createGradientPanel(new Color(200, 238, 255), new Color(0, 144, 0));
         addEvent.setPreferredSize(new Dimension(500, 500));
 
@@ -1375,7 +1374,7 @@ public class CalendarProject{
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 addEvent.setLayout(new GridLayout(6, 1, 10, 10));
 
-                JLabel projdue = new JLabel("Project due");
+                JLabel projdue = new JLabel("Project due time (format:yyyymmddThhmmssZ)");
                 JTextField projdueField = new JTextField();
                 projdueField.setPreferredSize(new Dimension(250, 40));
 
@@ -1402,52 +1401,84 @@ public class CalendarProject{
                     addEvent.setVisible(false);
                     handleMonthButton();
                     
-                boolean booleanValue = Boolean.parseBoolean(projstatusField.getText());
-                LocalDateTime dueDateTime = LocalDateTime.parse(projdueField.getText(), formatter);
-                Project myProject = new Project(titleField.getText(),descriptionField.getText(),dueDateTime,booleanValue);
-                writeProjectToFile(myProject, eventsList,"output.ics");    
+                    String inputTime = projdueField.getText();
+                    int dayNumber = Integer.parseInt(button.getText());
+                    
+                    try {
+                        boolean booleanValue = Boolean.parseBoolean(projstatusField.getText());
+                        
+                        // Parse the input time
+                        LocalTime appointmentTime = LocalTime.parse(inputTime, DateTimeFormatter.ofPattern("HH:mm"));
+                       
+                        
+                        // Combine the date from the button with the user-provided time
+                        LocalDateTime buttonDate = LocalDateTime.of(chosenDate.getYear(), chosenDate.getMonth(), dayNumber, 0, 0);
+                        LocalDateTime dueDateTime = buttonDate.with(LocalTime.of(appointmentTime.getHour(), appointmentTime.getMinute()));
+                        
+                        // Create Project object and write to file
+                        Project myProject = new Project(titleField.getText(),descriptionField.getText(),dueDateTime,booleanValue);
+                        writeProjectToFile(myProject, eventsList,"output.ics");    
+                    } catch (DateTimeParseException ex) {
+                        // Handle parsing exception (invalid format)
+                        JOptionPane.showMessageDialog(null, "Invalid time format. Please use HH:mm");
+                    }                
                 });
             }
         });
 
         checkBox2.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                addEvent.setLayout(new GridLayout(6, 1, 10, 10));
+                // Handle appointment checkbox selection
+                addEvent.setLayout(new GridLayout(7, 2, 10, 10));
 
-                JLabel start = new JLabel("Appointment start");
-                JTextField startField = new JTextField();
-                startField.setPreferredSize(new Dimension(250, 40));
-
-                JLabel end = new JLabel("Appointment ends");
-                JTextField endField = new JTextField();
-                endField.setPreferredSize(new Dimension(250, 40));
+                JLabel startLabel = new JLabel("Appointment start time (format:yyyymmddThhmmssZ)");
+                JTextField startTimeField = new JTextField();
+                startTimeField.setPreferredSize(new Dimension(250, 40));
+                
+                JLabel endLabel = new JLabel("Appointment end time (format:yyyymmddThhmmssZ)");
+                JTextField endTimeField = new JTextField();
+                startTimeField.setPreferredSize(new Dimension(250, 40));
 
                 JButton submit = new JButton("Submit");
                 submit.setPreferredSize(new Dimension(500, 40));
 
-
-                
-                addEvent.add(end, 0);
-                addEvent.add(endField, 1);
-                addEvent.add(start, 0);
-                addEvent.add(startField, 1);
+                addEvent.add(startLabel);
+                addEvent.add(startTimeField);
+                addEvent.add(endLabel);
+                addEvent.add(endTimeField);
                 addEvent.add(submit);
 
                 addEvent.revalidate();
                 addEvent.repaint();
 
-
                 submit.addActionListener(f -> {
                     addEvent.setVisible(false);
                     handleMonthButton();
                     
-                LocalDateTime dateTime = LocalDateTime.parse(startField.getText(), formatter);
-                LocalDateTime durationTime = LocalDateTime.parse(endField.getText(), formatter);
-                Appointment myAppointment = new Appointment(titleField.getText(),descriptionField.getText(),dateTime,durationTime);
-                writeAppointmentToFile(myAppointment,eventsList,"output.ics");
+                    // Get the input time from the user
+                    String inputTime = startTimeField.getText();
+                    int dayNumber = Integer.parseInt(button.getText());
+                    
+                    try {
+                        // Parse the input time
+                        LocalTime appointmentTime = LocalTime.parse(inputTime, DateTimeFormatter.ofPattern("HH:mm"));
+                        LocalTime appointmentEndTime = LocalTime.parse(inputTime, DateTimeFormatter.ofPattern("HH:mm"));
+                        
+                        // Combine the date from the button with the user-provided time
+                        LocalDateTime buttonDate = LocalDateTime.of(chosenDate.getYear(), chosenDate.getMonth(), dayNumber, 0, 0);
+                        LocalDateTime appointmentDateTime = buttonDate.with(LocalTime.of(appointmentTime.getHour(), appointmentTime.getMinute()));
+                        LocalDateTime appointmentEndDateTime = buttonDate.with(LocalTime.of(appointmentEndTime.getHour(), appointmentEndTime.getMinute()));
+                        // Create Appointment object and write to file
+                        Appointment myAppointment = new Appointment(titleField.getText(), descriptionField.getText(), appointmentDateTime,appointmentEndDateTime);
+                        writeAppointmentToFile(myAppointment, eventsList, "output.ics");
+                    } catch (DateTimeParseException ex) {
+                        // Handle parsing exception (invalid format)
+                        JOptionPane.showMessageDialog(null, "Invalid time format. Please use HH:mm");
+                    }
                 });
             }
         });
+
 
         addEvent.add(title);
         addEvent.add(titleField);
@@ -1458,7 +1489,7 @@ public class CalendarProject{
 
         return addEvent;
     }
-
+    
     private static void displayWholeDayAndUpcoming(LocalDateTime date) {
         
         ArrayList<Event> dayEvents = getEventsForDate(date);
