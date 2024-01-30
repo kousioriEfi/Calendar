@@ -1,51 +1,26 @@
 *ΤΙ ΤΡΕΧΕΙ:
 
-ΤΟ ΠΡΟΓΡΑΜΜΑ ΤΡΕΧΕΙ ΚΑΝΟΝΙΚΑ ΑΠΟ ΤΟ TERMINAL ΑΠΛΩΣ ΣΕ ΕΜΑΣ ΒΓΑΖΕΙ COMPILATION ERROR ΤΟ ΕΞΗΣ ΜΗΝΥΜΑ:
+ΤΟ ΠΡΟΓΡΑΜΜΑ ΤΡΕΧΕΙ ΣΤΟ TERMINAL ΑΠΛΩΣ ΣΕ ΕΜΑΣ ΕΜΦΑΝΙΖΕΙ ΑΥΤΟ ΤΟ ERROR:
 
-CalendarProject.java:35: error: cannot find symbol
-            TimeTeller teller = TimeService.getTeller();
-                                ^
-  symbol:   variable TimeService
-  location: class CalendarProject
-CalendarProject.java:167: error: cannot find symbol
-           TimeService.stop();
-           ^
-  symbol:   variable TimeService
-  location: class CalendarProject
-2 errors
+Exception in thread "AWT-EventQueue-0" java.awt.HeadlessException:
+No X11 DISPLAY variable was set,
+or no headful library support was found,
+but this program performed an operation which requires it
+
                           
-ΕΝΩ ΟΤΑΝ ΚΑΝΕΙ BUILD ΛΕΙΤΟΥΡΓΕΙ ΚΑΝΟΝΙΚΑ.
+ΠΙΣΤΕΥΟΥΜΕ ΠΩΣ ΣΕ ΕΣΑΣ ΛΕΙΤΟΥΡΓΕΙ ΚΑΝΟΝΙΚΑ.
 
 
 *ΓΙΑ ΤΗΝ ΜΕΤΑΓΛΩΤΤΙΣΗ:
 
-javac CalendarProject.java Event.java Project.java Appointment.java TimeTeller.java 
+mvn clean install 
 
 *ΓΙΑ ΤΟ ΤΡΕΞΙΜΟ:
 
--ΤΟ ΠΡΟΓΡΑΜΜΑ ΞΕΚΙΝΑΕΙ ΖΗΤΩΝΤΑΣ ΑΠΟ ΤΟ ΧΡΗΣΤΗ ΤΗΝ ΗΜΕΡΟΜΗΝΙΑ ΚΑΙ ΤΟ ΧΡΟΝΟ ΠΟΥ ΘΕΛΕΙ ΝΑ ΕΧΕΙ Ο ΥΠΟΛΟΓΙΣΤΗΣ ΣΤΟ ΣΥΓΚΕΚΡΙΜΕΝΟ RUN.
+-ΤΟ ΠΡΟΓΡΑΜΜΑ ΞΕΚΙΝΑΕΙ ΖΗΤΩΝΤΑΣ ΑΠΟ ΤΟ ΧΡΗΣΤΗ ΤΟ .ics FILE ΜΕ ΤΟ ΟΠΟΙΟ ΘΕΛΕΙ ΝΑ ΔΟΥΛΕΨΕΙ(ΕΜΕΙΣ ΓΙΑ ΤΕΣΤ ΕΧΟΥΜΕ output.ics ΚΑΙ calendar.ics).
 
--ΑΝ ΘΕΛΕΙ 1 ΟΡΙΣΜΑ(our test file is calendar.ics)
+Η ΓΡΑΜΜΗ ΕΚΤΕΛΕΣΗΣ ΕΙΝΑΙ:java -jar CalendarProject-1.0-SNAPSHOT.jar
 
-java -jar CalendarProject-1.0-SNAPSHOT.jar calendar.ics
+ΕΜΕΙΣ ΤΟ ΤΡΕΧΟΥΜΕ ΕΤΣΙ:
 
--ΑΝ ΘΕΛΕΙ 2 ΟΡΙΣΜΑTA(calendar.ics)
-
-java -jar CalendarProject-1.0-SNAPSHOT.jar day calendar.ics 
-                          ή
-java -jar CalendarProject-1.0-SNAPSHOT.jar week calendar.ics 
-			  ή
-java -jar CalendarProject-1.0-SNAPSHOT.jar month calendar.ics
-			  ή
-java -jar CalendarProject-1.0-SNAPSHOT.jar pastday calendar.ics
-			  ή
-java -jar CalendarProject-1.0-SNAPSHOT.jar pastweek calendar.ics
-			  ή
-java -jar CalendarProject-1.0-SNAPSHOT.jar pastmonth calendar.ics
-			  ή
-java -jar CalendarProject-1.0-SNAPSHOT.jar todo calendar.ics
-			  ή		
-java -jar CalendarProject-1.0-SNAPSHOT.jar due calendar.ics
-			  
-
-
+Calendar/src/main/java/gr/hua/dit/oop2/calendar$ javac CalendarProject.java Event.java Project.java Appointment.java
