@@ -74,11 +74,11 @@ public class CalendarProject{
             
         }else if (args.length == 0){
             String InputfileName = JOptionPane.showInputDialog("Enter the file name:");
-        
+            
             // Check if the user clicked OK or canceled the dialog
             if (InputfileName != null) {
-                // User entered a file name
-                System.out.println("File Name: " + InputfileName);
+                fileName = getDirectoryPath()+"//"+ InputfileName;
+
             } else {
                 // User clicked Cancel or closed the dialog
                 System.out.println("User canceled the operation.");

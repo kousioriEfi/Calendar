@@ -20,7 +20,9 @@ but this program performed an operation which requires it
 *ΓΙΑ ΤΟ ΤΡΕΞΙΜΟ:
 
 -ΤΟ ΠΡΟΓΡΑΜΜΑ ΞΕΚΙΝΑΕΙ ΖΗΤΩΝΤΑΣ ΑΠΟ ΤΟ ΧΡΗΣΤΗ ΤΟ .ics FILE ΜΕ ΤΟ ΟΠΟΙΟ ΘΕΛΕΙ ΝΑ ΔΟΥΛΕΨΕΙ(ΕΜΕΙΣ ΓΙΑ ΤΕΣΤ ΕΧΟΥΜΕ output.ics ΚΑΙ calendar.ics).
-ΕΜΕΙΣ ΤΟ ΤΡΕΧΟΥΜΕ ΕΤΣΙ:
+(ΣΕ ΠΕΡΙΠΤΩΣΗ ΠΟΥ ΔΕΝ ΒΡΙΣΚΕΙ ΤΟ .ics file ΣΑΣ ΜΠΟΡΕΙΤΕ ΝΑ ΤΟ ΒΑΛΕΤΕ ΣΤΗ ΓΡΑΜΜΗ ΕΚΤΕΛΕΣΗΣ).
+Π.Χ. java -jar CalendarProject-1.0-SNAPSHOT.jar output.ics
+
 
 Η ΓΡΑΜΜΗ ΕΚΤΕΛΕΣΗΣ ΕΙΝΑΙ:
 (3) java -jar CalendarProject-1.0-SNAPSHOT.jar
