@@ -13,14 +13,17 @@ but this program performed an operation which requires it
 
 *ΓΙΑ ΤΗΝ ΜΕΤΑΓΛΩΤΤΙΣΗ:
 
-mvn clean install 
+(1) Calendar/src/main/java/gr/hua/dit/oop2/calendar$ javac CalendarProject.java Event.java Project.java Appointment.java
+
+(2) mvn clean install 
 
 *ΓΙΑ ΤΟ ΤΡΕΞΙΜΟ:
 
 -ΤΟ ΠΡΟΓΡΑΜΜΑ ΞΕΚΙΝΑΕΙ ΖΗΤΩΝΤΑΣ ΑΠΟ ΤΟ ΧΡΗΣΤΗ ΤΟ .ics FILE ΜΕ ΤΟ ΟΠΟΙΟ ΘΕΛΕΙ ΝΑ ΔΟΥΛΕΨΕΙ(ΕΜΕΙΣ ΓΙΑ ΤΕΣΤ ΕΧΟΥΜΕ output.ics ΚΑΙ calendar.ics).
-
-Η ΓΡΑΜΜΗ ΕΚΤΕΛΕΣΗΣ ΕΙΝΑΙ:java -jar CalendarProject-1.0-SNAPSHOT.jar
-
 ΕΜΕΙΣ ΤΟ ΤΡΕΧΟΥΜΕ ΕΤΣΙ:
 
-Calendar/src/main/java/gr/hua/dit/oop2/calendar$ javac CalendarProject.java Event.java Project.java Appointment.java
+Η ΓΡΑΜΜΗ ΕΚΤΕΛΕΣΗΣ ΕΙΝΑΙ:
+(3) java -jar CalendarProject-1.0-SNAPSHOT.jar
+
+
+

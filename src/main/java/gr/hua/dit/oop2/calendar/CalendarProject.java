@@ -69,25 +69,22 @@ public class CalendarProject{
     
     //BEGINNING OF MAIN
     public static void main(String[] args) throws ParseException {
+        if(args.length == 1){
+            fileName = getDirectoryPath()+"//"+ args[0]; //Ifits not running with 
+            
+        }else if (args.length == 0){
+            String InputfileName = JOptionPane.showInputDialog("Enter the file name:");
         
-        String fileName = JOptionPane.showInputDialog("Enter the file name:");
-
-        // Check if the user clicked OK or canceled the dialog
-        if (fileName != null) {
-            // User entered a file name
-            System.out.println("File Name: " + fileName);
-            // Now you can use the fileName variable for further processing
-
-            // Example: Concatenate the directory path and file name
-            String directoryPath = getDirectoryPath(); // Assuming you have a method getDirectoryPath()
-            String fullPath = directoryPath + "//" + fileName;
-
-            // Perform other actions with the file name
-        } else {
-            // User clicked Cancel or closed the dialog
-            System.out.println("User canceled the operation.");
+            // Check if the user clicked OK or canceled the dialog
+            if (InputfileName != null) {
+                // User entered a file name
+                System.out.println("File Name: " + InputfileName);
+            } else {
+                // User clicked Cancel or closed the dialog
+                System.out.println("User canceled the operation.");
+            }
         }
-
+        
 
         eventsList = readAppointmentsFromFile(fileName, eventsList);//The ics file gets all the appointments
         eventsList = readProjectsFromFile(fileName, eventsList);//The ics file gets all the projects
@@ -156,7 +153,7 @@ public class CalendarProject{
     }
     
     //Does the same as requestChoiceWin but this time it doesnt allow 0
-        public static int requestChoiceWin2(int maxChoice,String inputType){
+    public static int requestChoiceWin2(int maxChoice,String inputType){
         boolean validInput = false;
         int timeChoice=0;
         while (!validInput) {
@@ -734,10 +731,10 @@ public class CalendarProject{
         }
     }
 
-        // chat gpt generated code to find file in system, actually not used...
+        // chat gpt generated code to find file in system
     public static String getDirectoryPath(){
        String currentDirectory = System.getProperty("user.dir");
-
+       
        
         File currentDirFile = new File(currentDirectory);
 
